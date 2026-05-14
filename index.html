@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Kingdom — An Almanac of Saudi Arabia</title>
+<meta name="description" content="A visual almanac of the Kingdom of Saudi Arabia — geography, history, economy, culture and Vision 2030." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,400&family=Newsreader:ital,opsz@0,6..72;1,6..72&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper:      #e9e1cf;
+    --paper-2:    #e1d6bd;
+    --ink:        #211c12;
+    --ink-soft:   #4a4334;
+    --green:      #14502f;
+    --green-br:   #1d6e41;
+    --ochre:      #b07d27;
+    --terra:      #a8431f;
+    --line:       rgba(33,28,18,.22);
+    --max:        1240px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(176,125,39,.10), transparent 42%),
+      radial-gradient(circle at 85% 78%, rgba(20,80,47,.12), transparent 46%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+    color: var(--ink);
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 19px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--green); color: var(--paper); }
+
+  /* ---------- shared ---------- */
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+
+  .eyebrow {
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  h1, h2, h3 { font-family: "Fraunces", serif; font-weight: 400; line-height: 1.02; }
+
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 32px;
+    font-family: "Space Mono", monospace;
+    font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    mix-blend-mode: difference; color: #e9e1cf;
+  }
+  .topbar nav { display: flex; gap: 26px; }
+  .topbar a { color: inherit; text-decoration: none; opacity: .7; transition: opacity .25s; }
+  .topbar a:hover { opacity: 1; }
+  @media (max-width: 720px) { .topbar nav { display: none; } }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 140px 0 80px;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      linear-gradient(180deg, #0d3a22 0%, #14502f 48%, #0e2f1d 100%);
+  }
+  .dunes { position: absolute; inset: 0; z-index: 1; }
+  .star {
+    position: absolute; z-index: 2;
+    width: 2px; height: 2px; border-radius: 50%;
+    background: #e9e1cf; opacity: .0;
+    animation: twinkle 5s infinite ease-in-out;
+  }
+  @keyframes twinkle { 0%,100%{opacity:.05} 50%{opacity:.55} }
+
+  .hero .wrap { position: relative; z-index: 5; color: var(--paper); }
+  .hero-arabic {
+    font-family: "Fraunces", serif;
+    font-size: clamp(20px, 3vw, 30px);
+    direction: rtl;
+    color: var(--ochre);
+    letter-spacing: .04em;
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-size: clamp(58px, 13vw, 188px);
+    font-weight: 300;
+    letter-spacing: -.02em;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--ochre);
+  }
+  .hero-sub {
+    margin-top: 30px;
+    max-width: 540px;
+    font-size: 21px;
+    color: rgba(233,225,207,.82);
+  }
+  .hero-meta {
+    margin-top: 54px;
+    display: flex; flex-wrap: wrap; gap: 40px;
+    font-family: "Space Mono", monospace;
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(233,225,207,.6);
+  }
+  .hero-meta b { display: block; font-family: "Fraunces", serif; font-size: 30px; letter-spacing: 0; text-transform: none; color: var(--paper); margin-top: 4px; }
+  .scroll-cue {
+    position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
+    z-index: 5;
+    font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: .3em;
+    color: rgba(233,225,207,.55); text-transform: uppercase;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .scroll-cue span { width: 1px; height: 40px; background: rgba(233,225,207,.4); animation: drop 1.8s infinite; }
+  @keyframes drop { 0%{transform:scaleY(0);transform-origin:top} 45%{transform:scaleY(1);transform-origin:top} 55%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+  /* ---------- section frame ---------- */
+  section { position: relative; padding: 120px 0; }
+  .section-head { margin-bottom: 64px; }
+  .section-head h2 {
+    font-size: clamp(38px, 6vw, 78px);
+    margin-top: 18px;
+    max-width: 16ch;
+  }
+  .section-head h2 em { font-style: italic; color: var(--green); }
+  .lead { max-width: 60ch; margin-top: 22px; font-size: 21px; color: var(--ink-soft); }
+
+  /* ---------- facts grid ---------- */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1.5px solid var(--ink);
+  }
+  .fact {
+    padding: 34px 26px 30px;
+    border-bottom: 1.5px solid var(--ink);
+    border-right: 1px solid var(--line);
+    position: relative;
+  }
+  .fact:nth-child(4n) { border-right: none; }
+  .fact .k {
+    font-family: "Space Mono", monospace;
+    font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--terra);
+  }
+  .fact .v {
+    font-family: "Fraunces", serif;
+    font-size: 40px; line-height: 1.05;
+    margin-top: 16px;
+  }
+  .fact .n { font-size: 14px; color: var(--ink-soft); margin-top: 8px; font-style: italic; }
+  @media (max-width: 900px) { .facts { grid-template-columns: repeat(2,1fr); } .fact:nth-child(4n){border-right:1px solid var(--line)} .fact:nth-child(2n){border-right:none} }
+  @media (max-width: 520px) { .facts { grid-template-columns: 1fr; } .fact{border-right:none!important} }
+
+  /* ---------- geography split ---------- */
+  .split { display: grid; grid-template-columns: 1.05fr .95fr; gap: 70px; align-items: center; }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; gap: 44px; } }
+  .geo-list { margin-top: 30px; }
+  .geo-list .row {
+    display: flex; justify-content: space-between; gap: 20px;
+    padding: 20px 0; border-bottom: 1px solid var(--line);
+  }
+  .geo-list .row:first-child { border-top: 1px solid var(--line); }
+  .geo-list .row .label { font-family: "Fraunces", serif; font-size: 24px; }
+  .geo-list .row .desc { font-size: 16px; color: var(--ink-soft); text-align: right; max-width: 30ch; }
+
+  .map-card {
+    background: var(--green);
+    border-radius: 4px;
+    padding: 40px;
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 18px 22px 0 rgba(33,28,18,.14);
+  }
+  .map-card svg { width: 100%; height: auto; display: block; }
+  .map-card .cap {
+    font-family: "Space Mono", monospace; font-size: 11px;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: rgba(233,225,207,.65); margin-top: 22px;
+  }
+
+  /* ---------- timeline ---------- */
+  .timeline { border-top: 1.5px solid var(--ink); }
+  .tl-item {
+    display: grid; grid-template-columns: 200px 1fr;
+    gap: 40px; padding: 38px 0;
+    border-bottom: 1px solid var(--line);
+    transition: background .4s;
+  }
+  .tl-item:hover { background: var(--paper-2); }
+  .tl-year {
+    font-family: "Fraunces", serif; font-size: 56px; font-weight: 300;
+    color: var(--green); line-height: 1;
+  }
+  .tl-body h3 { font-size: 27px; margin-bottom: 8px; }
+  .tl-body p { color: var(--ink-soft); font-size: 17px; max-width: 64ch; }
+  @media (max-width: 640px) { .tl-item { grid-template-columns: 1fr; gap: 10px; } .tl-year{font-size:42px} }
+
+  /* ---------- economy ---------- */
+  .econ-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--ink); border: 1.5px solid var(--ink); }
+  .econ-cell { background: var(--paper); padding: 38px 30px; }
+  .econ-cell.dark { background: var(--ink); color: var(--paper); }
+  .econ-cell.green { background: var(--green); color: var(--paper); }
+  .econ-cell .big { font-family: "Fraunces", serif; font-size: 64px; line-height: 1; font-weight: 300; }
+  .econ-cell .lab { font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; margin-top: 14px; opacity: .8; }
+  .econ-cell p { font-size: 16px; margin-top: 14px; }
+  .econ-cell.dark p, .econ-cell.green p { color: rgba(233,225,207,.8); }
+  @media (max-width: 760px) { .econ-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- vision cards ---------- */
+  .vision-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; }
+  @media (max-width: 760px) { .vision-grid { grid-template-columns: 1fr; } }
+  .v-card {
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    padding: 36px 34px 40px;
+    background: var(--paper);
+    position: relative;
+    transition: transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s;
+  }
+  .v-card:hover { transform: translateY(-8px); box-shadow: 10px 14px 0 var(--green); }
+  .v-card .num {
+    font-family: "Space Mono", monospace; font-size: 12px;
+    color: var(--terra); letter-spacing: .15em;
+  }
+  .v-card h3 { font-size: 34px; margin: 14px 0 12px; }
+  .v-card h3 em { font-style: italic; color: var(--green); }
+  .v-card p { font-size: 16px; color: var(--ink-soft); }
+
+  /* ---------- culture strip ---------- */
+  .culture { background: var(--ink); color: var(--paper); }
+  .culture .section-head h2 em { color: var(--ochre); }
+  .culture .lead { color: rgba(233,225,207,.72); }
+  .culture .eyebrow { color: var(--ochre); }
+  .culture .eyebrow::after { background: rgba(233,225,207,.25); }
+  .pillars { display: grid; grid-template-columns: repeat(3,1fr); gap: 50px; margin-top: 20px; }
+  @media (max-width: 760px) { .pillars { grid-template-columns: 1fr; gap: 36px; } }
+  .pillar { border-top: 1.5px solid var(--ochre); padding-top: 22px; }
+  .pillar h3 { font-size: 28px; margin-bottom: 10px; }
+  .pillar h3 em { font-style: italic; color: var(--ochre); }
+  .pillar p { color: rgba(233,225,207,.7); font-size: 16px; }
+
+  /* ---------- cities ---------- */
+  .cities { display: grid; grid-template-columns: repeat(5,1fr); border: 1.5px solid var(--ink); }
+  .city {
+    padding: 30px 22px 26px;
+    border-right: 1px solid var(--line);
+    transition: background .35s, color .35s;
+    cursor: default;
+  }
+  .city:last-child { border-right: none; }
+  .city:hover { background: var(--green); color: var(--paper); }
+  .city .rank { font-family: "Space Mono", monospace; font-size: 11px; color: var(--terra); }
+  .city:hover .rank { color: var(--ochre); }
+  .city h3 { font-size: 30px; margin: 12px 0 6px; }
+  .city p { font-size: 14px; color: var(--ink-soft); }
+  .city:hover p { color: rgba(233,225,207,.8); }
+  @media (max-width: 900px) { .cities { grid-template-columns: repeat(2,1fr); } .city{border-bottom:1px solid var(--line)} }
+  @media (max-width: 480px) { .cities { grid-template-columns: 1fr; } }
+
+  /* ---------- footer ---------- */
+  footer {
+    background: var(--green);
+    color: var(--paper);
+    padding: 90px 0 40px;
+  }
+  footer h2 { font-size: clamp(40px, 7vw, 96px); font-weight: 300; }
+  footer h2 em { font-style: italic; color: var(--ochre); }
+  .foot-row {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+    margin-top: 60px; padding-top: 28px;
+    border-top: 1px solid rgba(233,225,207,.3);
+    font-family: "Space Mono", monospace; font-size: 11px;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(233,225,207,.7);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>KSA · ALMANAC</div>
+  <nav>
+    <a href="#facts">Facts</a>
+    <a href="#land">Land</a>
+    <a href="#history">History</a>
+    <a href="#economy">Economy</a>
+    <a href="#vision">Vision 2030</a>
+  </nav>
+  <div>EST. 1932</div>
+</div>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <svg class="dunes" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <path d="M0 720 C 240 640 480 700 720 670 C 960 640 1200 720 1440 660 L1440 900 L0 900 Z" fill="#0e3f25"/>
+    <path d="M0 800 C 300 740 560 810 860 770 C 1120 736 1280 800 1440 760 L1440 900 L0 900 Z" fill="#0b2f1c"/>
+    <path d="M0 860 C 360 820 720 880 1080 850 C 1260 836 1360 860 1440 850 L1440 900 L0 900 Z" fill="#081f13"/>
+  </svg>
+  <div class="wrap">
+    <div class="hero-arabic">المملكة العربية السعودية</div>
+    <h1>The <em>Kingdom</em><br/>of Saudi&nbsp;Arabia</h1>
+    <p class="hero-sub">A nation forged from desert and unified in 1932 — guardian of Islam's holiest cities, anchor of the world's energy, and architect of one of the boldest reinventions of the 21st century.</p>
+    <div class="hero-meta">
+      <div>Capital <b>Riyadh</b></div>
+      <div>Area <b>2,150,000 km²</b></div>
+      <div>Population <b>≈ 37 million</b></div>
+      <div>Founded <b>23 Sept 1932</b></div>
+    </div>
+  </div>
+  <div class="scroll-cue">Scroll<span></span></div>
+</header>
+
+<!-- ================= FACTS ================= -->
+<section id="facts">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">01 — The Record</div>
+      <h2>The Kingdom <em>at a glance</em></h2>
+      <p class="lead">The largest country in the Middle East and the dominant landmass of the Arabian Peninsula — a sovereign monarchy bordered by the Red Sea and the Arabian Gulf.</p>
+    </div>
+    <div class="facts reveal">
+      <div class="fact"><div class="k">Official Name</div><div class="v">Saudi Arabia</div><div class="n">Kingdom of Saudi Arabia</div></div>
+      <div class="fact"><div class="k">Government</div><div class="v">Monarchy</div><div class="n">Unitary Islamic absolute monarchy</div></div>
+      <div class="fact"><div class="k">King</div><div class="v">Salman bin&nbsp;Abdulaziz</div><div class="n">Custodian of the Two Holy Mosques</div></div>
+      <div class="fact"><div class="k">Crown Prince</div><div class="v">Mohammed bin&nbsp;Salman</div><div class="n">Prime Minister</div></div>
+      <div class="fact"><div class="k">Currency</div><div class="v">Saudi Riyal</div><div class="n">SAR · pegged to the US dollar</div></div>
+      <div class="fact"><div class="k">Language</div><div class="v">Arabic</div><div class="n">Official; English widely used in business</div></div>
+      <div class="fact"><div class="k">Religion</div><div class="v">Islam</div><div class="n">Birthplace of Islam · Mecca &amp; Medina</div></div>
+      <div class="fact"><div class="k">Time Zone</div><div class="v">AST · UTC+3</div><div class="n">Arabian Standard Time</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LAND ================= -->
+<section id="land">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <div class="section-head reveal" style="margin-bottom:0">
+          <div class="eyebrow">02 — The Land</div>
+          <h2>Desert, mountain <em>&amp; two seas</em></h2>
+          <p class="lead">From the Red Sea coast to the Arabian Gulf, the Kingdom spans roughly four-fifths of the Arabian Peninsula — much of it sculpted by the world's largest continuous sand desert.</p>
+        </div>
+        <div class="geo-list reveal">
+          <div class="row"><span class="label">Rubʿ al-Khali</span><span class="desc">The "Empty Quarter" — largest sand desert on Earth</span></div>
+          <div class="row"><span class="label">Jabal Sawda</span><span class="desc">Highest peak, ~3,000 m, in the southwest Asir range</span></div>
+          <div class="row"><span class="label">Red Sea Coast</span><span class="desc">~1,800 km of coral reef and emerging tourism</span></div>
+          <div class="row"><span class="label">The Najd</span><span class="desc">Central plateau and historic heartland of the state</span></div>
+          <div class="row"><span class="label">Climate</span><span class="desc">Arid desert; extreme summer heat, rare rainfall</span></div>
+        </div>
+      </div>
+      <div class="map-card reveal">
+        <svg viewBox="0 0 320 300" aria-label="Stylised map of Saudi Arabia">
+          <path d="M40 70 L150 40 L250 55 L290 110 L270 180 L230 250 L150 270 L90 240 L55 170 Z"
+                fill="#1d6e41" stroke="#e9e1cf" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="170" cy="135" r="6" fill="#b07d27"/>
+          <text x="182" y="139" fill="#e9e1cf" font-family="Space Mono, monospace" font-size="11">Riyadh</text>
+          <circle cx="95" cy="150" r="4.5" fill="#e9e1cf"/>
+          <text x="105" y="154" fill="#e9e1cf" font-family="Space Mono, monospace" font-size="10">Mecca</text>
+          <circle cx="105" cy="105" r="4.5" fill="#e9e1cf"/>
+          <text x="115" y="109" fill="#e9e1cf" font-family="Space Mono, monospace" font-size="10">Medina</text>
+          <circle cx="245" cy="120" r="4.5" fill="#e9e1cf"/>
+          <text x="200" y="105" fill="#e9e1cf" font-family="Space Mono, monospace" font-size="10">Dammam</text>
+        </svg>
+        <div class="cap">Fig. 02 — Principal cities &amp; the central Najd</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HISTORY ================= -->
+<section id="history">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">03 — The Record of Years</div>
+      <h2>Three centuries, <em>one state</em></h2>
+      <p class="lead">The modern Kingdom is the third Saudi state — the culmination of a project begun in the oasis town of Diriyah nearly three hundred years ago.</p>
+    </div>
+    <div class="timeline reveal">
+      <div class="tl-item"><div class="tl-year">1727</div><div class="tl-body"><h3>The First Saudi State</h3><p>The House of Saud rises in Diriyah, near present-day Riyadh, founding the first unified Saudi polity in the Najd.</p></div></div>
+      <div class="tl-item"><div class="tl-year">1902</div><div class="tl-body"><h3>The Recapture of Riyadh</h3><p>Abdulaziz Ibn Saud seizes Riyadh, launching a thirty-year campaign to unify the peninsula.</p></div></div>
+      <div class="tl-item"><div class="tl-year">1932</div><div class="tl-body"><h3>The Kingdom is Proclaimed</h3><p>On 23 September the regions of Hejaz and Najd are merged into the Kingdom of Saudi Arabia.</p></div></div>
+      <div class="tl-item"><div class="tl-year">1938</div><div class="tl-body"><h3>Oil is Struck</h3><p>Commercial oil is discovered at Dammam — the find that would reshape the nation and the world economy.</p></div></div>
+      <div class="tl-item"><div class="tl-year">1960</div><div class="tl-body"><h3>A Founding Member of OPEC</h3><p>Saudi Arabia helps establish the Organization of the Petroleum Exporting Countries, anchoring global energy policy.</p></div></div>
+      <div class="tl-item"><div class="tl-year">2016</div><div class="tl-body"><h3>Vision 2030 is Launched</h3><p>Crown Prince Mohammed bin Salman unveils a sweeping plan to diversify the economy beyond oil.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ECONOMY ================= -->
+<section id="economy">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">04 — The Engine</div>
+      <h2>The economy of <em>energy</em></h2>
+      <p class="lead">Home to some of the planet's largest proven petroleum reserves, Saudi Arabia is a G20 economy and one of the world's foremost oil exporters — now investing its wealth into a post-oil future.</p>
+    </div>
+    <div class="econ-grid reveal">
+      <div class="econ-cell green">
+        <div class="big">#1</div>
+        <div class="lab">Oil Exports</div>
+        <p>Consistently among the largest crude oil exporters in the world.</p>
+      </div>
+      <div class="econ-cell">
+        <div class="big">~17%</div>
+        <div class="lab">of Global Reserves</div>
+        <p>One of the largest holders of proven petroleum reserves on Earth.</p>
+      </div>
+      <div class="econ-cell dark">
+        <div class="big">Aramco</div>
+        <div class="lab">National Oil Company</div>
+        <p>Saudi Aramco ranks among the most valuable companies ever listed.</p>
+      </div>
+      <div class="econ-cell">
+        <div class="big">G20</div>
+        <div class="lab">Member Economy</div>
+        <p>The only Arab nation in the Group of Twenty major economies.</p>
+      </div>
+      <div class="econ-cell dark">
+        <div class="big">PIF</div>
+        <div class="lab">Sovereign Wealth Fund</div>
+        <p>The Public Investment Fund deploys capital into global and domestic ventures.</p>
+      </div>
+      <div class="econ-cell green">
+        <div class="big">2030</div>
+        <div class="lab">Diversification Target</div>
+        <p>A national drive to grow tourism, industry, mining and technology.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VISION ================= -->
+<section id="vision">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">05 — The Future Under Construction</div>
+      <h2>Vision <em>2030</em></h2>
+      <p class="lead">A generational blueprint to build a vibrant society, a thriving economy and an ambitious nation — expressed through a series of giga-projects unlike anything attempted before.</p>
+    </div>
+    <div class="vision-grid reveal">
+      <div class="v-card"><div class="num">PROJECT / 01</div><h3><em>NEOM</em> &amp; The Line</h3><p>A $500-billion region on the Red Sea, including The Line — a linear city designed to stretch 170 kilometres with zero cars and zero carbon.</p></div>
+      <div class="v-card"><div class="num">PROJECT / 02</div><h3>The <em>Red Sea</em> Project</h3><p>A luxury tourism destination across an archipelago of pristine islands, built to strict regenerative-tourism standards.</p></div>
+      <div class="v-card"><div class="num">PROJECT / 03</div><h3><em>Qiddiya</em></h3><p>An entertainment, sports and culture capital rising near Riyadh — theme parks, motorsport and arenas at giga-scale.</p></div>
+      <div class="v-card"><div class="num">PROJECT / 04</div><h3><em>Diriyah</em> Gate</h3><p>The restoration of the birthplace of the first Saudi state into a global cultural and heritage destination.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CULTURE ================= -->
+<section class="culture">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">06 — Faith &amp; Heritage</div>
+      <h2>The heart of the <em>Islamic world</em></h2>
+      <p class="lead">Saudi Arabia is the birthplace of Islam and home to its two holiest cities. Each year millions of pilgrims travel here for Hajj and Umrah — the largest recurring human gathering on Earth.</p>
+    </div>
+    <div class="pillars reveal">
+      <div class="pillar"><h3><em>Mecca</em></h3><p>The holiest city in Islam and the destination of the Hajj pilgrimage, home to the Masjid al-Haram and the Kaaba.</p></div>
+      <div class="pillar"><h3><em>Medina</em></h3><p>The second holiest city, home to the Prophet's Mosque and a centre of Islamic learning and history.</p></div>
+      <div class="pillar"><h3><em>Living Culture</em></h3><p>Bedouin heritage, Najdi architecture, Arabic coffee and dates, falconry, and a fast-growing arts, film and music scene.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CITIES ================= -->
+<section id="cities">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">07 — Where the Kingdom Lives</div>
+      <h2>Cities of <em>the sands</em></h2>
+    </div>
+    <div class="cities reveal">
+      <div class="city"><div class="rank">CAPITAL</div><h3>Riyadh</h3><p>Political and financial capital on the central Najd plateau.</p></div>
+      <div class="city"><div class="rank">PORT</div><h3>Jeddah</h3><p>Red Sea gateway and historic commercial hub for the Hejaz.</p></div>
+      <div class="city"><div class="rank">HOLY</div><h3>Mecca</h3><p>Holiest city in Islam; destination of the annual Hajj.</p></div>
+      <div class="city"><div class="rank">HOLY</div><h3>Medina</h3><p>City of the Prophet's Mosque and Islamic scholarship.</p></div>
+      <div class="city"><div class="rank">INDUSTRY</div><h3>Dammam</h3><p>Heart of the Eastern Province and the oil industry.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow" style="color:var(--ochre)">End of Record</div>
+      <h2 style="margin-top:20px">A desert kingdom,<br/><em>rewriting its future.</em></h2>
+    </div>
+    <div class="foot-row">
+      <div>The Kingdom — An Almanac of Saudi Arabia</div>
+      <div>المملكة العربية السعودية</div>
+      <div>Compiled 2026 · Informational</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // staggered scroll reveals
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+  // hero starfield
+  const hero = document.querySelector('.hero');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 62 + '%';
+    s.style.animationDelay = (Math.random() * 5) + 's';
+    hero.appendChild(s);
+  }
+
+  // subtle parallax on dunes
+  const dunes = document.querySelector('.dunes');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < window.innerHeight) dunes.style.transform = 'translateY(' + (y * 0.18) + 'px)';
+  }, { passive: true });
+</script>
+</body>
+</html>
