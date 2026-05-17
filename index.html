@@ -2,7 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#024A26" />
 <title>NCGR Autopilot · الطيار الآلي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,22 +34,26 @@ body{display:flex;align-items:center;justify-content:center}
 body[data-bg="dark"]{background:var(--brand-deep)}
 body[data-bg="cover"]{background:var(--cream)}
 body[data-bg="light"]{background:var(--paper)}
-.stage{position:relative;width:100vw;height:100vh;overflow:hidden;background:transparent;display:flex;align-items:center;justify-content:center}
+.stage{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:transparent;display:flex;align-items:center;justify-content:center}
 .deck{position:relative;width:var(--slide-w);height:var(--slide-h);transform-origin:center center;background:var(--paper);box-shadow:0 40px 120px rgba(0,0,0,.55)}
 .slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .6s ease;background:var(--paper);overflow:hidden}
 .slide.is-active{opacity:1;visibility:visible;z-index:2}
 .slide.dark{background:var(--brand-deep);color:#F4F6F4}
 
 .hud{position:absolute;inset:0;pointer-events:none;z-index:5;width:1920px;height:1080px}
-.hud .logo{position:absolute;top:46px;right:54px;width:152px;opacity:.95}
-.hud .eyebrow{position:absolute;top:54px;left:54px;font-family:"JetBrains Mono",monospace;font-size:15px;color:var(--ink-soft);direction:ltr;unicode-bidi:isolate}
-.hud .counter{position:absolute;bottom:42px;left:54px;font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:.14em;color:var(--muted);direction:ltr;unicode-bidi:isolate}
-.hud .url{position:absolute;bottom:42px;right:54px;font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:.14em;color:var(--muted);direction:ltr;unicode-bidi:isolate}
-.hud .rule{position:absolute;left:54px;right:54px;top:118px;height:1px;background:linear-gradient(90deg,transparent,var(--hair) 12%,var(--hair) 88%,transparent)}
+.hud .logo{position:absolute;top:60px;right:84px;width:148px;opacity:.95}
+.hud .eyebrow{position:absolute;top:68px;left:84px;font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);direction:ltr;unicode-bidi:isolate;text-align:left;max-width:720px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-flex;align-items:center;gap:10px}
+.hud .eyebrow::before{content:"";display:inline-block;width:22px;height:1px;background:var(--brand);flex:none}
+.hud .counter{position:absolute;bottom:60px;left:84px;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate;text-align:left;white-space:nowrap;display:inline-flex;align-items:center;gap:10px}
+.hud .counter::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--brand);flex:none;opacity:.7}
+.hud .url{position:absolute;bottom:60px;right:84px;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate;text-align:right;white-space:nowrap}
+.hud .rule{position:absolute;left:84px;right:84px;top:132px;height:1px;background:linear-gradient(90deg,transparent,var(--hair) 8%,var(--hair) 92%,transparent)}
 .slide.dark .hud .eyebrow,
 .slide.dark .hud .counter,
 .slide.dark .hud .url{color:#CFE0D5}
-.slide.dark .hud .rule{background:linear-gradient(90deg,transparent,rgba(255,255,255,.18) 12%,rgba(255,255,255,.18) 88%,transparent)}
+.slide.dark .hud .eyebrow::before{background:#E4D9B6}
+.slide.dark .hud .counter::before{background:#E4D9B6;opacity:.85}
+.slide.dark .hud .rule{background:linear-gradient(90deg,transparent,rgba(255,255,255,.18) 8%,rgba(255,255,255,.18) 92%,transparent)}
 
 .cover{position:absolute;inset:0;display:flex}
 .cover .bgwrap{position:absolute;inset:0;overflow:hidden;background:var(--cream)}
@@ -293,6 +300,124 @@ body[data-bg="light"]{background:var(--paper)}
 .phasePill.on{background:var(--brand-deep);color:#FFF;border-color:var(--brand-deep);box-shadow:0 12px 28px rgba(2,74,38,.25)}
 .loopHeadline{line-height:1.24}
 
+/* ===== Slide 6 · interactive vs non-interactive (hardened) ===== */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:-4px;align-items:stretch;position:relative}
+.modes::before{content:"VS";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:46px;color:var(--ink);background:#FBF8F0;width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 36px rgba(14,17,21,.12);border:1px solid var(--hair);z-index:3;letter-spacing:-.02em}
+.mode{border-radius:20px;padding:28px 30px 22px;display:flex;flex-direction:column;min-height:560px;position:relative;overflow:hidden;opacity:0;transform:translateY(28px)}
+.is-active .mode{animation:rise .9s .3s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .mode-auto{animation-delay:.5s}
+.mode-int{background:#FFFDF7;border:1px solid var(--hair);box-shadow:0 18px 50px rgba(14,17,21,.05)}
+.mode-int::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#C9A24A 0%,#E4D9B6 100%)}
+.mode-auto{background:var(--brand-deep);color:#F2F7F4;border:1px solid var(--brand-deep);box-shadow:0 24px 70px rgba(2,74,38,.35)}
+.mode-auto::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#37D896 0%,#9DE0B6 100%)}
+.mode-auto::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 110% -10%,rgba(201,162,74,.18),transparent 55%);pointer-events:none}
+
+.modeHead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:16px;border-bottom:1px solid var(--hair);margin-bottom:18px;position:relative;z-index:1}
+.mode-auto .modeHead{border-bottom-color:rgba(255,255,255,.12)}
+.modeLabel{display:flex;flex-direction:column;gap:4px;min-width:0}
+.modeNum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted);letter-spacing:.32em}
+.mode-auto .modeNum{color:#9CC4AC}
+.modeName{font-family:"Inter",sans-serif;font-weight:700;font-size:24px;letter-spacing:-.005em;color:var(--ink);line-height:1.1}
+.mode-auto .modeName{color:#FFF}
+.modeAr{font-family:"IBM Plex Sans Arabic",sans-serif;font-weight:500;font-size:17px;color:var(--brand-deep);margin-top:3px}
+.mode-auto .modeAr{color:#CDE2D3}
+
+.modeStatus{display:flex;align-items:center;gap:8px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--ink-soft);background:#F4EFE3;padding:7px 12px;border-radius:999px;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.mode-auto .modeStatus{background:rgba(255,255,255,.07);color:#CDE2D3;border:1px solid rgba(255,255,255,.14)}
+.statusDot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none;position:relative}
+.statusDot.waiting{background:#C9A24A}
+.statusDot.waiting::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(201,162,74,.45);animation:dotRipple 1.6s ease-out infinite}
+.statusDot.running{background:#37D896}
+.statusDot.running::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(55,216,150,.55);animation:dotRipple 1.1s ease-out infinite}
+@keyframes dotRipple{0%{transform:scale(.6);opacity:1}100%{transform:scale(2.2);opacity:0}}
+
+.modeBody{flex:1;display:flex;flex-direction:column;min-height:0}
+.chat{flex:1;display:flex;flex-direction:column;gap:10px;font-family:"IBM Plex Sans Arabic","Inter",sans-serif;font-size:16.5px}
+.bubble.idle{background:transparent;color:var(--muted);align-self:flex-start;padding:6px 4px;font-style:normal;font-size:14px;font-family:"JetBrains Mono",monospace;letter-spacing:.06em;direction:rtl}
+.bubble.idle .cursor{background:var(--muted);margin-right:6px;vertical-align:-2px}
+.is-active .bubble:nth-child(5){animation-delay:2.6s}
+
+.term .tcmd{color:#9CC4AC}
+.term .dim{color:#6E8C7C;margin-inline-start:auto;font-size:13px}
+.term .arrow{color:#E4C97D;font-weight:700}
+.term code{background:rgba(255,255,255,.08);padding:1px 6px;border-radius:4px;color:#E4D9B6;font-family:inherit;font-size:13px}
+.term .line{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.is-active .term .line:nth-child(7){animation-delay:2.95s}
+
+.modeMetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:18px;padding:14px 0 2px;border-top:1px solid var(--hair)}
+.mode-auto .modeMetrics{border-top-color:rgba(255,255,255,.12)}
+.metric{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:0 14px;border-inline-start:1px solid var(--hair);direction:ltr;unicode-bidi:isolate}
+.metric:first-child{border-inline-start:0;padding-inline-start:0}
+.mode-auto .metric{border-inline-start-color:rgba(255,255,255,.12)}
+.metric .mval{font-family:"Playfair Display",serif;font-size:32px;font-weight:600;line-height:1;color:var(--brand-deep);letter-spacing:-.02em}
+.mode-auto .metric .mval{color:#E4D9B6}
+.metric .mlabel{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.mode-auto .metric .mlabel{color:#9CC4AC}
+
+.modeUse{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:14.5px;color:var(--ink-soft);margin-top:10px;padding-top:10px;border-top:1px dashed var(--hair);display:flex;align-items:baseline;gap:10px}
+.mode-auto .modeUse{color:#CDE2D3;border-top-color:rgba(255,255,255,.12)}
+.modeUse .useTag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.28em;color:var(--muted);text-transform:uppercase}
+.mode-auto .modeUse .useTag{color:#9CC4AC}
+
+.modesAxis{margin-top:24px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.modesAxis .lineL,.modesAxis .lineR{height:1px;background:linear-gradient(90deg,transparent,var(--hair) 30%,var(--hair) 70%,transparent)}
+.modesAxis .axCenter{display:flex;align-items:baseline;gap:14px;color:var(--ink-soft)}
+.modesAxis .axDelta{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:22px;color:var(--brand);letter-spacing:-.01em;text-transform:none}
+
+/* ===== Slide 13 · loop deepened (phase deck with concrete artifacts) ===== */
+.loopShellLine{font-family:"JetBrains Mono",monospace;font-size:14.5px;color:var(--brand-deep);background:var(--brand-soft);padding:12px 16px;border-radius:10px;margin-top:18px;letter-spacing:.04em;direction:ltr;unicode-bidi:isolate;display:inline-flex;gap:10px;align-items:baseline}
+.loopShellLine .sh{color:var(--muted)}
+
+.loopLayout{display:grid;grid-template-columns:auto 1fr;gap:48px;margin-top:8px;align-items:start}
+.loopCol-ring{display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:0}
+.loopCol-ring .loopStage{width:520px;height:520px;justify-content:flex-start;padding-top:8px}
+.loopCol-ring .ring{width:420px;height:420px;transform:translateY(-18px)}
+.loopCol-ring .phasePills{margin-top:30px;gap:10px}
+.loopCol-ring .phasePill{font-size:13px;letter-spacing:.16em;padding:11px 18px}
+.loopCol-ring .node{width:50px;height:50px;font-size:14px}
+.loopCol-ring .node .nlabel{font-size:14px;top:60px}
+.loopCol-ring .node .nlabel .ar{font-size:11px}
+.loopCol-ring .traveler{width:18px;height:18px}
+
+.loopCol-deck{display:flex;flex-direction:column;gap:14px;min-width:0}
+
+.phaseHead{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:10px}
+.phaseNow{display:flex;align-items:baseline;gap:14px;min-width:0}
+.phaseIdx{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted);letter-spacing:.32em;flex:none}
+.phaseName{font-family:"Inter",sans-serif;font-size:24px;font-weight:700;letter-spacing:.14em;color:var(--ink);text-transform:uppercase}
+.phaseNameAr{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:22px;color:var(--brand);font-weight:600}
+.phaseTrail{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+.phaseTrail b{color:var(--brand-deep);font-weight:700}
+
+.phaseDeck{position:relative;background:#0C1117;border-radius:16px;height:500px;overflow:hidden;box-shadow:0 30px 80px rgba(14,17,21,.22),inset 0 1px 0 rgba(255,255,255,.04);border:1px solid #1A222B}
+.phaseDeck .deckChrome{position:absolute;top:0;left:0;right:0;height:36px;background:linear-gradient(180deg,#161E27,#0C1117);border-bottom:1px solid #1A222B;display:flex;align-items:center;padding:0 16px;gap:8px;z-index:4}
+.phaseDeck .deckDots{display:flex;gap:6px}
+.phaseDeck .deckDots i{width:10px;height:10px;border-radius:50%;display:block}
+.phaseDeck .deckDots i:nth-child(1){background:#5B6470}
+.phaseDeck .deckDots i:nth-child(2){background:#5B6470}
+.phaseDeck .deckDots i:nth-child(3){background:#5B6470}
+.phaseDeck .deckTab{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;color:#9CC4AC;text-transform:uppercase;margin-left:auto;direction:ltr;unicode-bidi:isolate}
+
+.artifact{position:absolute;top:36px;bottom:0;left:0;right:0;padding:22px 26px 22px 26px;opacity:0;transition:opacity .35s ease;display:flex;flex-direction:column;gap:14px;pointer-events:none;direction:ltr;unicode-bidi:isolate}
+.artifact.is-on{opacity:1;pointer-events:auto;z-index:2}
+.artHeader{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#9CC4AC;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
+.artHeader .pip{width:7px;height:7px;border-radius:50%;background:#37D896;box-shadow:0 0 12px rgba(55,216,150,.6)}
+.artHeader .meta{margin-left:auto;color:#6E8C7C;letter-spacing:.16em}
+.artBody{font-family:"JetBrains Mono",monospace;font-size:14.5px;line-height:1.65;color:#D2E4D7;white-space:pre-wrap;margin:0;flex:1;overflow:hidden;tab-size:2}
+.artBody .key{color:#9CC4AC}
+.artBody .str{color:#E4D9B6}
+.artBody .num{color:#C9A24A}
+.artBody .punct{color:#6E8C7C}
+.artBody .ok{color:#37D896;font-weight:700}
+.artBody .warn{color:#E4C97D;font-weight:700}
+.artBody .err{color:#E07868;font-weight:700}
+.artBody .add{color:#9DE0B6;display:block}
+.artBody .nextArrow{color:#E4C97D;font-weight:700}
+.artBody .ar{font-family:"IBM Plex Sans Arabic",sans-serif;direction:rtl;unicode-bidi:isolate;display:inline}
+.artBody .dim{color:#5E7367}
+
+.is-active .phaseDeck{animation:rise .8s .4s cubic-bezier(.2,.8,.2,1) backwards}
+
 .gatestage{padding-top:20px;display:flex;flex-direction:column;gap:14px}
 .gateRow{display:grid;grid-template-columns:60px 1fr auto;gap:24px;align-items:center;padding:18px 24px;border-bottom:1px solid var(--hair);opacity:0;transform:translateY(14px)}
 .is-active .gateRow{animation:rise .5s cubic-bezier(.2,.8,.2,1) forwards}
@@ -395,6 +520,81 @@ body[data-bg="dark"] .progressDots{background:rgba(255,255,255,.08)}
 body[data-bg="dark"] .pd{background:rgba(255,255,255,.3)}
 .pd.on{background:var(--brand);width:20px;border-radius:6px}
 body[data-bg="dark"] .pd.on{background:var(--gold)}
+
+/* ===================== MOBILE / TOUCH ADAPTATION ===================== */
+.mnav{position:fixed;inset:0;z-index:70;pointer-events:none;display:none;transition:opacity .4s ease}
+.mnav.show{display:block}
+.mnav.hidden{opacity:0}
+.mnav.hidden .mbtn,.mnav.hidden .mcount{pointer-events:none}
+.mnav .mbtn{position:absolute;pointer-events:auto;width:50px;height:50px;border-radius:50%;border:1px solid rgba(0,0,0,.10);background:rgba(255,255,255,.92);color:var(--ink);font-family:"JetBrains Mono",monospace;font-size:22px;font-weight:600;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(0,0,0,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .18s ease,background .25s ease,opacity .25s ease;padding:0;line-height:1}
+.mnav .mbtn.disabled{opacity:.32;pointer-events:none}
+body[data-bg="dark"] .mnav .mbtn{background:rgba(255,255,255,.14);color:#F4F6F4;border-color:rgba(255,255,255,.22)}
+.mnav .mcount{position:absolute;pointer-events:auto;display:flex;align-items:center;justify-content:center;min-width:74px;height:34px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.85);color:var(--ink);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;border:1px solid rgba(0,0,0,.06);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);direction:ltr}
+body[data-bg="dark"] .mnav .mcount{background:rgba(0,0,0,.32);color:#F4F6F4;border-color:rgba(255,255,255,.16)}
+
+/* Side layout — landscape phones where deck fills the viewport height
+   and there's empty space in the left/right gutters around it. */
+.mnav.layout-side .mbtn.prev{right:max(10px,env(safe-area-inset-right));top:50%;transform:translateY(-50%)}
+.mnav.layout-side .mbtn.next{left:max(10px,env(safe-area-inset-left));top:50%;transform:translateY(-50%)}
+.mnav.layout-side .mbtn.prev:active{transform:translateY(-50%) scale(.9);background:rgba(255,255,255,1)}
+.mnav.layout-side .mbtn.next:active{transform:translateY(-50%) scale(.9);background:rgba(255,255,255,1)}
+body[data-bg="dark"] .mnav.layout-side .mbtn.prev:active,
+body[data-bg="dark"] .mnav.layout-side .mbtn.next:active{background:rgba(255,255,255,.26)}
+.mnav.layout-side .mcount{left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%)}
+
+/* Bottom layout — portrait phones (and any layout with room below the deck). */
+.mnav.layout-bottom .mbtn{bottom:max(22px,env(safe-area-inset-bottom))}
+.mnav.layout-bottom .mbtn.prev{right:calc(50% + 46px)}
+.mnav.layout-bottom .mbtn.next{left:calc(50% + 46px)}
+.mnav.layout-bottom .mbtn:active{transform:scale(.9);background:rgba(255,255,255,1)}
+body[data-bg="dark"] .mnav.layout-bottom .mbtn:active{background:rgba(255,255,255,.26)}
+.mnav.layout-bottom .mcount{left:50%;bottom:calc(max(22px,env(safe-area-inset-bottom)) + 8px);transform:translateX(-50%)}
+
+/* Subtle swipe hint that appears once at the start */
+.swipeHint{position:fixed;bottom:max(96px,calc(env(safe-area-inset-bottom) + 86px));left:50%;transform:translateX(-50%);z-index:69;pointer-events:none;display:none;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.78);background:rgba(0,0,0,.42);padding:7px 16px;border-radius:999px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:swipeFade 4.6s ease forwards}
+@keyframes swipeFade{0%{opacity:0;transform:translate(-50%,8px)}15%{opacity:1;transform:translate(-50%,0)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-4px);visibility:hidden}}
+body[data-bg="cover"] .swipeHint,body[data-bg="light"] .swipeHint{color:#F4F6F4}
+
+.rotateHint{position:fixed;inset:0;z-index:80;background:linear-gradient(160deg,#024A26 0%,#0E1115 100%);color:#F4F6F4;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;font-family:"IBM Plex Sans Arabic",sans-serif;direction:rtl}
+.rotateHint .ric{width:84px;height:84px;border:2px solid #C9A24A;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:28px;animation:rotateNudge 2.4s ease-in-out infinite;transform-origin:center}
+@keyframes rotateNudge{0%,40%,100%{transform:rotate(0)}55%{transform:rotate(-90deg)}80%{transform:rotate(-90deg)}}
+.rotateHint h3{font-family:"Playfair Display",serif;font-style:italic;font-size:30px;font-weight:500;color:#F4F6F4;margin-bottom:10px;letter-spacing:-.01em}
+.rotateHint p{font-size:15px;line-height:1.7;color:#CFE0D5;max-width:280px;margin-bottom:24px}
+.rotateHint button{margin-top:10px;background:transparent;border:1px solid rgba(255,255,255,.35);color:#F4F6F4;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;padding:12px 22px;border-radius:999px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rotateHint button:active{background:rgba(255,255,255,.08)}
+
+/* Mobile / touch device adjustments — nav visibility is driven by JS class .show */
+@media (max-width:900px), (hover:none) and (pointer:coarse){
+  .helpBar{display:none}
+  .progressDots{display:none}
+  .swipeHint{display:block}
+  .deck{box-shadow:0 14px 40px rgba(0,0,0,.32)}
+  .notes{font-size:14px;padding:14px 18px;max-height:50vh}
+  .notes .nh{font-size:11px}
+}
+
+/* Auto-rotated mode — JS rotates the deck -90° on portrait phones so the
+   landscape 1920×1080 canvas fills the long axis of the device. */
+body[data-rotated="1"] .rotateHint{display:none !important}
+body[data-rotated="1"] .mnav{display:none !important}
+body[data-rotated="1"] .helpBar{display:none}
+body[data-rotated="1"] .deck{box-shadow:0 0 60px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04)}
+body[data-rotated="1"] .swipeHint{
+  display:block;
+  top:50%;bottom:auto;
+  left:max(18px,env(safe-area-inset-left));right:auto;
+  transform-origin:center center;
+  transform:translateY(-50%) rotate(-90deg);
+  white-space:nowrap;
+  font-size:9.5px;
+  letter-spacing:.36em;
+  padding:7px 14px;
+}
+
+/* Portrait phone rotate hint */
+@media (max-width:768px) and (orientation:portrait){
+  .rotateHint:not(.dismissed){display:flex}
+}
 </style>
 </head>
 <body>
@@ -519,39 +719,65 @@ body[data-bg="dark"] .pd.on{background:var(--gold)}
   <div class="content full">
     <div class="kicker">6 / 17 — execution modes</div>
     <h2 class="headline reveal" style="max-width:none"><span class="latin">Interactive vs Non-Interactive</span> · <span class="accent">طريقتان للتشغيل</span>.</h2>
-    <div class="cards2">
-      <div class="card">
-        <div class="ctit">INTERACTIVE</div>
-        <div class="cwave">حوار خطوة بخطوة</div>
-        <div class="chat">
-          <div class="bubble h">اقرأ ملف القصة BE-0001</div>
-          <div class="bubble a">تم. أبدأ بالاختبارات؟</div>
-          <div class="bubble h">نعم، ابدأ.</div>
-          <div class="bubble a">كتبت أول اختبار. أكمل؟ <span class="cursor"></span></div>
+    <div class="modes">
+      <div class="mode mode-int">
+        <div class="modeHead">
+          <div class="modeLabel">
+            <span class="modeNum">01 · MODE</span>
+            <span class="modeName">INTERACTIVE</span>
+            <span class="modeAr">حوار خطوة بخطوة · إنسان في كل خطوة</span>
+          </div>
+          <div class="modeStatus"><span class="statusDot waiting"></span>WAITING · HUMAN</div>
         </div>
-        <div class="tags">
-          <span class="tag">human-in-loop</span>
-          <span class="tag">slow</span>
-          <span class="tag">exploration</span>
+        <div class="modeBody">
+          <div class="chat">
+            <div class="bubble h">اقرأ ملف القصة BE-0001</div>
+            <div class="bubble a">تم. أبدأ بكتابة الاختبارات؟</div>
+            <div class="bubble h">نعم، ابدأ.</div>
+            <div class="bubble a">كتبت أول اختبار. أكمل لبقية الحالات؟</div>
+            <div class="bubble idle"><span class="cursor"></span> ينتظر تأكيد المستخدم…</div>
+          </div>
         </div>
+        <div class="modeMetrics">
+          <div class="metric"><span class="mval">~3</span><span class="mlabel">steps / hour</span></div>
+          <div class="metric"><span class="mval">100%</span><span class="mlabel">human attention</span></div>
+          <div class="metric"><span class="mval">1×</span><span class="mlabel">parallelism</span></div>
+        </div>
+        <div class="modeUse"><span class="useTag">use when</span>للاستكشاف · للحالات الحساسة · للتعلّم.</div>
       </div>
-      <div class="card r">
-        <div class="ctit">NON-INTERACTIVE</div>
-        <div class="cwave">تنفيذ يمشي لحاله</div>
-        <div class="term">
-          <div class="line"><span class="prompt">$</span> claude -p --dangerously-skip-permissions</div>
-          <div class="line"><span class="check">✓</span> read PRD · BE-0001</div>
-          <div class="line"><span class="check">✓</span> wrote 3 files · 142 lines</div>
-          <div class="line"><span class="check">✓</span> ran tests · 18 passed</div>
-          <div class="line"><span class="check">✓</span> committed · 7-gates green</div>
-          <div class="line"><span class="check">✓</span> next story → BE-0002</div>
+
+      <div class="mode mode-auto">
+        <div class="modeHead">
+          <div class="modeLabel">
+            <span class="modeNum">02 · MODE</span>
+            <span class="modeName">NON-INTERACTIVE</span>
+            <span class="modeAr">تنفيذ ذاتي · يمشي بدون توقف</span>
+          </div>
+          <div class="modeStatus"><span class="statusDot running"></span>RUNNING · 00:38:14</div>
         </div>
-        <div class="tags">
-          <span class="tag">autonomous</span>
-          <span class="tag">scalable</span>
-          <span class="tag">production</span>
+        <div class="modeBody">
+          <div class="term">
+            <div class="line"><span class="tcmd">$ claude -p --dangerously-skip-permissions</span></div>
+            <div class="line"><span class="check">✓</span> read PRD · <code>BE-0001</code><span class="dim">42ms</span></div>
+            <div class="line"><span class="check">✓</span> wrote 3 files · 142 lines<span class="dim">4.1s</span></div>
+            <div class="line"><span class="check">✓</span> ran tests · 18 passed<span class="dim">2.3s</span></div>
+            <div class="line"><span class="check">✓</span> 7-gates green · committed<span class="dim">11.4s</span></div>
+            <div class="line"><span class="check">✓</span> recorded sprint log<span class="dim">0.2s</span></div>
+            <div class="line"><span class="arrow">→</span> next story · <code>BE-0002</code><span class="cursor"></span></div>
+          </div>
         </div>
+        <div class="modeMetrics">
+          <div class="metric"><span class="mval">~180</span><span class="mlabel">steps / hour</span></div>
+          <div class="metric"><span class="mval">0%</span><span class="mlabel">human attention</span></div>
+          <div class="metric"><span class="mval">∞</span><span class="mlabel">parallelism</span></div>
+        </div>
+        <div class="modeUse"><span class="useTag">use when</span>للإنتاج · للتسليم المتواصل · للقياس.</div>
       </div>
+    </div>
+    <div class="modesAxis">
+      <span class="lineL"></span>
+      <span class="axCenter"><span>الفرق التشغيلي</span><span class="axDelta">×60 throughput</span></span>
+      <span class="lineR"></span>
     </div>
   </div>
 </section>
@@ -685,27 +911,162 @@ body[data-bg="dark"] .pd.on{background:var(--gold)}
   </div>
 </section>
 
-<section class="slide" data-slide="13" data-eyebrow="— 4.2 · الحلقة" data-notes="هذه هي الحلقة التشغيلية. تسع مراحل، وأربعة أطوار، وتتكرر بدون توقف. النقطة الذهبية تمثل العميل وهو ينتقل بين المراحل. مبنية فعلياً من سكربت ralph.sh.">
-  <div class="content">
-    <div class="left">
-      <div class="kicker">13 / 17 — the loop ★</div>
-      <h2 class="headline reveal loopHeadline">أربع مراحل<br/><span class="accent">تمشي بدون توقف</span>.</h2>
-      <p class="lede reveal d2">تسع خطوات واضحة، موزعة على أربعة أطوار. يبدأ العميل من ملف القصة، يجمع السياق، يخطط، يبني، يختبر، يتحقق، يصلح، يوثق، ثم ينتقل للي بعدها — تلقائياً.</p>
-      <p class="lede reveal d3" style="font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--brand-deep);background:var(--brand-soft);padding:14px 18px;border-radius:10px;margin-top:24px;letter-spacing:.04em">while true; do claude -p "$PROMPT"; done <span style="color:var(--muted)"># ralph.sh</span></p>
-    </div>
-    <div class="right" style="display:flex;flex-direction:column;align-items:center">
-      <div class="loopStage">
-        <div class="ring" id="loopRing">
-          <svg viewBox="0 0 680 680">
-            <circle class="ringbg" cx="340" cy="340" r="300"/>
-            <circle class="ringfg" cx="340" cy="340" r="300"/>
-          </svg>
+<section class="slide" data-slide="13" data-eyebrow="— 4.2 · الحلقة" data-notes="هذه هي الحلقة التشغيلية. تسع مراحل، وأربعة أطوار، وتتكرر بدون توقف. النقطة الذهبية تمثل العميل وهو ينتقل بين المراحل. كل مرحلة هنا مربوطة بمخرَج حقيقي: قصة من prd.json، خطة، تعديل ملف، نتيجة اختبار، بوّابة، تصحيح، Commit، ثم القصة التالية.">
+  <div class="content full">
+    <div class="kicker">13 / 17 — the loop · مخرَج كل خطوة ★</div>
+    <h2 class="headline reveal loopHeadline" style="font-size:40px;max-width:none;margin-bottom:8px">أربع مراحل، <span class="accent">تسع خطوات</span> — وكل خطوة تنتج شيئاً ملموساً.</h2>
+
+    <div class="loopLayout">
+      <div class="loopCol-ring">
+        <div class="loopStage">
+          <div class="ring" id="loopRing">
+            <svg viewBox="0 0 680 680">
+              <circle class="ringbg" cx="340" cy="340" r="300"/>
+              <circle class="ringfg" cx="340" cy="340" r="300"/>
+            </svg>
+          </div>
+          <div class="phasePills" id="phasePills">
+            <div class="phasePill" data-phase="read">Read</div>
+            <div class="phasePill" data-phase="build">Build</div>
+            <div class="phasePill" data-phase="verify">Verify</div>
+            <div class="phasePill" data-phase="record">Record</div>
+          </div>
         </div>
-        <div class="phasePills" id="phasePills">
-          <div class="phasePill" data-phase="read">Read</div>
-          <div class="phasePill" data-phase="build">Build</div>
-          <div class="phasePill" data-phase="verify">Verify</div>
-          <div class="phasePill" data-phase="record">Record</div>
+      </div>
+
+      <div class="loopCol-deck">
+        <div class="phaseHead">
+          <div class="phaseNow">
+            <span class="phaseIdx" id="phaseIdx">01 / 09</span>
+            <span class="phaseName" id="phaseNameEn">READ</span>
+            <span class="phaseNameAr" id="phaseNameAr">يقرأ القصة</span>
+          </div>
+          <div class="phaseTrail">phase · <b id="phasePhase">READ</b></div>
+        </div>
+
+        <div class="phaseDeck" id="phaseDeck">
+          <div class="deckChrome">
+            <div class="deckDots"><i></i><i></i><i></i></div>
+            <div class="deckTab" id="deckTab">~/sprint-12/BE-0007</div>
+          </div>
+
+          <div class="artifact is-on" data-stage="0">
+            <div class="artHeader"><span class="pip"></span>prd.json · BE-0007<span class="meta">read · 38ms</span></div>
+<pre class="artBody">{
+  <span class="key">"id"</span><span class="punct">:</span> <span class="str">"BE-0007"</span><span class="punct">,</span>
+  <span class="key">"title"</span><span class="punct">:</span> <span class="str">"<span class="ar">تقديم طلب إجازة</span>"</span><span class="punct">,</span>
+  <span class="key">"as"</span><span class="punct">:</span>       <span class="str">"<span class="ar">موظف حكومي</span>"</span><span class="punct">,</span>
+  <span class="key">"want"</span><span class="punct">:</span>     <span class="str">"<span class="ar">أرفع طلب إجازة من البوابة</span>"</span><span class="punct">,</span>
+  <span class="key">"so_that"</span><span class="punct">:</span>  <span class="str">"<span class="ar">يصلني الرد بدون مراجعة يدوية</span>"</span><span class="punct">,</span>
+  <span class="key">"acceptance"</span><span class="punct">:</span> [
+    <span class="str">"POST /leave-requests → 201"</span><span class="punct">,</span>
+    <span class="str">"<span class="ar">الإشعار يصل لمدير القسم</span>"</span><span class="punct">,</span>
+    <span class="str">"<span class="ar">رفض التواريخ الماضية</span>"</span>
+  ]<span class="punct">,</span>
+  <span class="key">"estimate"</span><span class="punct">:</span> <span class="str">"20m"</span>
+}</pre>
+          </div>
+
+          <div class="artifact" data-stage="1">
+            <div class="artHeader"><span class="pip"></span>scan workspace · context<span class="meta">1.2s</span></div>
+<pre class="artBody">> indexing project context
+
+  ├─ src/api/leave/                <span class="dim">NEW</span>
+  ├─ src/db/schema/employees.ts    <span class="dim">84 LOC</span>
+  ├─ src/auth/session.ts           <span class="dim">42 LOC</span>
+  ├─ src/notify/manager.ts         <span class="dim">26 LOC</span>
+  └─ tests/setup.ts                <span class="dim">18 LOC</span>
+
+<span class="ok">✓</span> 4 anchor files · 312 LOC indexed
+<span class="ok">✓</span> 2 conventions detected · zod, vitest</pre>
+          </div>
+
+          <div class="artifact" data-stage="2">
+            <div class="artHeader"><span class="pip"></span>plan · 4 steps before code<span class="meta">draft</span></div>
+<pre class="artBody"><span class="num">1.</span> db/schema/leave_requests       <span class="dim">→ migration + index</span>
+<span class="num">2.</span> POST /api/leave handler        <span class="dim">→ zod dto + guard</span>
+<span class="num">3.</span> notify-manager webhook         <span class="dim">→ reuse notify/manager</span>
+<span class="num">4.</span> tests · 1 happy + 3 edge        <span class="dim">→ vitest</span>
+
+<span class="dim"># plan stored at .agent/plans/BE-0007.md</span></pre>
+          </div>
+
+          <div class="artifact" data-stage="3">
+            <div class="artHeader"><span class="pip"></span>build · src/api/leave/handler.ts<span class="meta">+3 files · 142 LOC</span></div>
+<pre class="artBody"><span class="add">+ export async function createLeaveRequest(req) {</span>
+<span class="add">+   const dto = LeaveRequestDto.parse(req.body)</span>
+<span class="add">+   await assertEmployeeActive(dto.employeeId)</span>
+<span class="add">+   const row = await db.leaveRequests.insert(dto)</span>
+<span class="add">+   await notifyManager(row)</span>
+<span class="add">+   return Response.json(row, { status: 201 })</span>
+<span class="add">+ }</span>
+
+<span class="dim"># also: schema + manager hook + dto</span></pre>
+          </div>
+
+          <div class="artifact" data-stage="4">
+            <div class="artHeader"><span class="pip"></span>vitest · 4 specs<span class="meta">0.3s</span></div>
+<pre class="artBody"><span class="ok">✓</span> creates leave request           <span class="dim">124ms</span>
+<span class="ok">✓</span> rejects invalid employee id      <span class="dim"> 38ms</span>
+<span class="ok">✓</span> sends manager notification       <span class="dim"> 96ms</span>
+<span class="ok">✓</span> refuses past dates               <span class="dim"> 41ms</span>
+
+ <span class="ok">4 passed</span>  ·  0 failed  ·  0 skipped</pre>
+          </div>
+
+          <div class="artifact" data-stage="5">
+            <div class="artHeader"><span class="pip"></span>seven gates · هل القصة جاهزة؟<span class="meta">verify</span></div>
+<pre class="artBody"><span class="ok">✓</span> [1/7] typecheck
+<span class="ok">✓</span> [2/7] lint
+<span class="ok">✓</span> [3/7] unit tests
+<span class="ok">✓</span> [4/7] integration
+<span class="warn">!</span> [5/7] coverage 78% <span class="dim">(target ≥ 80%)</span>
+<span class="ok">✓</span> [6/7] security scan
+<span class="ok">✓</span> [7/7] build
+
+<span class="warn">gate failed · loop back to fix</span></pre>
+          </div>
+
+          <div class="artifact" data-stage="6">
+            <div class="artHeader"><span class="pip"></span>fix · close coverage gap<span class="meta">autofix</span></div>
+<pre class="artBody"><span class="warn">!</span> uncovered · createLeaveRequest overlap path
+  → add test: rejects overlapping range
+
+<span class="ok">✓</span> wrote tests/leave-overlap.spec.ts
+<span class="ok">✓</span> coverage 84% <span class="dim">(+6)</span>
+<span class="ok">✓</span> re-running 7 gates …
+
+all gates green <span class="dim">· loop forward</span></pre>
+          </div>
+
+          <div class="artifact" data-stage="7">
+            <div class="artHeader"><span class="pip"></span>iteration · record + commit<span class="meta">DEMO-0006 ✓</span></div>
+<pre class="artBody"><span class="dim">═══════════════════════════════════════════════</span>
+  NCGR Autopilot · Iteration 6 · <span class="ok">DEMO-0006 done</span>
+<span class="dim">═══════════════════════════════════════════════</span>
+<span class="key">Story</span>     Add EF Core persistence + migrations
+<span class="key">Landed</span>    7 DbSets · cascade-delete mappings
+          unique indexes · DI extension
+          InitialCreate migration · SQLite + PG
+<span class="key">Verify</span>    dotnet format ✓  build · 0 warnings ✓
+          <span class="ok">178 / 178</span> tests passed (12 new persistence)
+<span class="key">Commit</span>    feat(demo): [DEMO-0006] EF Core …
+          29 files · <span class="ok">+2380</span> / <span class="err">-11</span>
+<span class="key">Next</span>      <span class="nextArrow">→</span> DEMO-0007 unblocked · app services
+
+<span class="dim">Iteration 6 complete · 14 stories remain · looping…</span></pre>
+          </div>
+
+          <div class="artifact" data-stage="8">
+            <div class="artHeader"><span class="pip"></span>queue · sprint 12<span class="meta">restart in 0.2s</span></div>
+<pre class="artBody"><span class="nextArrow">→</span> BE-0008   notification dispatcher        <span class="dim">~25m</span>
+  BE-0009   leave approval workflow        <span class="dim">~30m</span>
+  BE-0010   reporting endpoint             <span class="dim">~20m</span>
+  BE-0011   audit trail                    <span class="dim">~15m</span>
+  <span class="dim">17 more pending · 1 done</span>
+
+<span class="dim"># loop continues — no human prompt</span></pre>
+          </div>
         </div>
       </div>
     </div>
@@ -881,6 +1242,20 @@ body[data-bg="dark"] .pd.on{background:var(--gold)}
 
 <div class="progressDots" id="dots"></div>
 
+<div class="mnav" id="mnav" aria-label="تنقّل الشرائح">
+  <button class="mbtn prev" id="mPrev" type="button" aria-label="السابق">›</button>
+  <button class="mbtn next" id="mNext" type="button" aria-label="التالي">‹</button>
+  <div class="mcount" id="mCount">01 / 17</div>
+</div>
+<div class="swipeHint" id="swipeHint">اسحب للتنقّل · swipe to navigate</div>
+
+<div class="rotateHint" id="rotateHint" role="dialog" aria-label="نصيحة العرض">
+  <div class="ric">⟳</div>
+  <h3>أفضل تجربة عرض</h3>
+  <p>اقلب الجهاز أفقيًا لمشاهدة الشرائح بحجم أكبر وأوضح.</p>
+  <button type="button" id="rotateDismiss">متابعة كما هو</button>
+</div>
+
 <script>
 (function(){
   const slides=[...document.querySelectorAll('.slide')];
@@ -900,13 +1275,27 @@ body[data-bg="dark"] .pd.on{background:var(--gold)}
     dotsWrap.appendChild(d);
   });
 
+  const portraitMq=window.matchMedia('(max-width:900px) and (orientation:portrait)');
   function scale(){
     const stage=document.querySelector('.stage');
     const w=stage.clientWidth, h=stage.clientHeight;
-    const s=Math.min(w/1920,h/1080);
-    document.getElementById('deck').style.transform='scale('+s+')';
+    const deck=document.getElementById('deck');
+    if(portraitMq.matches){
+      /* Rotate the landscape deck -90° so its long axis matches the
+         phone's long axis — gives ~3× more pixel area than letterboxing. */
+      const s=Math.min(h/1920, w/1080);
+      deck.style.transform='rotate(-90deg) scale('+s+')';
+      document.body.dataset.rotated='1';
+    } else {
+      const s=Math.min(w/1920, h/1080);
+      deck.style.transform='scale('+s+')';
+      if(document.body.dataset.rotated)delete document.body.dataset.rotated;
+    }
   }
-  window.addEventListener('resize',scale);scale();
+  window.addEventListener('resize',scale);
+  window.addEventListener('orientationchange',()=>setTimeout(scale,160));
+  if(window.visualViewport){window.visualViewport.addEventListener('resize',scale)}
+  scale();
 
   window.__deck_go=function(i){go(i)};
   function go(i){
@@ -932,14 +1321,84 @@ body[data-bg="dark"] .pd.on{background:var(--gold)}
     const s=slides[cur];
     if(s.dataset.noHud==='true'){hud.style.display='none';return}
     hud.style.display='block';
-    hudEyebrow.textContent=s.dataset.eyebrow||'';
+    hudEyebrow.textContent=(s.dataset.eyebrow||'').replace(/^—\s*/,'').trim();
     hudCounter.textContent=String(cur+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
     notesH.textContent='SPEAKER NOTES · شريحة '+String(cur+1).padStart(2,'0');
     notesBody.textContent=s.dataset.notes||'';
   }
   function updateDots(){
     [...dotsWrap.children].forEach((d,i)=>d.classList.toggle('on',i===cur));
+    const mc=document.getElementById('mCount');
+    if(mc)mc.textContent=String(cur+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    const mp=document.getElementById('mPrev'),mn=document.getElementById('mNext');
+    if(mp)mp.classList.toggle('disabled',cur===0);
+    if(mn)mn.classList.toggle('disabled',cur===slides.length-1);
   }
+
+  /* ---------- Mobile controls: layout, auto-hide, swipe ---------- */
+  const mPrev=document.getElementById('mPrev'),mNext=document.getElementById('mNext');
+  if(mPrev)mPrev.addEventListener('click',e=>{e.stopPropagation();go(cur-1)});
+  if(mNext)mNext.addEventListener('click',e=>{e.stopPropagation();go(cur+1)});
+  const rh=document.getElementById('rotateHint'),rhDis=document.getElementById('rotateDismiss');
+  if(rhDis)rhDis.addEventListener('click',()=>rh.classList.add('dismissed'));
+
+  const mq=window.matchMedia('(max-width:900px), (hover:none) and (pointer:coarse)');
+  function positionMnav(){
+    const mnavEl=document.getElementById('mnav');
+    if(!mnavEl)return;
+    if(!mq.matches){
+      mnavEl.classList.remove('show','layout-side','layout-bottom');
+      return;
+    }
+    const s=Math.min(window.innerWidth/1920,window.innerHeight/1080);
+    const gutterY=(window.innerHeight - 1080*s)/2;
+    const gutterX=(window.innerWidth  - 1920*s)/2;
+    const useSide=(gutterY < 60) && (gutterX >= 56);
+    mnavEl.classList.add('show');
+    mnavEl.classList.toggle('layout-side',useSide);
+    mnavEl.classList.toggle('layout-bottom',!useSide);
+  }
+  positionMnav();
+  window.addEventListener('resize',positionMnav);
+  window.addEventListener('orientationchange',()=>setTimeout(positionMnav,200));
+
+  let hideTimer=null;
+  function showMnav(){
+    const mnavEl=document.getElementById('mnav');
+    if(!mnavEl||!mq.matches)return;
+    mnavEl.classList.remove('hidden');
+    clearTimeout(hideTimer);
+    hideTimer=setTimeout(()=>mnavEl.classList.add('hidden'),3200);
+  }
+  ['touchstart','pointerdown','keydown'].forEach(ev=>
+    document.addEventListener(ev,showMnav,{passive:true})
+  );
+  showMnav();
+
+  let tStartX=0,tStartY=0,tStartT=0,tracking=false;
+  const stageEl=document.querySelector('.stage');
+  stageEl.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1)return;
+    tStartX=e.touches[0].clientX;tStartY=e.touches[0].clientY;tStartT=Date.now();tracking=true;
+  },{passive:true});
+  stageEl.addEventListener('touchend',e=>{
+    if(!tracking)return;tracking=false;
+    const t=e.changedTouches[0];
+    const dx=t.clientX-tStartX, dy=t.clientY-tStartY, dt=Date.now()-tStartT;
+    if(dt>700)return;
+    const rotated=document.body.dataset.rotated==='1';
+    if(rotated){
+      /* Deck is rotated -90°. Swipe UP = next, swipe DOWN = prev — matches the
+         user's tilted-right reading frame (where physical-up reads as visual-right
+         which in RTL is the next-slide direction). */
+      if(Math.abs(dy)<48||Math.abs(dy)<Math.abs(dx)*1.2)return;
+      if(dy<0)go(cur+1);else go(cur-1);
+    } else {
+      /* RTL landscape: swipe-left = next, swipe-right = prev */
+      if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy)*1.2)return;
+      if(dx<0)go(cur+1);else go(cur-1);
+    }
+  },{passive:true});
 
   window.addEventListener('keydown',e=>{
     if(['ArrowRight','PageDown'].includes(e.key)){go(cur+1)}
@@ -961,7 +1420,7 @@ body[data-bg="dark"] .pd.on{background:var(--gold)}
     {name:'Record',ar:'يوثق الأثر',phase:'record'},
     {name:'Next',ar:'ينتقل للي بعدها',phase:'read'}
   ];
-  let loopRaf=null,loopStart=0,nodeEls=[],pillEls={};
+  let loopRaf=null,loopStart=0,nodeEls=[],pillEls={},artEls=[],phEls={};
 
   function makeNode(idx,st){
     const el=document.createElement('div');
@@ -996,15 +1455,23 @@ body[data-bg="dark"] .pd.on{background:var(--gold)}
     tr.className='traveler';tr.id='traveler';
     ring.appendChild(tr);
     document.querySelectorAll('.phasePill').forEach(p=>pillEls[p.dataset.phase]=p);
+    artEls=[...document.querySelectorAll('#phaseDeck .artifact')];
+    phEls={
+      idx:document.getElementById('phaseIdx'),
+      en:document.getElementById('phaseNameEn'),
+      ar:document.getElementById('phaseNameAr'),
+      phase:document.getElementById('phasePhase')
+    };
   }
 
   function startLoop(){
     buildLoopNodes();
     loopStart=performance.now();
     cancelAnimationFrame(loopRaf);
+    let lastIdx=-1;
     const tick=now=>{
       const elapsed=(now-loopStart)/1000;
-      const period=18;
+      const period=27;
       const t=(elapsed%period)/period;
       const ang=t*Math.PI*2 - Math.PI/2;
       const cx=340,cy=340,r=300;
@@ -1013,10 +1480,20 @@ body[data-bg="dark"] .pd.on{background:var(--gold)}
       const tr=document.getElementById('traveler');
       if(tr){tr.style.left=(x/680*100)+'%';tr.style.top=(y/680*100)+'%'}
       const idx=Math.floor(t*stages.length)%stages.length;
-      nodeEls.forEach((n,i)=>n.classList.toggle('active',i===idx));
-      const phase=stages[idx].phase;
-      Object.values(pillEls).forEach(p=>p.classList.remove('on'));
-      if(pillEls[phase])pillEls[phase].classList.add('on');
+      if(idx!==lastIdx){
+        lastIdx=idx;
+        nodeEls.forEach((n,i)=>n.classList.toggle('active',i===idx));
+        const phase=stages[idx].phase;
+        Object.values(pillEls).forEach(p=>p.classList.remove('on'));
+        if(pillEls[phase])pillEls[phase].classList.add('on');
+        if(artEls.length){artEls.forEach((a,i)=>a.classList.toggle('is-on',i===idx))}
+        if(phEls.idx){
+          phEls.idx.textContent=String(idx+1).padStart(2,'0')+' / '+String(stages.length).padStart(2,'0');
+          phEls.en.textContent=stages[idx].name.toUpperCase();
+          phEls.ar.textContent=stages[idx].ar;
+          if(phEls.phase)phEls.phase.textContent=phase.toUpperCase();
+        }
+      }
       loopRaf=requestAnimationFrame(tick);
     };
     loopRaf=requestAnimationFrame(tick);
