@@ -1,0 +1,21 @@
+base_url: https://ploy.jsa.sa
+organization: 0gFfxIvKJRyGX8l7RuCOa
+project:
+  name: aziz
+  id: 9oTWGN-qNh6S7te3cuePM
+environments:
+  production: 5bBb3e4tohTcLZK9Q9mIP
+  staging: OGuiVv3ZeFc6BEqLG79RJ
+application:
+  name: aziz-web
+  id: vYPz57z31ZuHf2Y4W3-tk
+  appName: app-bypass-multi-byte-interface-etmirz
+  environment: staging
+  build_type: static
+  source: git
+  git_url: https://github.com/JuribaDev/aziz.git
+  git_branch: main
+domain:
+  id: 01sovB_wYToM1U-bYOmSW
+  host: sa-staging.ploy.jsa.sa
+  certificate: letsencrypt

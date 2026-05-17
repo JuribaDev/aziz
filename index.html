@@ -1,561 +1,1030 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Kingdom — An Almanac of Saudi Arabia</title>
-<meta name="description" content="A visual almanac of the Kingdom of Saudi Arabia — geography, history, economy, culture and Vision 2030." />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NCGR Autopilot · الطيار الآلي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,400&family=Newsreader:ital,opsz@0,6..72;1,6..72&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,500;1,700;1,900&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    --paper:      #e9e1cf;
-    --paper-2:    #e1d6bd;
-    --ink:        #211c12;
-    --ink-soft:   #4a4334;
-    --green:      #14502f;
-    --green-br:   #1d6e41;
-    --ochre:      #b07d27;
-    --terra:      #a8431f;
-    --line:       rgba(33,28,18,.22);
-    --max:        1240px;
-  }
+:root{
+  --ink:#0E1115;
+  --ink-soft:#2A2F36;
+  --muted:#6B7280;
+  --hair:#E5E1D8;
+  --paper:#FFFFFF;
+  --cream:#F6F2E9;
+  --brand:#006C35;
+  --brand-deep:#024A26;
+  --brand-soft:#E6F0EA;
+  --gold:#C9A24A;
+  --crit:#BE3A2E;
+  --crit-soft:#F2D9D5;
+  --slate:#101418;
+  --slide-w:1920px;
+  --slide-h:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Arabic","Inter",system-ui,sans-serif;overflow:hidden;transition:background-color .55s ease}
+body{display:flex;align-items:center;justify-content:center}
+body[data-bg="dark"]{background:var(--brand-deep)}
+body[data-bg="cover"]{background:var(--cream)}
+body[data-bg="light"]{background:var(--paper)}
+.stage{position:relative;width:100vw;height:100vh;overflow:hidden;background:transparent;display:flex;align-items:center;justify-content:center}
+.deck{position:relative;width:var(--slide-w);height:var(--slide-h);transform-origin:center center;background:var(--paper);box-shadow:0 40px 120px rgba(0,0,0,.55)}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .6s ease;background:var(--paper);overflow:hidden}
+.slide.is-active{opacity:1;visibility:visible;z-index:2}
+.slide.dark{background:var(--brand-deep);color:#F4F6F4}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+.hud{position:absolute;inset:0;pointer-events:none;z-index:5;width:1920px;height:1080px}
+.hud .logo{position:absolute;top:46px;right:54px;width:152px;opacity:.95}
+.hud .eyebrow{position:absolute;top:54px;left:54px;font-family:"JetBrains Mono",monospace;font-size:15px;color:var(--ink-soft);direction:ltr;unicode-bidi:isolate}
+.hud .counter{position:absolute;bottom:42px;left:54px;font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:.14em;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+.hud .url{position:absolute;bottom:42px;right:54px;font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:.14em;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+.hud .rule{position:absolute;left:54px;right:54px;top:118px;height:1px;background:linear-gradient(90deg,transparent,var(--hair) 12%,var(--hair) 88%,transparent)}
+.slide.dark .hud .eyebrow,
+.slide.dark .hud .counter,
+.slide.dark .hud .url{color:#CFE0D5}
+.slide.dark .hud .rule{background:linear-gradient(90deg,transparent,rgba(255,255,255,.18) 12%,rgba(255,255,255,.18) 88%,transparent)}
 
-  html { scroll-behavior: smooth; }
+.cover{position:absolute;inset:0;display:flex}
+.cover .bgwrap{position:absolute;inset:0;overflow:hidden;background:var(--cream)}
+.cover .skyline{position:absolute;left:0;right:0;bottom:0;height:65%;transform:translateY(60px);opacity:0;background:radial-gradient(ellipse at 20% 100%,rgba(0,108,53,.10),transparent 55%),radial-gradient(ellipse at 80% 100%,rgba(2,74,38,.08),transparent 55%),linear-gradient(180deg,transparent 0%,rgba(14,17,21,.04) 100%)}
+.cover .skyline svg{position:absolute;bottom:0;width:100%;height:100%;display:block}
+.cover.is-anim .skyline{animation:coverRise 1.4s .15s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes coverRise{to{transform:translateY(0);opacity:1}}
+.cover .panel{position:absolute;top:0;right:0;width:62%;height:100%;background:var(--brand-deep);color:#F8FAF8;clip-path:polygon(0 0,100% 0,100% 100%,18% 100%);transform:translateX(40%);opacity:0;display:flex;flex-direction:column;justify-content:center;padding:0 130px 0 240px}
+.cover.is-anim .panel{animation:panelIn 1.1s .35s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes panelIn{to{transform:translateX(0);opacity:1}}
+.cover .title-block{transform:translateY(36px);opacity:0}
+.cover.is-anim .title-block{animation:rise .9s 1.25s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes rise{to{transform:translateY(0);opacity:1}}
+.cover h1{font-size:158px;line-height:.92;font-weight:700;letter-spacing:-.03em}
+.cover h1 .it{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:138px;display:block;margin-top:8px;color:#E4D9B6}
+.cover .sub{font-size:26px;line-height:1.65;color:#D7E2DA;margin-top:48px;max-width:780px;opacity:0;transform:translateY(20px)}
+.cover.is-anim .sub{animation:rise .9s 1.7s cubic-bezier(.2,.8,.2,1) forwards}
+.cover .meta{position:absolute;bottom:64px;left:64px;font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-soft);opacity:0;transform:translateY(10px)}
+.cover.is-anim .meta{animation:rise .9s 2.0s cubic-bezier(.2,.8,.2,1) forwards}
+.cover .urlc{position:absolute;bottom:64px;right:64px;font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.28em;color:#CFE0D5;opacity:0;transform:translateY(10px)}
+.cover.is-anim .urlc{animation:rise .9s 2.15s cubic-bezier(.2,.8,.2,1) forwards}
+.cover .coverlogo{position:absolute;top:60px;right:64px;width:180px;z-index:4}
 
-  body {
-    background-color: var(--paper);
-    background-image:
-      radial-gradient(circle at 18% 12%, rgba(176,125,39,.10), transparent 42%),
-      radial-gradient(circle at 85% 78%, rgba(20,80,47,.12), transparent 46%),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
-    color: var(--ink);
-    font-family: "Newsreader", Georgia, serif;
-    font-size: 19px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
+.divider{position:absolute;inset:0;background:var(--brand-deep);color:#F4F6F4;overflow:hidden}
+.divider .fold{position:absolute;top:-80px;right:18%;width:780px;height:780px;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,0));clip-path:polygon(0 0,100% 0,100% 100%);transform:rotate(8deg)}
+.divider .grain{position:absolute;inset:0;opacity:.05;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.6) 1px,transparent 1px);background-size:3px 3px}
+.divider .dlogo{position:absolute;top:60px;right:64px;width:170px}
+.divider .top-en{position:absolute;top:64px;left:64px;right:64px;font-family:"JetBrains Mono",monospace;font-size:18px;letter-spacing:.16em;text-transform:uppercase;color:#CDE2D3;direction:ltr;unicode-bidi:isolate;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+.divider .top-en .ar{font-family:"IBM Plex Sans Arabic",sans-serif;letter-spacing:0;color:#A8C5B2;margin-left:14px;font-size:16px;text-transform:none;direction:rtl;unicode-bidi:isolate}
+.divider .top-desc{position:absolute;top:130px;left:64px;width:820px;max-width:55%;font-size:26px;line-height:1.55;color:#D9E5DE;opacity:.92;direction:rtl;text-align:right}
+.divider .arabic-huge{position:absolute;bottom:64px;right:64px;font-family:"IBM Plex Sans Arabic",sans-serif;font-weight:700;font-size:230px;line-height:.85;letter-spacing:-.02em;color:#FFFFFF;text-shadow:0 8px 60px rgba(0,0,0,.25);transform:translateY(60px);opacity:0}
+.divider.is-anim .arabic-huge{animation:dividerRise 1.4s .25s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes dividerRise{to{transform:translateY(0);opacity:1}}
+.divider .top-en,.divider .top-desc{opacity:0;transform:translateY(18px)}
+.divider.is-anim .top-en{animation:rise .9s .9s cubic-bezier(.2,.8,.2,1) forwards}
+.divider.is-anim .top-desc{animation:rise .9s 1.05s cubic-bezier(.2,.8,.2,1) forwards}
+.divider .en-secondary{position:absolute;top:46%;left:64px;font-family:"Playfair Display",serif;font-style:italic;font-size:84px;line-height:1;color:#E7D9B5;font-weight:500;max-width:720px;opacity:0;transform:translateY(20px)}
+.divider.is-anim .en-secondary{animation:rise 1s 1.1s cubic-bezier(.2,.8,.2,1) forwards}
+.divider .en-secondary b{font-family:"Playfair Display",serif;font-style:normal;font-weight:700;color:#FFF;display:block;font-size:64px;margin-bottom:8px}
+.divider .corner-mark{position:absolute;bottom:60px;left:64px;font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.3em;color:rgba(255,255,255,.55);text-transform:uppercase}
 
-  ::selection { background: var(--green); color: var(--paper); }
+.content{position:absolute;inset:0;padding:170px 110px 130px 110px;display:grid;grid-template-columns:1fr 1.05fr;gap:80px;align-items:start}
+.content.full{grid-template-columns:1fr}
+.content .left{padding-top:30px}
+.headline{font-size:62px;line-height:1.12;font-weight:600;color:var(--ink);letter-spacing:-.01em;max-width:780px}
+.headline .accent{color:var(--brand)}
+.headline .accent.en,.headline .ital{color:var(--brand);font-family:"Playfair Display",serif;font-style:italic;font-weight:500}
+.headline .latin{font-family:"Inter",sans-serif;font-weight:600;unicode-bidi:isolate;direction:ltr;display:inline-block}
+/* Bidi protection — keep Latin/number runs in LTR order inside RTL parents */
+.ltr,.kicker,.tag,.unit,.ctop,.gsub,.heroCap,.mmunit,.cbLab .dur,.term .line,.proofUS,.proofUS .subline,.tlegend,.tseg,.layer .num,.layer .name,.result-chip,.hex .h-num,.hex .h-name,.grow .gterm,.progressMeta,.token,.callout .bigx{unicode-bidi:isolate;direction:ltr}
+.bidi-ltr{unicode-bidi:isolate;direction:ltr;display:inline-block}
+.lede{margin-top:36px;font-size:26px;line-height:1.7;color:var(--ink-soft);max-width:740px;font-weight:400}
+.pull{margin-top:42px;padding-right:22px;border-right:3px solid var(--brand);font-family:"Playfair Display",serif;font-style:italic;font-size:30px;line-height:1.45;color:var(--brand-deep);max-width:680px}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.28em;text-transform:uppercase;color:var(--brand);margin-bottom:22px;direction:ltr;unicode-bidi:isolate;text-align:right}
 
-  /* ---------- shared ---------- */
-  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+.reveal{opacity:0;transform:translateY(28px)}
+.is-active .reveal{animation:rise .9s .25s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .reveal.d2{animation-delay:.45s}
+.is-active .reveal.d3{animation-delay:.65s}
+.is-active .reveal.d4{animation-delay:.85s}
+.is-active .reveal.d5{animation-delay:1.05s}
 
-  .eyebrow {
-    font-family: "Space Mono", monospace;
-    font-size: 12px;
-    letter-spacing: .32em;
-    text-transform: uppercase;
-    color: var(--terra);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .eyebrow::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--line);
-  }
+.llm-stage{position:relative;width:100%;height:680px;display:flex;align-items:center;justify-content:center}
+.llm-core{position:relative;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#0E8C4F,#024A26 70%);box-shadow:0 30px 90px rgba(0,108,53,.35),inset 0 -10px 30px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;color:#fff;font-family:"Playfair Display",serif;font-style:italic;font-size:96px;font-weight:500;letter-spacing:-.02em;z-index:3}
+.llm-core::after{content:"";position:absolute;inset:-2px;border-radius:50%;box-shadow:0 0 0 0 rgba(0,108,53,.5);animation:pulsePing 2.6s ease-out infinite}
+@keyframes pulsePing{0%{box-shadow:0 0 0 0 rgba(0,108,53,.5)}80%{box-shadow:0 0 0 110px rgba(0,108,53,0)}100%{box-shadow:0 0 0 0 rgba(0,108,53,0)}}
+.halo{position:absolute;border-radius:50%;border:1.5px dashed rgba(0,108,53,.35)}
+.halo.h1{width:480px;height:480px;animation:spin 38s linear infinite}
+.halo.h2{width:640px;height:640px;border-style:dotted;border-color:rgba(0,108,53,.22);animation:spinR 64s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinR{to{transform:rotate(-360deg)}}
+.token{position:absolute;top:50%;left:50%;transform-origin:0 0;font-family:"JetBrains Mono",monospace;font-size:16px;background:#FFF;border:1px solid var(--hair);border-radius:999px;padding:9px 18px;color:var(--brand-deep);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.05);opacity:0}
+.is-active .token{animation:tokenOrbit 4.6s ease-out infinite}
+.is-active .token:nth-child(1){animation-delay:.1s;--ang:-90deg}
+.is-active .token:nth-child(2){animation-delay:.55s;--ang:-30deg}
+.is-active .token:nth-child(3){animation-delay:1.0s;--ang:30deg}
+.is-active .token:nth-child(4){animation-delay:1.45s;--ang:90deg}
+.is-active .token:nth-child(5){animation-delay:1.9s;--ang:150deg}
+.is-active .token:nth-child(6){animation-delay:2.35s;--ang:210deg}
+@keyframes tokenOrbit{0%{opacity:0;transform:rotate(var(--ang)) translate(120px) rotate(calc(var(--ang)*-1)) scale(.6)}18%{opacity:1;transform:rotate(var(--ang)) translate(180px) rotate(calc(var(--ang)*-1)) scale(1)}85%{opacity:1;transform:rotate(var(--ang)) translate(310px) rotate(calc(var(--ang)*-1)) scale(1)}100%{opacity:0;transform:rotate(var(--ang)) translate(360px) rotate(calc(var(--ang)*-1)) scale(.85)}}
 
-  h1, h2, h3 { font-family: "Fraunces", serif; font-weight: 400; line-height: 1.02; }
+.layers{position:relative;width:100%;height:680px;padding-top:30px}
+.layer{position:relative;height:88px;border:1.5px solid var(--hair);background:#FFF;display:flex;align-items:center;padding:0 32px;border-radius:14px;margin-bottom:18px;box-shadow:0 14px 34px rgba(14,17,21,.04);opacity:0;transform:translateX(80px);font-size:22px;color:var(--ink);gap:24px;justify-content:flex-start}
+.layer .num{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.2em;color:var(--brand);min-width:42px;flex:0 0 auto}
+.layer .name{font-family:"Inter",sans-serif;font-weight:600;font-size:22px;flex:0 0 auto;direction:ltr;unicode-bidi:isolate}
+.layer .ar{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:20px;color:var(--muted);margin-inline-start:auto}
+.layer:nth-child(2){margin-right:32px}
+.layer:nth-child(3){margin-right:64px}
+.layer:nth-child(4){margin-right:96px}
+.layer:nth-child(5){margin-right:128px;background:var(--brand-soft);border-color:#BFD9C9}
+.is-active .layer{animation:layerIn .7s cubic-bezier(.2,.7,.2,1) forwards}
+.is-active .layer:nth-child(1){animation-delay:.25s}
+.is-active .layer:nth-child(2){animation-delay:.45s}
+.is-active .layer:nth-child(3){animation-delay:.65s}
+.is-active .layer:nth-child(4){animation-delay:.85s}
+.is-active .layer:nth-child(5){animation-delay:1.05s}
+@keyframes layerIn{to{opacity:1;transform:translateX(0)}}
+.result-chip{margin-top:28px;display:inline-flex;align-items:center;gap:18px;background:var(--brand-deep);color:#FFF;border-radius:14px;padding:24px 36px;font-family:"Inter",sans-serif;font-weight:700;font-size:26px;letter-spacing:.02em;box-shadow:0 22px 50px rgba(2,74,38,.28);opacity:0;transform:translateY(20px);white-space:nowrap}
+.result-chip .dot{width:12px;height:12px;border-radius:50%;background:var(--gold)}
+.is-active .result-chip{animation:rise .8s 1.4s cubic-bezier(.2,.8,.2,1) forwards}
 
-  .reveal { opacity: 0; transform: translateY(34px); transition: opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1); }
-  .reveal.in { opacity: 1; transform: none; }
+.hexstage{position:relative;width:100%;height:520px;margin-top:-10px}
+.anatomyContent{grid-template-columns:.78fr 1.08fr;align-items:center;gap:70px}
+.anatomyCopy{max-width:680px}
+.anatomyContent .hexstage{width:860px;height:540px;margin-top:0;justify-self:start}
+.hex{position:absolute;width:180px;height:208px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#FFF;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:1px solid var(--hair);box-shadow:0 14px 40px rgba(14,17,21,.06);transform:scale(.7);opacity:0;padding:24px 14px}
+.hex .h-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.2em;color:var(--brand);margin-bottom:6px}
+.hex .h-name{font-family:"Inter",sans-serif;font-weight:700;font-size:22px;color:var(--ink);letter-spacing:-.01em}
+.hex .h-ar{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:14px;color:var(--muted);margin-top:6px;line-height:1.4}
+.hex.center{background:var(--brand-deep);color:#fff;width:210px;height:240px;box-shadow:0 22px 60px rgba(2,74,38,.35)}
+.hex.center .h-num{color:var(--gold)}
+.hex.center .h-name{color:#FFF;font-size:28px;font-family:"Playfair Display",serif;font-style:italic;font-weight:500}
+.hex.center .h-ar{color:#D6E5DC}
+.is-active .hex{animation:hexPop .55s cubic-bezier(.2,.7,.2,1) forwards}
+.is-active .hex:nth-child(1){animation-delay:.20s}
+.is-active .hex:nth-child(2){animation-delay:.32s}
+.is-active .hex:nth-child(3){animation-delay:.44s}
+.is-active .hex:nth-child(4){animation-delay:.56s}
+.is-active .hex:nth-child(5){animation-delay:.68s}
+.is-active .hex:nth-child(6){animation-delay:.80s}
+.is-active .hex.center{animation-delay:1.0s}
+@keyframes hexPop{to{transform:scale(1);opacity:1}}
 
-  /* ---------- top bar ---------- */
-  .topbar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 32px;
-    font-family: "Space Mono", monospace;
-    font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
-    mix-blend-mode: difference; color: #e9e1cf;
-  }
-  .topbar nav { display: flex; gap: 26px; }
-  .topbar a { color: inherit; text-decoration: none; opacity: .7; transition: opacity .25s; }
-  .topbar a:hover { opacity: 1; }
-  @media (max-width: 720px) { .topbar nav { display: none; } }
+.cards2{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:60px}
+.card{background:#FFF;border:1px solid var(--hair);border-radius:18px;padding:38px 36px;box-shadow:0 18px 50px rgba(14,17,21,.05);opacity:0;transform:translateY(28px);min-height:540px;display:flex;flex-direction:column}
+.is-active .card{animation:rise .8s .35s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .card.r{animation-delay:.55s}
+.card .ctit{font-family:"Inter",sans-serif;font-weight:700;font-size:22px;color:var(--ink);margin-bottom:6px;letter-spacing:-.01em}
+.card .cwave{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:30px;font-weight:600;color:var(--brand-deep);margin-bottom:20px}
+.card.r{background:var(--brand-deep);color:#F2F7F4;border-color:var(--brand-deep)}
+.card.r .ctit{color:#fff}
+.card.r .cwave{color:#FFF}
+.chat{flex:1;display:flex;flex-direction:column;gap:12px;font-family:"Inter",sans-serif;font-size:17px}
+.bubble{padding:10px 16px;border-radius:14px;max-width:78%;opacity:0;transform:translateY(8px)}
+.bubble.h{background:#F2EFE8;color:var(--ink);align-self:flex-end}
+.bubble.a{background:var(--brand-soft);color:var(--brand-deep);align-self:flex-start}
+.is-active .bubble{animation:rise .45s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .bubble:nth-child(1){animation-delay:.8s}
+.is-active .bubble:nth-child(2){animation-delay:1.2s}
+.is-active .bubble:nth-child(3){animation-delay:1.6s}
+.is-active .bubble:nth-child(4){animation-delay:2.0s}
+.cursor{display:inline-block;width:9px;height:18px;background:var(--ink);vertical-align:middle;margin-right:4px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.term{flex:1;display:flex;flex-direction:column;gap:10px;font-family:"JetBrains Mono",monospace;font-size:16px;background:rgba(0,0,0,.25);border-radius:12px;padding:22px;color:#D2E4D7;border:1px solid rgba(255,255,255,.08)}
+.term .line{opacity:0;transform:translateY(6px)}
+.is-active .term .line{animation:rise .4s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .term .line:nth-child(1){animation-delay:.9s}
+.is-active .term .line:nth-child(2){animation-delay:1.25s}
+.is-active .term .line:nth-child(3){animation-delay:1.6s}
+.is-active .term .line:nth-child(4){animation-delay:1.95s}
+.is-active .term .line:nth-child(5){animation-delay:2.3s}
+.is-active .term .line:nth-child(6){animation-delay:2.65s}
+.term .check{color:#7CD3A2;margin-left:8px}
+.term .prompt{color:var(--gold)}
+.tags{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.tag{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.1em;padding:6px 12px;border-radius:999px;background:#F2EFE8;color:var(--ink-soft);text-transform:lowercase}
+.card.r .tag{background:rgba(255,255,255,.12);color:#E2EBE4}
 
-  /* ---------- hero ---------- */
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 140px 0 80px;
-    overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute; inset: 0; z-index: 0;
-    background:
-      linear-gradient(180deg, #0d3a22 0%, #14502f 48%, #0e2f1d 100%);
-  }
-  .dunes { position: absolute; inset: 0; z-index: 1; }
-  .star {
-    position: absolute; z-index: 2;
-    width: 2px; height: 2px; border-radius: 50%;
-    background: #e9e1cf; opacity: .0;
-    animation: twinkle 5s infinite ease-in-out;
-  }
-  @keyframes twinkle { 0%,100%{opacity:.05} 50%{opacity:.55} }
+.timestage{padding-top:30px}
+.bigday{font-family:"Playfair Display",serif;font-style:italic;font-size:148px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:18px;letter-spacing:-.04em;opacity:0;transform:translateY(20px);direction:ltr;unicode-bidi:isolate}
+.is-active .bigday{animation:rise .9s .25s cubic-bezier(.2,.8,.2,1) forwards}
+.bigday .small{font-family:"JetBrains Mono",monospace;font-style:normal;font-size:18px;color:var(--muted);letter-spacing:.2em;margin-right:14px;vertical-align:middle;text-transform:uppercase}
+.tbar{display:flex;border-radius:10px;overflow:hidden;height:74px;border:1px solid var(--hair);box-shadow:0 14px 34px rgba(0,0,0,.05);opacity:0;transform:translateY(14px)}
+.is-active .tbar{animation:rise .8s .45s cubic-bezier(.2,.8,.2,1) forwards}
+.tseg{display:flex;align-items:center;justify-content:center;color:#fff;font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.08em;transform:scaleX(0);transform-origin:left;opacity:0;white-space:nowrap;padding:0 8px}
+.is-active .tseg{animation:tsegIn .5s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes tsegIn{to{transform:scaleX(1);opacity:1}}
+.tseg.gray{background:#3A4048;color:#E2E6EB}
+.tseg.red{background:var(--crit);animation-name:tsegRed!important}
+.tseg.gold{background:var(--gold);color:#2A2105}
+@keyframes tsegRed{from{transform:scaleX(0);opacity:0}50%{box-shadow:inset 0 0 0 60px rgba(0,0,0,.15)}to{transform:scaleX(1);opacity:1;box-shadow:inset 0 0 0 0 rgba(0,0,0,0)}}
+.is-active .tseg:nth-child(1){animation-delay:.65s}
+.is-active .tseg:nth-child(2){animation-delay:.80s}
+.is-active .tseg:nth-child(3){animation-delay:.95s}
+.is-active .tseg:nth-child(4){animation-delay:1.10s}
+.is-active .tseg:nth-child(5){animation-delay:1.25s}
+.is-active .tseg:nth-child(6){animation-delay:1.40s}
+.is-active .tseg:nth-child(7){animation-delay:1.55s}
+.is-active .tseg:nth-child(8){animation-delay:1.70s}
+.tlegend{margin-top:18px;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
 
-  .hero .wrap { position: relative; z-index: 5; color: var(--paper); }
-  .hero-arabic {
-    font-family: "Fraunces", serif;
-    font-size: clamp(20px, 3vw, 30px);
-    direction: rtl;
-    color: var(--ochre);
-    letter-spacing: .04em;
-    margin-bottom: 10px;
-  }
-  .hero h1 {
-    font-size: clamp(58px, 13vw, 188px);
-    font-weight: 300;
-    letter-spacing: -.02em;
-  }
-  .hero h1 em {
-    font-style: italic;
-    font-weight: 500;
-    color: var(--ochre);
-  }
-  .hero-sub {
-    margin-top: 30px;
-    max-width: 540px;
-    font-size: 21px;
-    color: rgba(233,225,207,.82);
-  }
-  .hero-meta {
-    margin-top: 54px;
-    display: flex; flex-wrap: wrap; gap: 40px;
-    font-family: "Space Mono", monospace;
-    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
-    color: rgba(233,225,207,.6);
-  }
-  .hero-meta b { display: block; font-family: "Fraunces", serif; font-size: 30px; letter-spacing: 0; text-transform: none; color: var(--paper); margin-top: 4px; }
-  .scroll-cue {
-    position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
-    z-index: 5;
-    font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: .3em;
-    color: rgba(233,225,207,.55); text-transform: uppercase;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-  }
-  .scroll-cue span { width: 1px; height: 40px; background: rgba(233,225,207,.4); animation: drop 1.8s infinite; }
-  @keyframes drop { 0%{transform:scaleY(0);transform-origin:top} 45%{transform:scaleY(1);transform-origin:top} 55%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:30px}
+.statcell{background:#FFF;border:1px solid var(--hair);border-radius:18px;padding:36px 38px;min-height:230px;display:flex;flex-direction:column;justify-content:space-between;opacity:0;transform:translateY(24px);box-shadow:0 12px 30px rgba(0,0,0,.04)}
+.is-active .statcell{animation:rise .55s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .statcell:nth-child(1){animation-delay:.35s}
+.is-active .statcell:nth-child(2){animation-delay:.48s}
+.is-active .statcell:nth-child(3){animation-delay:.61s}
+.is-active .statcell:nth-child(4){animation-delay:.74s}
+.statcell .lbl{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:21px;color:var(--ink-soft);font-weight:500}
+.statcell .num{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:96px;line-height:1;color:var(--ink);letter-spacing:-.03em;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.statcell.money .num{font-family:"Inter",sans-serif;font-style:normal;font-size:52px;font-weight:700;letter-spacing:-.04em}
+.statcell.crit .num{color:var(--crit)}
+.statcell .unit{font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-top:8px}
 
-  /* ---------- section frame ---------- */
-  section { position: relative; padding: 120px 0; }
-  .section-head { margin-bottom: 64px; }
-  .section-head h2 {
-    font-size: clamp(38px, 6vw, 78px);
-    margin-top: 18px;
-    max-width: 16ch;
-  }
-  .section-head h2 em { font-style: italic; color: var(--green); }
-  .lead { max-width: 60ch; margin-top: 22px; font-size: 21px; color: var(--ink-soft); }
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:30px}
+.col{background:#FFF;border:1px solid var(--hair);border-radius:18px;padding:28px 36px;opacity:0;transform:translateX(-30px)}
+.col.r{transform:translateX(30px);background:var(--brand-deep);color:#F1F6F2;border-color:var(--brand-deep);box-shadow:0 24px 60px rgba(2,74,38,.25)}
+.is-active .col{animation:colIn .8s .35s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .col.r{animation-delay:.5s}
+@keyframes colIn{to{opacity:1;transform:translateX(0)}}
+.col .ctop{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.col.r .ctop{color:var(--gold)}
+.col .ch{font-family:"IBM Plex Sans Arabic",sans-serif;font-weight:700;font-size:30px;margin:6px 0 18px;color:var(--ink)}
+.col.r .ch{color:#FFF}
+.kpi{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--hair)}
+.col.r .kpi{border-color:rgba(255,255,255,.12)}
+.kpi:last-child{border-bottom:none}
+.kpi .k{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:18px;color:var(--ink-soft)}
+.col.r .kpi .k{color:#CDE0D4}
+.kpi .v{font-family:"Playfair Display",serif;font-style:italic;font-size:32px;font-weight:500;color:var(--ink);unicode-bidi:isolate;direction:ltr}
+.col.r .kpi .v{color:#FFF}
+.col.r .kpi .v.up{color:var(--gold)}
 
-  /* ---------- facts grid ---------- */
-  .facts {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border-top: 1.5px solid var(--ink);
-  }
-  .fact {
-    padding: 34px 26px 30px;
-    border-bottom: 1.5px solid var(--ink);
-    border-right: 1px solid var(--line);
-    position: relative;
-  }
-  .fact:nth-child(4n) { border-right: none; }
-  .fact .k {
-    font-family: "Space Mono", monospace;
-    font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
-    color: var(--terra);
-  }
-  .fact .v {
-    font-family: "Fraunces", serif;
-    font-size: 40px; line-height: 1.05;
-    margin-top: 16px;
-  }
-  .fact .n { font-size: 14px; color: var(--ink-soft); margin-top: 8px; font-style: italic; }
-  @media (max-width: 900px) { .facts { grid-template-columns: repeat(2,1fr); } .fact:nth-child(4n){border-right:1px solid var(--line)} .fact:nth-child(2n){border-right:none} }
-  @media (max-width: 520px) { .facts { grid-template-columns: 1fr; } .fact{border-right:none!important} }
+.heroStat{background:#FFF;border:1px solid var(--hair);border-radius:22px;padding:52px 52px 46px;box-shadow:0 24px 70px rgba(0,0,0,.08);opacity:0;transform:translateY(28px);position:relative;overflow:hidden}
+.is-active .heroStat{animation:rise .9s .35s cubic-bezier(.2,.8,.2,1) forwards}
+.heroStat::after{content:"";position:absolute;top:-40%;left:-20%;width:60%;height:200%;background:radial-gradient(ellipse,rgba(0,108,53,.06),transparent 60%);transform:rotate(20deg);pointer-events:none}
+.pulsePill{display:inline-flex;align-items:center;gap:12px;background:var(--brand-soft);color:var(--brand-deep);font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.24em;text-transform:uppercase;padding:10px 18px;border-radius:999px;font-weight:600}
+.pulsePill .pdot{width:10px;height:10px;border-radius:50%;background:var(--brand);animation:pdot 2.4s ease-in-out infinite}
+@keyframes pdot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.5}}
+.heroBigNum{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:220px;line-height:.9;letter-spacing:-.04em;color:var(--ink);margin-top:18px;direction:ltr;unicode-bidi:isolate}
+.heroBigNum .tilde{font-style:normal;color:var(--brand)}
+.heroCap{font-family:"JetBrains Mono",monospace;font-size:18px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.miniMetrics{margin-top:34px;display:flex;gap:36px;padding-top:24px;border-top:1px solid var(--hair)}
+.mm{display:flex;flex-direction:column}
+.mm .mmlab{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:14px;color:var(--muted);letter-spacing:.04em}
+.mm .mmval{font-family:"Playfair Display",serif;font-style:italic;font-size:42px;font-weight:500;color:var(--ink);margin-top:4px;direction:ltr;unicode-bidi:isolate;display:flex;align-items:baseline;gap:8px}
+.mm .mmunit{font-family:"JetBrains Mono",monospace;font-style:normal;font-size:12px;color:var(--muted);font-weight:400;letter-spacing:.1em;text-transform:uppercase}
 
-  /* ---------- geography split ---------- */
-  .split { display: grid; grid-template-columns: 1.05fr .95fr; gap: 70px; align-items: center; }
-  @media (max-width: 860px) { .split { grid-template-columns: 1fr; gap: 44px; } }
-  .geo-list { margin-top: 30px; }
-  .geo-list .row {
-    display: flex; justify-content: space-between; gap: 20px;
-    padding: 20px 0; border-bottom: 1px solid var(--line);
-  }
-  .geo-list .row:first-child { border-top: 1px solid var(--line); }
-  .geo-list .row .label { font-family: "Fraunces", serif; font-size: 24px; }
-  .geo-list .row .desc { font-size: 16px; color: var(--ink-soft); text-align: right; max-width: 30ch; }
+.loopStage{position:relative;width:100%;height:700px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring{position:relative;width:500px;height:500px}
+.ring svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ring .ringbg{fill:none;stroke:#EFEAE0;stroke-width:2}
+.ring .ringfg{fill:none;stroke:var(--brand);stroke-width:3;stroke-linecap:round;stroke-dasharray:1885;stroke-dashoffset:1885;transform:rotate(-90deg);transform-origin:center}
+.is-active .ring .ringfg{animation:drawRing 3.5s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes drawRing{to{stroke-dashoffset:0}}
+.node{position:absolute;width:58px;height:58px;border-radius:50%;background:#FFF;border:2px solid var(--hair);display:flex;align-items:center;justify-content:center;font-family:"JetBrains Mono",monospace;font-weight:600;font-size:16px;color:var(--ink);transform:translate(-50%,-50%);transition:all .3s ease;box-shadow:0 8px 20px rgba(0,0,0,.06)}
+.node .nlabel{position:absolute;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:17px;color:var(--ink);font-weight:600;white-space:nowrap;top:68px;left:50%;transform:translateX(-50%);text-align:center}
+.node .nlabel .ar{display:block;font-size:13px;color:var(--muted);font-weight:400;margin-top:2px}
+.node.active{background:var(--brand);color:#fff;border-color:var(--brand);box-shadow:0 0 0 6px rgba(0,108,53,.15),0 14px 30px rgba(0,108,53,.35);transform:translate(-50%,-50%) scale(1.18)}
+.node.active .nlabel{color:var(--brand-deep);font-weight:700}
+.traveler{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 6px rgba(201,162,74,.25),0 0 20px rgba(201,162,74,.6);transform:translate(-50%,-50%);pointer-events:none;z-index:5}
+.phasePills{display:flex;gap:14px;margin-top:86px}
+.phasePill{font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);background:#FFF;border:1px solid var(--hair);padding:14px 26px;border-radius:999px;transition:all .35s ease}
+.phasePill.on{background:var(--brand-deep);color:#FFF;border-color:var(--brand-deep);box-shadow:0 12px 28px rgba(2,74,38,.25)}
+.loopHeadline{line-height:1.24}
 
-  .map-card {
-    background: var(--green);
-    border-radius: 4px;
-    padding: 40px;
-    color: var(--paper);
-    position: relative;
-    overflow: hidden;
-    box-shadow: 18px 22px 0 rgba(33,28,18,.14);
-  }
-  .map-card svg { width: 100%; height: auto; display: block; }
-  .map-card .cap {
-    font-family: "Space Mono", monospace; font-size: 11px;
-    letter-spacing: .18em; text-transform: uppercase;
-    color: rgba(233,225,207,.65); margin-top: 22px;
-  }
+.gatestage{padding-top:20px;display:flex;flex-direction:column;gap:14px}
+.gateRow{display:grid;grid-template-columns:60px 1fr auto;gap:24px;align-items:center;padding:18px 24px;border-bottom:1px solid var(--hair);opacity:0;transform:translateY(14px)}
+.is-active .gateRow{animation:rise .5s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .gateRow:nth-child(1){animation-delay:.25s}
+.is-active .gateRow:nth-child(2){animation-delay:.40s}
+.is-active .gateRow:nth-child(3){animation-delay:.55s}
+.is-active .gateRow:nth-child(4){animation-delay:.70s}
+.is-active .gateRow:nth-child(5){animation-delay:.85s}
+.is-active .gateRow:nth-child(6){animation-delay:1.00s}
+.is-active .gateRow:nth-child(7){animation-delay:1.15s}
+.gateRow .gn{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:38px;color:var(--brand-deep)}
+.gateRow .gname{font-family:"Inter",sans-serif;font-weight:700;font-size:22px;color:var(--ink);letter-spacing:-.01em}
+.gateRow .gsub{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted);letter-spacing:.06em;margin-top:2px}
+.checkbox{width:42px;height:42px;border:2px solid var(--hair);border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative}
+.checkbox svg{width:24px;height:24px}
+.checkbox svg path{fill:none;stroke:var(--brand);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:30;stroke-dashoffset:30}
+.is-active .gateRow:nth-child(1) .checkbox{animation:checkBorder .2s .60s forwards}
+.is-active .gateRow:nth-child(2) .checkbox{animation:checkBorder .2s .80s forwards}
+.is-active .gateRow:nth-child(3) .checkbox{animation:checkBorder .2s 1.00s forwards}
+.is-active .gateRow:nth-child(4) .checkbox{animation:checkBorder .2s 1.20s forwards}
+.is-active .gateRow:nth-child(5) .checkbox{animation:checkBorder .2s 1.40s forwards}
+.is-active .gateRow:nth-child(6) .checkbox{animation:checkBorder .2s 1.60s forwards}
+.is-active .gateRow:nth-child(7) .checkbox{animation:checkBorder .2s 1.80s forwards}
+@keyframes checkBorder{to{border-color:var(--brand);background:var(--brand-soft)}}
+.is-active .gateRow:nth-child(1) .checkbox svg path{animation:drawCheck .4s .80s forwards}
+.is-active .gateRow:nth-child(2) .checkbox svg path{animation:drawCheck .4s 1.00s forwards}
+.is-active .gateRow:nth-child(3) .checkbox svg path{animation:drawCheck .4s 1.20s forwards}
+.is-active .gateRow:nth-child(4) .checkbox svg path{animation:drawCheck .4s 1.40s forwards}
+.is-active .gateRow:nth-child(5) .checkbox svg path{animation:drawCheck .4s 1.60s forwards}
+.is-active .gateRow:nth-child(6) .checkbox svg path{animation:drawCheck .4s 1.80s forwards}
+.is-active .gateRow:nth-child(7) .checkbox svg path{animation:drawCheck .4s 2.00s forwards}
+@keyframes drawCheck{to{stroke-dashoffset:0}}
 
-  /* ---------- timeline ---------- */
-  .timeline { border-top: 1.5px solid var(--ink); }
-  .tl-item {
-    display: grid; grid-template-columns: 200px 1fr;
-    gap: 40px; padding: 38px 0;
-    border-bottom: 1px solid var(--line);
-    transition: background .4s;
-  }
-  .tl-item:hover { background: var(--paper-2); }
-  .tl-year {
-    font-family: "Fraunces", serif; font-size: 56px; font-weight: 300;
-    color: var(--green); line-height: 1;
-  }
-  .tl-body h3 { font-size: 27px; margin-bottom: 8px; }
-  .tl-body p { color: var(--ink-soft); font-size: 17px; max-width: 64ch; }
-  @media (max-width: 640px) { .tl-item { grid-template-columns: 1fr; gap: 10px; } .tl-year{font-size:42px} }
+.compareBars{margin-top:18px;display:flex;flex-direction:column;gap:14px}
+.cbRow{display:flex;flex-direction:column;gap:8px}
+.cbLab{display:flex;justify-content:space-between;align-items:baseline;font-family:"IBM Plex Sans Arabic",sans-serif}
+.cbLab .nm{font-size:18px;color:var(--ink);font-weight:600}
+.cbLab .dur{font-family:"Playfair Display",serif;font-style:italic;font-size:26px;color:var(--ink);font-weight:500;direction:ltr;unicode-bidi:isolate}
+.cbBar{height:38px;background:#F2EFE8;border-radius:10px;overflow:hidden;position:relative}
+.cbFill{height:100%;transform:scaleX(0);transform-origin:right;border-radius:10px}
+.cbFill.red{background:repeating-linear-gradient(135deg,var(--crit) 0 16px,#a8341f 16px 32px)}
+.cbFill.green{background:linear-gradient(90deg,var(--brand),#04A24F)}
+.is-active .cbFill{transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.is-active .cbRow:nth-child(1) .cbFill{transform:scaleX(1);transition-delay:.3s}
+.is-active .cbRow:nth-child(2) .cbFill{transform:scaleX(1);transition-delay:.5s}
+.is-active .cbRow:nth-child(3) .cbFill{transform:scaleX(.035);transition-delay:1.0s}
+.callout{margin-top:24px;background:var(--brand-deep);color:#FFF;border-radius:18px;padding:18px 36px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 20px 50px rgba(2,74,38,.25);opacity:0;transform:translateY(20px)}
+.is-active .callout{animation:rise .8s 1.5s cubic-bezier(.2,.8,.2,1) forwards}
+.callout .bigx{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:88px;line-height:.9;color:#FFD56B;letter-spacing:-.04em;direction:ltr;unicode-bidi:isolate}
+.callout .ctext{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:24px;font-weight:600;max-width:380px;text-align:left}
 
-  /* ---------- economy ---------- */
-  .econ-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--ink); border: 1.5px solid var(--ink); }
-  .econ-cell { background: var(--paper); padding: 38px 30px; }
-  .econ-cell.dark { background: var(--ink); color: var(--paper); }
-  .econ-cell.green { background: var(--green); color: var(--paper); }
-  .econ-cell .big { font-family: "Fraunces", serif; font-size: 64px; line-height: 1; font-weight: 300; }
-  .econ-cell .lab { font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; margin-top: 14px; opacity: .8; }
-  .econ-cell p { font-size: 16px; margin-top: 14px; }
-  .econ-cell.dark p, .econ-cell.green p { color: rgba(233,225,207,.8); }
-  @media (max-width: 760px) { .econ-grid { grid-template-columns: 1fr; } }
+.proofGrid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.proofGrid .statcell{min-height:200px}
+.caseGrid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.casecell{background:#FFF;border:1px solid var(--hair);border-radius:18px;padding:28px 30px;min-height:218px;box-shadow:0 12px 30px rgba(0,0,0,.04);opacity:0;transform:translateY(24px)}
+.is-active .casecell{animation:rise .55s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .casecell:nth-child(1){animation-delay:.35s}
+.is-active .casecell:nth-child(2){animation-delay:.48s}
+.is-active .casecell:nth-child(3){animation-delay:.61s}
+.is-active .casecell:nth-child(4){animation-delay:.74s}
+.casecell .source{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--brand);direction:ltr;unicode-bidi:isolate}
+.casecell .caseTitle{margin-top:12px;font-family:"Inter",sans-serif;font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.03em;direction:ltr;unicode-bidi:isolate}
+.casecell .caseText{margin-top:12px;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:17px;line-height:1.55;color:var(--ink-soft)}
+.progressWrap{margin-top:34px;background:#FFF;border:1px solid var(--hair);border-radius:18px;padding:30px 32px;opacity:0;transform:translateY(20px)}
+.is-active .progressWrap{animation:rise .8s 1.2s cubic-bezier(.2,.8,.2,1) forwards}
+.progressBar{height:18px;background:#F2EFE8;border-radius:999px;overflow:hidden;margin:18px 0}
+.progressFill{height:100%;background:linear-gradient(90deg,var(--brand),var(--gold));border-radius:999px;width:0%;transition:width 1.6s cubic-bezier(.2,.7,.2,1)}
+.is-active .progressFill{width:13.5%;transition-delay:1.4s}
+.progressMeta{display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.proofUS{margin-top:22px;padding:18px 22px;background:var(--brand-soft);border-radius:12px;font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--brand-deep);letter-spacing:.04em;line-height:1.7;border:1px solid #C8DCCE}
+.proofUS .subline{color:var(--ink-soft);font-size:13px}
 
-  /* ---------- vision cards ---------- */
-  .vision-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; }
-  @media (max-width: 760px) { .vision-grid { grid-template-columns: 1fr; } }
-  .v-card {
-    border: 1.5px solid var(--ink);
-    border-radius: 4px;
-    padding: 36px 34px 40px;
-    background: var(--paper);
-    position: relative;
-    transition: transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s;
-  }
-  .v-card:hover { transform: translateY(-8px); box-shadow: 10px 14px 0 var(--green); }
-  .v-card .num {
-    font-family: "Space Mono", monospace; font-size: 12px;
-    color: var(--terra); letter-spacing: .15em;
-  }
-  .v-card h3 { font-size: 34px; margin: 14px 0 12px; }
-  .v-card h3 em { font-style: italic; color: var(--green); }
-  .v-card p { font-size: 16px; color: var(--ink-soft); }
+.gloss{margin-top:14px;display:flex;flex-direction:column}
+.grow{display:grid;grid-template-columns:320px 1fr;gap:36px;padding:13px 8px;border-bottom:1px solid var(--hair);opacity:0;transform:translateY(14px)}
+.is-active .grow{animation:rise .5s cubic-bezier(.2,.8,.2,1) forwards}
+.is-active .grow:nth-child(1){animation-delay:.20s}
+.is-active .grow:nth-child(2){animation-delay:.28s}
+.is-active .grow:nth-child(3){animation-delay:.36s}
+.is-active .grow:nth-child(4){animation-delay:.44s}
+.is-active .grow:nth-child(5){animation-delay:.52s}
+.is-active .grow:nth-child(6){animation-delay:.60s}
+.is-active .grow:nth-child(7){animation-delay:.68s}
+.is-active .grow:nth-child(8){animation-delay:.76s}
+.grow .gterm{font-family:"Inter",sans-serif;font-weight:700;font-size:21px;color:var(--ink);letter-spacing:-.01em;direction:ltr;unicode-bidi:isolate;display:flex;align-items:baseline;gap:14px}
+.grow .gterm .ar{font-family:"IBM Plex Sans Arabic",sans-serif;font-weight:500;font-size:14px;color:var(--muted);direction:rtl}
+.grow .def{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:18px;color:var(--ink-soft);line-height:1.5}
+.grow.hl{background:var(--brand-soft);border-radius:14px;padding:18px 22px;border-bottom:1px solid var(--brand-soft);margin-top:4px}
+.grow.hl .gterm{font-size:24px;color:var(--brand-deep)}
+.grow.hl .def{color:var(--brand-deep);font-weight:600;font-size:19px}
 
-  /* ---------- culture strip ---------- */
-  .culture { background: var(--ink); color: var(--paper); }
-  .culture .section-head h2 em { color: var(--ochre); }
-  .culture .lead { color: rgba(233,225,207,.72); }
-  .culture .eyebrow { color: var(--ochre); }
-  .culture .eyebrow::after { background: rgba(233,225,207,.25); }
-  .pillars { display: grid; grid-template-columns: repeat(3,1fr); gap: 50px; margin-top: 20px; }
-  @media (max-width: 760px) { .pillars { grid-template-columns: 1fr; gap: 36px; } }
-  .pillar { border-top: 1.5px solid var(--ochre); padding-top: 22px; }
-  .pillar h3 { font-size: 28px; margin-bottom: 10px; }
-  .pillar h3 em { font-style: italic; color: var(--ochre); }
-  .pillar p { color: rgba(233,225,207,.7); font-size: 16px; }
-
-  /* ---------- cities ---------- */
-  .cities { display: grid; grid-template-columns: repeat(5,1fr); border: 1.5px solid var(--ink); }
-  .city {
-    padding: 30px 22px 26px;
-    border-right: 1px solid var(--line);
-    transition: background .35s, color .35s;
-    cursor: default;
-  }
-  .city:last-child { border-right: none; }
-  .city:hover { background: var(--green); color: var(--paper); }
-  .city .rank { font-family: "Space Mono", monospace; font-size: 11px; color: var(--terra); }
-  .city:hover .rank { color: var(--ochre); }
-  .city h3 { font-size: 30px; margin: 12px 0 6px; }
-  .city p { font-size: 14px; color: var(--ink-soft); }
-  .city:hover p { color: rgba(233,225,207,.8); }
-  @media (max-width: 900px) { .cities { grid-template-columns: repeat(2,1fr); } .city{border-bottom:1px solid var(--line)} }
-  @media (max-width: 480px) { .cities { grid-template-columns: 1fr; } }
-
-  /* ---------- footer ---------- */
-  footer {
-    background: var(--green);
-    color: var(--paper);
-    padding: 90px 0 40px;
-  }
-  footer h2 { font-size: clamp(40px, 7vw, 96px); font-weight: 300; }
-  footer h2 em { font-style: italic; color: var(--ochre); }
-  .foot-row {
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px;
-    margin-top: 60px; padding-top: 28px;
-    border-top: 1px solid rgba(233,225,207,.3);
-    font-family: "Space Mono", monospace; font-size: 11px;
-    letter-spacing: .14em; text-transform: uppercase;
-    color: rgba(233,225,207,.7);
-  }
+.notes{position:fixed;left:0;right:0;bottom:0;background:rgba(10,10,10,.95);color:#E8E5DC;font-family:"IBM Plex Sans Arabic",sans-serif;padding:20px 36px;font-size:18px;line-height:1.7;transform:translateY(100%);transition:transform .3s ease;z-index:50;max-height:35vh;overflow-y:auto;direction:rtl;border-top:2px solid var(--brand)}
+.notes.on{transform:translateY(0)}
+.notes .nh{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px}
+.helpBar{position:fixed;top:14px;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:10px;color:rgba(120,120,120,.55);letter-spacing:.18em;z-index:60;padding:5px 14px;border-radius:999px;background:rgba(255,255,255,.6);border:1px solid rgba(0,0,0,.06);backdrop-filter:blur(8px);opacity:.5;transition:opacity .3s ease}
+.helpBar:hover{opacity:1}
+body[data-bg="dark"] .helpBar{background:rgba(0,0,0,.35);color:rgba(255,255,255,.55);border-color:rgba(255,255,255,.1)}
+.progressDots{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:60;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.06);backdrop-filter:blur(6px)}
+body[data-bg="dark"] .progressDots{background:rgba(255,255,255,.08)}
+.pd{width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,.25);transition:all .3s ease;cursor:pointer}
+body[data-bg="dark"] .pd{background:rgba(255,255,255,.3)}
+.pd.on{background:var(--brand);width:20px;border-radius:6px}
+body[data-bg="dark"] .pd.on{background:var(--gold)}
 </style>
 </head>
 <body>
+<div class="helpBar">← → SPACE · HOME/END · N=NOTES</div>
+<div class="stage"><div class="deck" id="deck">
 
-<div class="topbar">
-  <div>KSA · ALMANAC</div>
-  <nav>
-    <a href="#facts">Facts</a>
-    <a href="#land">Land</a>
-    <a href="#history">History</a>
-    <a href="#economy">Economy</a>
-    <a href="#vision">Vision 2030</a>
-  </nav>
-  <div>EST. 1932</div>
+<section class="slide" data-slide="1" data-no-hud="true" data-notes="شريحة البداية. نعرّف باسم النظام ودوره: الطيّار الآلي للمركز الوطني لنظم الموارد الحكومية. الاسم، السنة، والمعنى باختصار واضح.">
+  <div class="cover">
+    <div class="bgwrap">
+      <div class="skyline">
+        <svg viewBox="0 0 1920 700" preserveAspectRatio="none">
+          <g fill="#0E1115" opacity=".06">
+            <rect x="0" y="450" width="120" height="250"/>
+            <rect x="130" y="380" width="80" height="320"/>
+            <rect x="220" y="420" width="110" height="280"/>
+            <rect x="340" y="340" width="70" height="360"/>
+            <rect x="420" y="400" width="100" height="300"/>
+            <rect x="530" y="360" width="140" height="340"/>
+            <rect x="680" y="320" width="60" height="380"/>
+            <rect x="750" y="280" width="120" height="420"/>
+            <rect x="880" y="350" width="90" height="350"/>
+            <rect x="980" y="300" width="110" height="400"/>
+            <rect x="1100" y="380" width="80" height="320"/>
+            <rect x="1190" y="340" width="100" height="360"/>
+            <rect x="1300" y="290" width="130" height="410"/>
+            <rect x="1440" y="370" width="90" height="330"/>
+            <rect x="1540" y="320" width="110" height="380"/>
+            <rect x="1660" y="400" width="100" height="300"/>
+            <rect x="1770" y="350" width="150" height="350"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <img class="coverlogo" src="assets/ncgr-logo-white.png" alt="NCGR" onerror="this.src='assets/ncgr-logo.png';this.style.filter='brightness(0) invert(1)'"/>
+    <div class="panel">
+      <div class="title-block">
+        <h1>NCGR<span class="it">Autopilot</span></h1>
+      </div>
+      <p class="sub">الطيّار الآلي للمركز الوطني لنظم الموارد الحكومية — نظام يسلّم مشاريع البرمجيات بخطوات واضحة ومتحقَّقة.</p>
+    </div>
+    <div class="meta">ENGINEERING · INITIATIVE · 2026</div>
+    <div class="urlc">NCGR.GOV.SA / AUTOPILOT</div>
+  </div>
+</section>
+
+<section class="slide dark" data-slide="2" data-no-hud="true" data-notes="فاصل القسم الأول. نوضح فكرة الذكاء العامل: الفرق بين نموذج يفكر، وعميل ينفّذ ويتحمّل خطوة التسليم.">
+  <div class="divider">
+    <div class="grain"></div>
+    <div class="fold"></div>
+    <img class="dlogo" src="assets/ncgr-logo-white.png" alt="NCGR" onerror="this.src='assets/ncgr-logo.png';this.style.filter='brightness(0) invert(1)'"/>
+    <div class="top-en">01 / 05 · Introduction<span class="ar">الذكاء اللي يشتغل</span></div>
+    <div class="top-desc">قبل ندخل في الحل، نثبت المفاهيم. وش دور النموذج؟ ووش دور العميل الذكي؟</div>
+    <div class="arabic-huge">البداية</div>
+    <div class="corner-mark">section · one</div>
+  </div>
+</section>
+
+<section class="slide" data-slide="3" data-eyebrow="— 2.1 · المفهوم الأول" data-notes="نوضح أن النموذج اللغوي الكبير محرّك تفكير: يحلل، يصيغ، ويقترح. لكنه لحاله ما ينفّذ: ما يفتح ملف، ما يكتب على القرص، ولا يشغّل اختبار.">
+  <div class="content">
+    <div class="left">
+      <div class="kicker">3 / 17 — concept 01</div>
+      <h2 class="headline reveal">وش هو <span class="latin accent">LLM</span>؟ <br/><span class="accent">محرّك تفكير لغوي.</span></h2>
+      <p class="lede reveal d2">النموذج اللغوي الكبير يفهم النص، يحلله، ويصيغ الإجابات والمسودات والاقتراحات.<br/>لكنّه لحاله <strong>ما ينفّذ</strong>. ما يفتح ملف، ولا يكتب على القرص، ولا يشغّل اختبار.</p>
+      <div class="pull reveal d3">“LLM = reasoning engine · not a delivery system.”</div>
+    </div>
+    <div class="right">
+      <div class="llm-stage">
+        <div class="halo h2"></div>
+        <div class="halo h1"></div>
+        <div class="llm-core">LLM</div>
+        <span class="token">analyze()</span>
+        <span class="token">summarize</span>
+        <span class="token">suggest</span>
+        <span class="token">explain</span>
+        <span class="token">draft</span>
+        <span class="token">reason</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="4" data-eyebrow="— 2.2 · المفهوم الثاني" data-notes="العميل الذكي يعني نموذج ومعه سياق وأدوات ومهارات وبوابات تحقق. الفرق واضح: النموذج يقول أتوقع. العميل يقول قرأت، عدلت، شغلت الاختبار، وهذا الدليل.">
+  <div class="content">
+    <div class="left">
+      <div class="kicker">4 / 17 — concept 02</div>
+      <h2 class="headline reveal">وش هو <span class="latin accent">AI Agent</span>؟<br/><span class="accent">طبقة تشغيل فوق الـ LLM.</span></h2>
+      <p class="lede reveal d2">العميل الذكي = نموذج لغوي <strong>+ سياق + أدوات + مهارات + بوّابات تحقّق</strong>.<br/>النموذج يقول: «أتوقع…».<br/>العميل يقول: «قرأت الملف، عدّلت الكود، شغّلت الاختبار — وهذا الدليل».</p>
+    </div>
+    <div class="right">
+      <div class="layers">
+        <div class="layer"><div class="num">01</div><div class="name">LLM</div><div class="ar">العقل اللي يفكر</div></div>
+        <div class="layer"><div class="num">02</div><div class="name">Context · Memory</div><div class="ar">السياق والذاكرة</div></div>
+        <div class="layer"><div class="num">03</div><div class="name">Skills · Playbooks</div><div class="ar">مهارات جاهزة للتنفيذ</div></div>
+        <div class="layer"><div class="num">04</div><div class="name">Tools · CLI · MCP</div><div class="ar">أدوات تشغيل فعلية</div></div>
+        <div class="layer"><div class="num">05</div><div class="name">Verification Gates</div><div class="ar">بوّابات تثبت الجودة</div></div>
+        <div class="result-chip"><span class="dot"></span>AI AGENT · EXECUTION</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="5" data-eyebrow="— 2.3 · بنية العميل" data-notes="سبعة مكونات إذا اشتغلت مع بعض تصنع عميل منتج: النموذج، الإطار التشغيلي، المهارات، سطر الأوامر، بروتوكول MCP، وبوابات التحقق. العميل في الوسط يربطها ويشغلها.">
+  <div class="content anatomyContent">
+    <div class="anatomyCopy">
+      <div class="kicker">5 / 17 — anatomy</div>
+      <h2 class="headline reveal">سبعة مكونات تصنع <span class="accent">عميل ينجز</span>.</h2>
+      <p class="lede reveal d2">كل مكون لحاله ما يكفي، والترتيب بدون تحقق ما يضمن النتيجة. القيمة تظهر يوم تشتغل كلها مع بعض.</p>
+    </div>
+    <div class="hexstage">
+      <div class="hex" style="top:0;left:calc(50% - 200px)"><div class="h-num">01</div><div class="h-name">LLM</div><div class="h-ar">عقل التفكير</div></div>
+      <div class="hex" style="top:0;left:calc(50% + 20px)"><div class="h-num">02</div><div class="h-name">Harness</div><div class="h-ar">إطار التشغيل</div></div>
+      <div class="hex" style="top:155px;left:calc(50% - 410px)"><div class="h-num">03</div><div class="h-name">Skills</div><div class="h-ar">مهارات جاهزة</div></div>
+      <div class="hex center" style="top:140px;left:calc(50% - 105px)"><div class="h-num">00</div><div class="h-name">Agent</div><div class="h-ar">العميل</div></div>
+      <div class="hex" style="top:155px;left:calc(50% + 230px)"><div class="h-num">04</div><div class="h-name">CLI</div><div class="h-ar">سطر الأوامر</div></div>
+      <div class="hex" style="top:310px;left:calc(50% - 200px)"><div class="h-num">05</div><div class="h-name">MCP</div><div class="h-ar">ربط الأدوات</div></div>
+      <div class="hex" style="top:310px;left:calc(50% + 20px)"><div class="h-num">06</div><div class="h-name">Verify</div><div class="h-ar">إثبات الجودة</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="6" data-eyebrow="— 2.4 · أنماط التشغيل" data-notes="عندنا طريقتين لتشغيل العميل: حوار تفاعلي يحتاج إنسان في كل خطوة، أو تنفيذ ذاتي يمشي بدون توقف. الثاني هو اللي يعطي قابلية التوسع.">
+  <div class="content full">
+    <div class="kicker">6 / 17 — execution modes</div>
+    <h2 class="headline reveal" style="max-width:none"><span class="latin">Interactive vs Non-Interactive</span> · <span class="accent">طريقتان للتشغيل</span>.</h2>
+    <div class="cards2">
+      <div class="card">
+        <div class="ctit">INTERACTIVE</div>
+        <div class="cwave">حوار خطوة بخطوة</div>
+        <div class="chat">
+          <div class="bubble h">اقرأ ملف القصة BE-0001</div>
+          <div class="bubble a">تم. أبدأ بالاختبارات؟</div>
+          <div class="bubble h">نعم، ابدأ.</div>
+          <div class="bubble a">كتبت أول اختبار. أكمل؟ <span class="cursor"></span></div>
+        </div>
+        <div class="tags">
+          <span class="tag">human-in-loop</span>
+          <span class="tag">slow</span>
+          <span class="tag">exploration</span>
+        </div>
+      </div>
+      <div class="card r">
+        <div class="ctit">NON-INTERACTIVE</div>
+        <div class="cwave">تنفيذ يمشي لحاله</div>
+        <div class="term">
+          <div class="line"><span class="prompt">$</span> claude -p --dangerously-skip-permissions</div>
+          <div class="line"><span class="check">✓</span> read PRD · BE-0001</div>
+          <div class="line"><span class="check">✓</span> wrote 3 files · 142 lines</div>
+          <div class="line"><span class="check">✓</span> ran tests · 18 passed</div>
+          <div class="line"><span class="check">✓</span> committed · 7-gates green</div>
+          <div class="line"><span class="check">✓</span> next story → BE-0002</div>
+        </div>
+        <div class="tags">
+          <span class="tag">autonomous</span>
+          <span class="tag">scalable</span>
+          <span class="tag">production</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" data-slide="7" data-no-hud="true" data-notes="فاصل القسم الثاني. ننتقل من المفاهيم للمشكلة الفعلية: التنفيذ البشري اليدوي أبطأ، أقل كفاءة، ومعرّض للأخطاء إذا ما كان مربوطاً بتحقق قوي.">
+  <div class="divider">
+    <div class="grain"></div>
+    <div class="fold"></div>
+    <img class="dlogo" src="assets/ncgr-logo-white.png" alt="NCGR" onerror="this.src='assets/ncgr-logo.png';this.style.filter='brightness(0) invert(1)'"/>
+    <div class="top-en">02 / 05 · Problem Definition<span class="ar">فجوة الإنتاجية</span></div>
+    <div class="top-desc">التنفيذ اليدوي يعتمد على سرعة الإنسان وانضباطه. وإذا ما كان معه اختبارات وبوّابات تحقق قوية، تزيد الأخطاء وتطول دورة التسليم.</div>
+    <div class="arabic-huge">المشكلة</div>
+    <div class="corner-mark">section · two</div>
+  </div>
+</section>
+
+<section class="slide" data-slide="8" data-eyebrow="— 3.1 · فرق الوقت" data-notes="الحجة الأساسية: العميل الذكي أسرع لأنه يحوّل القصة إلى دورة تنفيذ مستمرة. التنفيذ اليدوي يأخذ قراءة وكتابة واختبار ومراجعة على مراحل، بينما NCGR Autopilot يضغط الدورة إلى نحو عشرين دقيقة للقصة.">
+  <div class="content">
+    <div class="left">
+      <div class="kicker">8 / 17 — time delta</div>
+      <h2 class="headline reveal">القصة نفسها:<br/><span class="accent">يوم ونصف أو عشرين دقيقة</span>.</h2>
+      <p class="lede reveal d2">في التنفيذ اليدوي، القصة تمر على قراءة، كتابة، اختبار، إصلاح، ومراجعة، وكل خطوة تعتمد على وقت الإنسان وتركيزه.</p>
+      <p class="lede reveal d3" style="margin-top:18px;font-size:21px;color:var(--muted)">NCGR Autopilot يضغط نفس الدورة إلى تنفيذ مستمر: يقرأ، يبني، يختبر، ويتحقق بدون توقف بين الخطوات.</p>
+    </div>
+    <div class="right timestage">
+      <div class="bigday"><span class="small">manual cycle</span>1.5d</div>
+      <div class="tbar">
+        <div class="tseg gray" style="flex:0.5">Read 0.5h</div>
+        <div class="tseg gray" style="flex:2">Code 2h</div>
+        <div class="tseg red" style="flex:1">CI 1h</div>
+        <div class="tseg gray" style="flex:0.5">Self-review 0.5h</div>
+        <div class="tseg red" style="flex:4">Wait peer review 4h</div>
+        <div class="tseg gray" style="flex:1">Fix 1h</div>
+        <div class="tseg gold" style="flex:1.5">Re-review 1.5h</div>
+        <div class="tseg gray" style="flex:0.5">Merge 0.5h</div>
+      </div>
+      <div class="tlegend">manual path · <span style="color:var(--brand)">autopilot target: ~20m</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="9" data-eyebrow="— 3.2 · فرق التكلفة" data-notes="بدل أرقام العيوب، نعرض الفرق التجاري المباشر: وقت أقل يعني تكلفة أقل لكل قصة. المقارنة هنا بالريال السعودي: التنفيذ اليدوي التقديري مقابل تكلفة قصة آلية مضغوطة بزمن أقل.">
+  <div class="content">
+    <div class="left">
+      <div class="kicker">9 / 17 — cost delta</div>
+      <h2 class="headline reveal">فرق السرعة يتحول<br/><span class="accent">إلى فرق تكلفة واضح</span>.</h2>
+      <p class="lede reveal d2">إذا القصة اليدوية تمتد إلى يوم ونصف، تكلفتها التشغيلية ترتفع. وإذا ضغطناها إلى نحو عشرين دقيقة مع تحقق آلي، تنخفض تكلفة القصة بشكل كبير.</p>
+    </div>
+    <div class="right">
+      <div class="statgrid">
+        <div class="statcell crit money">
+          <div class="lbl">زمن القصة اليدوي</div>
+          <div><div class="num">1.5d</div><div class="unit">manual cycle</div></div>
+        </div>
+        <div class="statcell crit money">
+          <div class="lbl">زمن الطيّار الآلي</div>
+          <div><div class="num">~20m</div><div class="unit">agent cycle</div></div>
+        </div>
+        <div class="statcell crit">
+          <div class="lbl">تكلفة القصة اليدوية</div>
+          <div><div class="num">SAR 2,250</div><div class="unit">per story</div></div>
+        </div>
+        <div class="statcell crit">
+          <div class="lbl">تكلفة القصة آلياً</div>
+          <div><div class="num">SAR 12</div><div class="unit">per story</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="10" data-eyebrow="— 3.3 · المقارنة" data-notes="المقارنة النهائية تركز على الوقت والتكلفة بالريال، لا على أرقام عيوب غير موثقة. NCGR Autopilot أسرع وأقل تكلفة، ومعه تحقق ثابت في كل قصة.">
+  <div class="content full">
+    <div class="kicker">10 / 17 — equation breaks</div>
+    <h2 class="headline reveal" style="max-width:none">مع العملاء الأذكياء،<br/><span class="accent">المعادلة القديمة ما تكفي</span>.</h2>
+    <div class="compare">
+      <div class="col">
+        <div class="ctop">Status Quo · Human team</div>
+        <div class="ch">الفريق البشري فقط</div>
+        <div class="kpi"><div class="k">Cycle / Story</div><div class="v">~1.5d</div></div>
+        <div class="kpi"><div class="k">Cost / Story</div><div class="v">SAR 2,250</div></div>
+        <div class="kpi"><div class="k">Stories / Day</div><div class="v">2–4</div></div>
+        <div class="kpi"><div class="k">Throughput</div><div class="v">محدود</div></div>
+        <div class="kpi"><div class="k">Verification</div><div class="v">يدوي</div></div>
+      </div>
+      <div class="col r">
+        <div class="ctop">NCGR Autopilot · Agentic</div>
+        <div class="ch">الطيّار الآلي</div>
+        <div class="kpi"><div class="k">Cycle / Story</div><div class="v up">~20m</div></div>
+        <div class="kpi"><div class="k">Cost / Story</div><div class="v up">SAR 12</div></div>
+        <div class="kpi"><div class="k">Stories / Day</div><div class="v up">~40</div></div>
+        <div class="kpi"><div class="k">Throughput</div><div class="v up">24 / 7</div></div>
+        <div class="kpi"><div class="k">Verification</div><div class="v up">آلي ثابت</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" data-slide="11" data-no-hud="true" data-notes="فاصل قسم الحل. ندخل في الطيار الآلي: وش هو، كيف يشتغل، وكيف نضمن جودة مخرجاته.">
+  <div class="divider">
+    <div class="grain"></div>
+    <div class="fold"></div>
+    <img class="dlogo" src="assets/ncgr-logo-white.png" alt="NCGR" onerror="this.src='assets/ncgr-logo.png';this.style.filter='brightness(0) invert(1)'"/>
+    <div class="top-en">03 / 05 · The Solution<span class="ar">الحل</span></div>
+    <div class="top-desc">من الفكرة للتنفيذ: نظام تشغيل يأخذ Sprint Backlog ويسلّم القصص وحدة وحدة.</div>
+    <div class="en-secondary"><b>Deep Dive to</b><em>NCGR Autopilot</em></div>
+    <div class="arabic-huge">الحل</div>
+    <div class="corner-mark">section · three</div>
+  </div>
+</section>
+
+<section class="slide" data-slide="12" data-eyebrow="— 4.1 · النظرة العامة" data-notes="الطيار الآلي نظام تشغيل كامل. يأخذ Sprint Backlog، ويسلّم القصص وحدة وحدة، وكل قصة تمر على سبع بوابات تحقق. المتوسط: عشرون دقيقة لكل قصة.">
+  <div class="content">
+    <div class="left">
+      <div class="kicker">12 / 17 — overview</div>
+      <h2 class="headline reveal"><span class="latin">NCGR Autopilot</span> —<br/><span class="accent">طيّار آلي للسبرنت</span>.</h2>
+      <p class="lede reveal d2">نظام تشغيل يأخذ <strong>Sprint Backlog</strong> ويسلّم القصص وحدة وحدة، وكل قصة تمر عبر <strong>سبع بوّابات تحقّق</strong>. السبرنت يخلص في ساعات، بمهندس واحد، بدل أربعة مهندسين × أسبوعين.</p>
+      <div class="pull reveal d3">Sprint كامل · مهندس واحد · ساعات معدودة.</div>
+    </div>
+    <div class="right">
+      <div class="heroStat">
+        <div class="pulsePill"><span class="pdot"></span>PRODUCTION GRADE</div>
+        <div class="heroBigNum"><span class="tilde">~</span>20</div>
+        <div class="heroCap">MIN / CYCLE</div>
+        <div class="miniMetrics">
+          <div class="mm"><div class="mmlab">قصص يومياً</div><div class="mmval">~40<span class="mmunit">stories/day</span></div></div>
+          <div class="mm"><div class="mmlab">تكلفة القصة</div><div class="mmval">SAR 12<span class="mmunit">per story</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="13" data-eyebrow="— 4.2 · الحلقة" data-notes="هذه هي الحلقة التشغيلية. تسع مراحل، وأربعة أطوار، وتتكرر بدون توقف. النقطة الذهبية تمثل العميل وهو ينتقل بين المراحل. مبنية فعلياً من سكربت ralph.sh.">
+  <div class="content">
+    <div class="left">
+      <div class="kicker">13 / 17 — the loop ★</div>
+      <h2 class="headline reveal loopHeadline">أربع مراحل<br/><span class="accent">تمشي بدون توقف</span>.</h2>
+      <p class="lede reveal d2">تسع خطوات واضحة، موزعة على أربعة أطوار. يبدأ العميل من ملف القصة، يجمع السياق، يخطط، يبني، يختبر، يتحقق، يصلح، يوثق، ثم ينتقل للي بعدها — تلقائياً.</p>
+      <p class="lede reveal d3" style="font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--brand-deep);background:var(--brand-soft);padding:14px 18px;border-radius:10px;margin-top:24px;letter-spacing:.04em">while true; do claude -p "$PROMPT"; done <span style="color:var(--muted)"># ralph.sh</span></p>
+    </div>
+    <div class="right" style="display:flex;flex-direction:column;align-items:center">
+      <div class="loopStage">
+        <div class="ring" id="loopRing">
+          <svg viewBox="0 0 680 680">
+            <circle class="ringbg" cx="340" cy="340" r="300"/>
+            <circle class="ringfg" cx="340" cy="340" r="300"/>
+          </svg>
+        </div>
+        <div class="phasePills" id="phasePills">
+          <div class="phasePill" data-phase="read">Read</div>
+          <div class="phasePill" data-phase="build">Build</div>
+          <div class="phasePill" data-phase="verify">Verify</div>
+          <div class="phasePill" data-phase="record">Record</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="14" data-eyebrow="— 4.3 · بوّابات التحقّق" data-notes="سبع بوابات ما فيها تجاوز. كل قصة لازم تعبرها قبل تعتبر مكتملة. هنا الفرق بين كاتب كود وعميل إنتاجي موثوق.">
+  <div class="content">
+    <div class="left">
+      <div class="kicker">14 / 17 — verification</div>
+      <h2 class="headline reveal">حلقة <span class="accent">محكومة</span> ·<br/><span class="accent">سبع بوّابات</span> · بدون تجاوز.</h2>
+      <p class="lede reveal d2">القصة ما تعتبر مكتملة إلا بعد ما تعدّي كل البوابات. هنا الفرق بين «كاتب كود» و«عميل إنتاجي» يقدر الفريق يعتمد عليه.</p>
+      <div class="pull reveal d3">No gate skipped · no story shipped.</div>
+    </div>
+    <div class="right gatestage">
+      <div class="gateRow">
+        <div class="gn">01</div>
+        <div><div class="gname">Automated Tests</div><div class="gsub">unit · integration · race · fuzz</div></div>
+        <div class="checkbox"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+      </div>
+      <div class="gateRow">
+        <div class="gn">02</div>
+        <div><div class="gname">Static Checks</div><div class="gsub">lint · vet · type · format</div></div>
+        <div class="checkbox"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+      </div>
+      <div class="gateRow">
+        <div class="gn">03</div>
+        <div><div class="gname">Security Audit</div><div class="gsub">secrets · vulnerabilities · govulncheck</div></div>
+        <div class="checkbox"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+      </div>
+      <div class="gateRow">
+        <div class="gn">04</div>
+        <div><div class="gname">Tenant Isolation</div><div class="gsub">cross-org · cross-project · cross-env</div></div>
+        <div class="checkbox"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+      </div>
+      <div class="gateRow">
+        <div class="gn">05</div>
+        <div><div class="gname">Audit Trail</div><div class="gsub">progress.txt · git log · request_id</div></div>
+        <div class="checkbox"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+      </div>
+      <div class="gateRow">
+        <div class="gn">06</div>
+        <div><div class="gname">Scoped Permissions</div><div class="gsub">actions · grants · break-glass</div></div>
+        <div class="checkbox"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+      </div>
+      <div class="gateRow">
+        <div class="gn">07</div>
+        <div><div class="gname">Human Override</div><div class="gsub">review evidence · sign-off</div></div>
+        <div class="checkbox"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="15" data-eyebrow="— 4.4 · المقياس" data-notes="المقارنة مبنية على Sprint متوسط من 20 قصة. إذا كان متوسط القصة في NCGR Autopilot نحو عشرين دقيقة، فالإجمالي يقارب 6.7 ساعات، ونقرّبها إلى حوالي سبع ساعات كسعة يوم عمل قصير.">
+  <div class="content full">
+    <div class="kicker">15 / 17 — speed</div>
+    <h2 class="headline reveal" style="max-width:none"><span class="latin">Sprint</span> كامل في <span class="accent">ساعات</span>،<br/>مو أسبوعين.</h2>
+    <p class="lede reveal d2" style="max-width:1120px;margin-top:20px;font-size:22px">على افتراض <strong>Sprint متوسط من 20 قصة</strong>، ومتوسط تنفيذ يقارب <strong>~20 دقيقة لكل قصة</strong>.</p>
+    <div class="compareBars">
+      <div class="cbRow">
+        <div class="cbLab"><div class="nm">Traditional · 4 مهندسين</div><div class="dur">2 weeks</div></div>
+        <div class="cbBar"><div class="cbFill red"></div></div>
+      </div>
+      <div class="cbRow">
+        <div class="cbLab"><div class="nm">Traditional · مهندس واحد</div><div class="dur">8 weeks</div></div>
+        <div class="cbBar"><div class="cbFill red"></div></div>
+      </div>
+      <div class="cbRow">
+        <div class="cbLab"><div class="nm">NCGR Autopilot · واحد + AI</div><div class="dur" style="color:var(--brand)">~7 hours</div></div>
+        <div class="cbBar"><div class="cbFill green"></div></div>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="bigx">×40</div>
+      <div class="ctext">أسرع، والجودة ثابتة.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="16" data-eyebrow="— 4.5 · الدليل" data-notes="الهدف من الديمو مو عرض شاشة فقط؛ الهدف إثبات أن NCGR Autopilot يقدر يأخذ نطاق حكومي معقد، يقسمه إلى قصص، يبني backend وfrontend، ويربط المصادقة والتحقق في حلقة تنفيذ واحدة.">
+  <div class="content">
+    <div class="left">
+      <div class="kicker">16 / 17 — demo proposal</div>
+      <h2 class="headline reveal">الدليل يكون بتجربة<br/><span class="accent">قريبة من واقع NCGR</span>.</h2>
+      <p class="lede reveal d2">نقترح Demo كامل بنمط <strong>NCGR Autopilot</strong>: نظام <span class="latin">.NET 8 + ABP + DDD</span> لإدارة العقارات الحكومية، مع تكامل <span class="latin">Keycloak</span> للمصادقة، وواجهة <span class="latin">Angular</span>.</p>
+      <div class="proofUS reveal d3">
+        <strong>Demo objective</strong> — من backlog إلى نظام يعمل · <span style="color:var(--brand)">backend + frontend + auth + gates</span>
+        <div class="subline">government real estate domain · one execution loop</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="caseGrid">
+        <div class="casecell">
+          <div class="source">Domain Model</div>
+          <div class="caseTitle">Real Estate</div>
+          <div class="caseText">العقارات الحكومية → المباني → الوحدات والأصول، مع علاقات واضحة وصلاحيات على كل مستوى.</div>
+        </div>
+        <div class="casecell">
+          <div class="source">Backend</div>
+          <div class="caseTitle">.NET 8 · ABP</div>
+          <div class="caseText">تطبيق مبني بـ DDD وEF Core، مع APIs، طبقات Domain/Application، واختبارات تحقق.</div>
+        </div>
+        <div class="casecell">
+          <div class="source">Identity</div>
+          <div class="caseTitle">Keycloak SSO</div>
+          <div class="caseText">مصادقة موحدة، أدوار وصلاحيات، وربط الوصول للعقارات الحكومية عبر Keycloak.</div>
+        </div>
+        <div class="casecell">
+          <div class="source">Frontend</div>
+          <div class="caseTitle">Angular Portal</div>
+          <div class="caseText">واجهة لإدارة العقارات والمباني، مربوطة بالـ APIs والصلاحيات وتجربة استخدام واضحة.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide="17" data-eyebrow="— 5.1 · القاموس" data-notes="مرجع سريع للمصطلحات. الصف الأخير، NCGR Autopilot، هو محور العرض ونثبته هنا بصرياً.">
+  <div class="content full">
+    <div class="kicker">17 / 17 — reference</div>
+    <h2 class="headline reveal" style="max-width:none">قاموس <span class="accent">المفاهيم</span>.</h2>
+    <div class="gloss">
+      <div class="grow">
+        <div class="gterm">LLM <span class="ar">نموذج لغوي كبير</span></div>
+        <div class="def">محرّك تفكير. ما ينفّذ لحاله؛ ينتج نص، يحلل، يقترح، ويصيغ.</div>
+      </div>
+      <div class="grow">
+        <div class="gterm">AI Agent <span class="ar">عميل ذكي</span></div>
+        <div class="def">LLM + سياق + أدوات + بوّابات تحقق. ينفّذ ويوثق بالدليل.</div>
+      </div>
+      <div class="grow">
+        <div class="gterm">Tool Use <span class="ar">استخدام الأدوات</span></div>
+        <div class="def">قدرة العميل يستدعي أدوات حقيقية أثناء التنفيذ: يقرأ ملف، يشغّل أمر، أو يستدعي API.</div>
+      </div>
+      <div class="grow">
+        <div class="gterm">Skills <span class="ar">Playbooks جاهزة</span></div>
+        <div class="def">معرفة قابلة لإعادة الاستخدام تدخل للعميل وقت الحاجة، حسب السياق.</div>
+      </div>
+      <div class="grow">
+        <div class="gterm">CLI <span class="ar">سطر الأوامر</span></div>
+        <div class="def">أدوات واضحة ومقروءة آلياً، تعطي العميل تنفيذ مضبوط وقابل للتكرار.</div>
+      </div>
+      <div class="grow">
+        <div class="gterm">MCP <span class="ar">بروتوكول السياق</span></div>
+        <div class="def">بروتوكول موحد يربط العميل بأنظمة خارجية بطريقة آمنة وواضحة.</div>
+      </div>
+      <div class="grow">
+        <div class="gterm">Verification Gates <span class="ar">بوّابات التحقّق</span></div>
+        <div class="def">فحوصات إلزامية: اختبارات · تدقيق · أمان · توثيق. ما تمر قصة بدونها.</div>
+      </div>
+      <div class="grow hl">
+        <div class="gterm">NCGR Autopilot <span class="ar">الطيّار الآلي</span></div>
+        <div class="def">النظام التشغيلي الكامل: يأخذ Sprint Backlog ويسلّم القصص وحدة وحدة — Sprint كامل في ساعات.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hud" id="hud">
+  <img class="logo" id="hudLogo" src="assets/ncgr-logo.png" alt="NCGR" onerror="this.style.display='none'"/>
+  <div class="eyebrow" id="hudEyebrow">— 2.1 · المفهوم الأول</div>
+  <div class="rule"></div>
+  <div class="counter" id="hudCounter">03 / 17</div>
+  <div class="url">NCGR.GOV.SA / AUTOPILOT</div>
+</div>
+</div></div>
+
+<div class="notes" id="notes">
+  <div class="nh" id="notesH">SPEAKER NOTES · شريحة 03</div>
+  <div id="notesBody"></div>
 </div>
 
-<!-- ================= HERO ================= -->
-<header class="hero">
-  <div class="hero-bg"></div>
-  <svg class="dunes" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-    <path d="M0 720 C 240 640 480 700 720 670 C 960 640 1200 720 1440 660 L1440 900 L0 900 Z" fill="#0e3f25"/>
-    <path d="M0 800 C 300 740 560 810 860 770 C 1120 736 1280 800 1440 760 L1440 900 L0 900 Z" fill="#0b2f1c"/>
-    <path d="M0 860 C 360 820 720 880 1080 850 C 1260 836 1360 860 1440 850 L1440 900 L0 900 Z" fill="#081f13"/>
-  </svg>
-  <div class="wrap">
-    <div class="hero-arabic">المملكة العربية السعودية</div>
-    <h1>The <em>Kingdom</em><br/>of Saudi&nbsp;Arabia</h1>
-    <p class="hero-sub">A nation forged from desert and unified in 1932 — guardian of Islam's holiest cities, anchor of the world's energy, and architect of one of the boldest reinventions of the 21st century.</p>
-    <div class="hero-meta">
-      <div>Capital <b>Riyadh</b></div>
-      <div>Area <b>2,150,000 km²</b></div>
-      <div>Population <b>≈ 37 million</b></div>
-      <div>Founded <b>23 Sept 1932</b></div>
-    </div>
-  </div>
-  <div class="scroll-cue">Scroll<span></span></div>
-</header>
-
-<!-- ================= FACTS ================= -->
-<section id="facts">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">01 — The Record</div>
-      <h2>The Kingdom <em>at a glance</em></h2>
-      <p class="lead">The largest country in the Middle East and the dominant landmass of the Arabian Peninsula — a sovereign monarchy bordered by the Red Sea and the Arabian Gulf.</p>
-    </div>
-    <div class="facts reveal">
-      <div class="fact"><div class="k">Official Name</div><div class="v">Saudi Arabia</div><div class="n">Kingdom of Saudi Arabia</div></div>
-      <div class="fact"><div class="k">Government</div><div class="v">Monarchy</div><div class="n">Unitary Islamic absolute monarchy</div></div>
-      <div class="fact"><div class="k">King</div><div class="v">Salman bin&nbsp;Abdulaziz</div><div class="n">Custodian of the Two Holy Mosques</div></div>
-      <div class="fact"><div class="k">Crown Prince</div><div class="v">Mohammed bin&nbsp;Salman</div><div class="n">Prime Minister</div></div>
-      <div class="fact"><div class="k">Currency</div><div class="v">Saudi Riyal</div><div class="n">SAR · pegged to the US dollar</div></div>
-      <div class="fact"><div class="k">Language</div><div class="v">Arabic</div><div class="n">Official; English widely used in business</div></div>
-      <div class="fact"><div class="k">Religion</div><div class="v">Islam</div><div class="n">Birthplace of Islam · Mecca &amp; Medina</div></div>
-      <div class="fact"><div class="k">Time Zone</div><div class="v">AST · UTC+3</div><div class="n">Arabian Standard Time</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= LAND ================= -->
-<section id="land">
-  <div class="wrap">
-    <div class="split">
-      <div>
-        <div class="section-head reveal" style="margin-bottom:0">
-          <div class="eyebrow">02 — The Land</div>
-          <h2>Desert, mountain <em>&amp; two seas</em></h2>
-          <p class="lead">From the Red Sea coast to the Arabian Gulf, the Kingdom spans roughly four-fifths of the Arabian Peninsula — much of it sculpted by the world's largest continuous sand desert.</p>
-        </div>
-        <div class="geo-list reveal">
-          <div class="row"><span class="label">Rubʿ al-Khali</span><span class="desc">The "Empty Quarter" — largest sand desert on Earth</span></div>
-          <div class="row"><span class="label">Jabal Sawda</span><span class="desc">Highest peak, ~3,000 m, in the southwest Asir range</span></div>
-          <div class="row"><span class="label">Red Sea Coast</span><span class="desc">~1,800 km of coral reef and emerging tourism</span></div>
-          <div class="row"><span class="label">The Najd</span><span class="desc">Central plateau and historic heartland of the state</span></div>
-          <div class="row"><span class="label">Climate</span><span class="desc">Arid desert; extreme summer heat, rare rainfall</span></div>
-        </div>
-      </div>
-      <div class="map-card reveal">
-        <svg viewBox="0 0 320 300" aria-label="Stylised map of Saudi Arabia">
-          <path d="M40 70 L150 40 L250 55 L290 110 L270 180 L230 250 L150 270 L90 240 L55 170 Z"
-                fill="#1d6e41" stroke="#e9e1cf" stroke-width="2" stroke-linejoin="round"/>
-          <circle cx="170" cy="135" r="6" fill="#b07d27"/>
-          <text x="182" y="139" fill="#e9e1cf" font-family="Space Mono, monospace" font-size="11">Riyadh</text>
-          <circle cx="95" cy="150" r="4.5" fill="#e9e1cf"/>
-          <text x="105" y="154" fill="#e9e1cf" font-family="Space Mono, monospace" font-size="10">Mecca</text>
-          <circle cx="105" cy="105" r="4.5" fill="#e9e1cf"/>
-          <text x="115" y="109" fill="#e9e1cf" font-family="Space Mono, monospace" font-size="10">Medina</text>
-          <circle cx="245" cy="120" r="4.5" fill="#e9e1cf"/>
-          <text x="200" y="105" fill="#e9e1cf" font-family="Space Mono, monospace" font-size="10">Dammam</text>
-        </svg>
-        <div class="cap">Fig. 02 — Principal cities &amp; the central Najd</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= HISTORY ================= -->
-<section id="history">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">03 — The Record of Years</div>
-      <h2>Three centuries, <em>one state</em></h2>
-      <p class="lead">The modern Kingdom is the third Saudi state — the culmination of a project begun in the oasis town of Diriyah nearly three hundred years ago.</p>
-    </div>
-    <div class="timeline reveal">
-      <div class="tl-item"><div class="tl-year">1727</div><div class="tl-body"><h3>The First Saudi State</h3><p>The House of Saud rises in Diriyah, near present-day Riyadh, founding the first unified Saudi polity in the Najd.</p></div></div>
-      <div class="tl-item"><div class="tl-year">1902</div><div class="tl-body"><h3>The Recapture of Riyadh</h3><p>Abdulaziz Ibn Saud seizes Riyadh, launching a thirty-year campaign to unify the peninsula.</p></div></div>
-      <div class="tl-item"><div class="tl-year">1932</div><div class="tl-body"><h3>The Kingdom is Proclaimed</h3><p>On 23 September the regions of Hejaz and Najd are merged into the Kingdom of Saudi Arabia.</p></div></div>
-      <div class="tl-item"><div class="tl-year">1938</div><div class="tl-body"><h3>Oil is Struck</h3><p>Commercial oil is discovered at Dammam — the find that would reshape the nation and the world economy.</p></div></div>
-      <div class="tl-item"><div class="tl-year">1960</div><div class="tl-body"><h3>A Founding Member of OPEC</h3><p>Saudi Arabia helps establish the Organization of the Petroleum Exporting Countries, anchoring global energy policy.</p></div></div>
-      <div class="tl-item"><div class="tl-year">2016</div><div class="tl-body"><h3>Vision 2030 is Launched</h3><p>Crown Prince Mohammed bin Salman unveils a sweeping plan to diversify the economy beyond oil.</p></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= ECONOMY ================= -->
-<section id="economy">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">04 — The Engine</div>
-      <h2>The economy of <em>energy</em></h2>
-      <p class="lead">Home to some of the planet's largest proven petroleum reserves, Saudi Arabia is a G20 economy and one of the world's foremost oil exporters — now investing its wealth into a post-oil future.</p>
-    </div>
-    <div class="econ-grid reveal">
-      <div class="econ-cell green">
-        <div class="big">#1</div>
-        <div class="lab">Oil Exports</div>
-        <p>Consistently among the largest crude oil exporters in the world.</p>
-      </div>
-      <div class="econ-cell">
-        <div class="big">~17%</div>
-        <div class="lab">of Global Reserves</div>
-        <p>One of the largest holders of proven petroleum reserves on Earth.</p>
-      </div>
-      <div class="econ-cell dark">
-        <div class="big">Aramco</div>
-        <div class="lab">National Oil Company</div>
-        <p>Saudi Aramco ranks among the most valuable companies ever listed.</p>
-      </div>
-      <div class="econ-cell">
-        <div class="big">G20</div>
-        <div class="lab">Member Economy</div>
-        <p>The only Arab nation in the Group of Twenty major economies.</p>
-      </div>
-      <div class="econ-cell dark">
-        <div class="big">PIF</div>
-        <div class="lab">Sovereign Wealth Fund</div>
-        <p>The Public Investment Fund deploys capital into global and domestic ventures.</p>
-      </div>
-      <div class="econ-cell green">
-        <div class="big">2030</div>
-        <div class="lab">Diversification Target</div>
-        <p>A national drive to grow tourism, industry, mining and technology.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= VISION ================= -->
-<section id="vision">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">05 — The Future Under Construction</div>
-      <h2>Vision <em>2030</em></h2>
-      <p class="lead">A generational blueprint to build a vibrant society, a thriving economy and an ambitious nation — expressed through a series of giga-projects unlike anything attempted before.</p>
-    </div>
-    <div class="vision-grid reveal">
-      <div class="v-card"><div class="num">PROJECT / 01</div><h3><em>NEOM</em> &amp; The Line</h3><p>A $500-billion region on the Red Sea, including The Line — a linear city designed to stretch 170 kilometres with zero cars and zero carbon.</p></div>
-      <div class="v-card"><div class="num">PROJECT / 02</div><h3>The <em>Red Sea</em> Project</h3><p>A luxury tourism destination across an archipelago of pristine islands, built to strict regenerative-tourism standards.</p></div>
-      <div class="v-card"><div class="num">PROJECT / 03</div><h3><em>Qiddiya</em></h3><p>An entertainment, sports and culture capital rising near Riyadh — theme parks, motorsport and arenas at giga-scale.</p></div>
-      <div class="v-card"><div class="num">PROJECT / 04</div><h3><em>Diriyah</em> Gate</h3><p>The restoration of the birthplace of the first Saudi state into a global cultural and heritage destination.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= CULTURE ================= -->
-<section class="culture">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">06 — Faith &amp; Heritage</div>
-      <h2>The heart of the <em>Islamic world</em></h2>
-      <p class="lead">Saudi Arabia is the birthplace of Islam and home to its two holiest cities. Each year millions of pilgrims travel here for Hajj and Umrah — the largest recurring human gathering on Earth.</p>
-    </div>
-    <div class="pillars reveal">
-      <div class="pillar"><h3><em>Mecca</em></h3><p>The holiest city in Islam and the destination of the Hajj pilgrimage, home to the Masjid al-Haram and the Kaaba.</p></div>
-      <div class="pillar"><h3><em>Medina</em></h3><p>The second holiest city, home to the Prophet's Mosque and a centre of Islamic learning and history.</p></div>
-      <div class="pillar"><h3><em>Living Culture</em></h3><p>Bedouin heritage, Najdi architecture, Arabic coffee and dates, falconry, and a fast-growing arts, film and music scene.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= CITIES ================= -->
-<section id="cities">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">07 — Where the Kingdom Lives</div>
-      <h2>Cities of <em>the sands</em></h2>
-    </div>
-    <div class="cities reveal">
-      <div class="city"><div class="rank">CAPITAL</div><h3>Riyadh</h3><p>Political and financial capital on the central Najd plateau.</p></div>
-      <div class="city"><div class="rank">PORT</div><h3>Jeddah</h3><p>Red Sea gateway and historic commercial hub for the Hejaz.</p></div>
-      <div class="city"><div class="rank">HOLY</div><h3>Mecca</h3><p>Holiest city in Islam; destination of the annual Hajj.</p></div>
-      <div class="city"><div class="rank">HOLY</div><h3>Medina</h3><p>City of the Prophet's Mosque and Islamic scholarship.</p></div>
-      <div class="city"><div class="rank">INDUSTRY</div><h3>Dammam</h3><p>Heart of the Eastern Province and the oil industry.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= FOOTER ================= -->
-<footer>
-  <div class="wrap">
-    <div class="reveal">
-      <div class="eyebrow" style="color:var(--ochre)">End of Record</div>
-      <h2 style="margin-top:20px">A desert kingdom,<br/><em>rewriting its future.</em></h2>
-    </div>
-    <div class="foot-row">
-      <div>The Kingdom — An Almanac of Saudi Arabia</div>
-      <div>المملكة العربية السعودية</div>
-      <div>Compiled 2026 · Informational</div>
-    </div>
-  </div>
-</footer>
+<div class="progressDots" id="dots"></div>
 
 <script>
-  // staggered scroll reveals
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  const hud=document.getElementById('hud');
+  const hudEyebrow=document.getElementById('hudEyebrow');
+  const hudCounter=document.getElementById('hudCounter');
+  const notes=document.getElementById('notes');
+  const notesH=document.getElementById('notesH');
+  const notesBody=document.getElementById('notesBody');
+  const dotsWrap=document.getElementById('dots');
+  let cur=0;
 
-  // hero starfield
-  const hero = document.querySelector('.hero');
-  for (let i = 0; i < 60; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.left = Math.random() * 100 + '%';
-    s.style.top = Math.random() * 62 + '%';
-    s.style.animationDelay = (Math.random() * 5) + 's';
-    hero.appendChild(s);
+  slides.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className='pd';
+    d.addEventListener('click',()=>go(i));
+    dotsWrap.appendChild(d);
+  });
+
+  function scale(){
+    const stage=document.querySelector('.stage');
+    const w=stage.clientWidth, h=stage.clientHeight;
+    const s=Math.min(w/1920,h/1080);
+    document.getElementById('deck').style.transform='scale('+s+')';
+  }
+  window.addEventListener('resize',scale);scale();
+
+  window.__deck_go=function(i){go(i)};
+  function go(i){
+    i=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach(s=>s.classList.remove('is-active'));
+    void slides[i].offsetWidth;
+    slides[i].classList.add('is-active');
+    cur=i;
+    updateHud();
+    updateDots();
+    if(i===12)startLoop();else stopLoop();
+    if(i===0)document.querySelector('.cover').classList.add('is-anim');
+    document.querySelectorAll('.divider').forEach(d=>d.classList.remove('is-anim'));
+    const sl=slides[i];
+    document.body.setAttribute('data-bg', sl.classList.contains('dark') ? 'dark' : (i===0 ? 'cover' : 'light'));
+    if(sl.classList.contains('dark')){
+      const div=sl.querySelector('.divider');
+      if(div){void div.offsetWidth;div.classList.add('is-anim')}
+    }
   }
 
-  // subtle parallax on dunes
-  const dunes = document.querySelector('.dunes');
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (y < window.innerHeight) dunes.style.transform = 'translateY(' + (y * 0.18) + 'px)';
-  }, { passive: true });
+  function updateHud(){
+    const s=slides[cur];
+    if(s.dataset.noHud==='true'){hud.style.display='none';return}
+    hud.style.display='block';
+    hudEyebrow.textContent=s.dataset.eyebrow||'';
+    hudCounter.textContent=String(cur+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    notesH.textContent='SPEAKER NOTES · شريحة '+String(cur+1).padStart(2,'0');
+    notesBody.textContent=s.dataset.notes||'';
+  }
+  function updateDots(){
+    [...dotsWrap.children].forEach((d,i)=>d.classList.toggle('on',i===cur));
+  }
+
+  window.addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown'].includes(e.key)){go(cur+1)}
+    else if(e.key===' '){e.preventDefault();go(cur+1)}
+    else if(['ArrowLeft','PageUp'].includes(e.key))go(cur-1);
+    else if(e.key==='Home')go(0);
+    else if(e.key==='End')go(slides.length-1);
+    else if(e.key==='n'||e.key==='N')notes.classList.toggle('on');
+  });
+
+  const stages=[
+    {name:'Read',ar:'يقرأ القصة',phase:'read'},
+    {name:'Context',ar:'يلمّ السياق',phase:'read'},
+    {name:'Plan',ar:'يرتب الخطة',phase:'read'},
+    {name:'Build',ar:'يبني الكود',phase:'build'},
+    {name:'Test',ar:'يشغّل الاختبار',phase:'build'},
+    {name:'Verify',ar:'يتحقق من الجودة',phase:'verify'},
+    {name:'Fix',ar:'يعالج الخلل',phase:'verify'},
+    {name:'Record',ar:'يوثق الأثر',phase:'record'},
+    {name:'Next',ar:'ينتقل للي بعدها',phase:'read'}
+  ];
+  let loopRaf=null,loopStart=0,nodeEls=[],pillEls={};
+
+  function makeNode(idx,st){
+    const el=document.createElement('div');
+    el.className='node';
+    el.appendChild(document.createTextNode(String(idx+1)));
+    const lbl=document.createElement('div');
+    lbl.className='nlabel';
+    lbl.appendChild(document.createTextNode(st.name));
+    const ar=document.createElement('span');
+    ar.className='ar';
+    ar.textContent=st.ar;
+    lbl.appendChild(ar);
+    el.appendChild(lbl);
+    return el;
+  }
+
+  function buildLoopNodes(){
+    const ring=document.getElementById('loopRing');
+    if(!ring||nodeEls.length)return;
+    const cx=340,cy=340,r=300;
+    stages.forEach((st,i)=>{
+      const ang=(i/stages.length)*Math.PI*2 - Math.PI/2;
+      const x=cx+Math.cos(ang)*r;
+      const y=cy+Math.sin(ang)*r;
+      const el=makeNode(i,st);
+      el.style.left=(x/680*100)+'%';
+      el.style.top=(y/680*100)+'%';
+      ring.appendChild(el);
+      nodeEls.push(el);
+    });
+    const tr=document.createElement('div');
+    tr.className='traveler';tr.id='traveler';
+    ring.appendChild(tr);
+    document.querySelectorAll('.phasePill').forEach(p=>pillEls[p.dataset.phase]=p);
+  }
+
+  function startLoop(){
+    buildLoopNodes();
+    loopStart=performance.now();
+    cancelAnimationFrame(loopRaf);
+    const tick=now=>{
+      const elapsed=(now-loopStart)/1000;
+      const period=18;
+      const t=(elapsed%period)/period;
+      const ang=t*Math.PI*2 - Math.PI/2;
+      const cx=340,cy=340,r=300;
+      const x=cx+Math.cos(ang)*r;
+      const y=cy+Math.sin(ang)*r;
+      const tr=document.getElementById('traveler');
+      if(tr){tr.style.left=(x/680*100)+'%';tr.style.top=(y/680*100)+'%'}
+      const idx=Math.floor(t*stages.length)%stages.length;
+      nodeEls.forEach((n,i)=>n.classList.toggle('active',i===idx));
+      const phase=stages[idx].phase;
+      Object.values(pillEls).forEach(p=>p.classList.remove('on'));
+      if(pillEls[phase])pillEls[phase].classList.add('on');
+      loopRaf=requestAnimationFrame(tick);
+    };
+    loopRaf=requestAnimationFrame(tick);
+  }
+  function stopLoop(){cancelAnimationFrame(loopRaf);loopRaf=null}
+
+  go(0);
+})();
 </script>
 </body>
 </html>
