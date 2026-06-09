@@ -597,6 +597,233 @@ body[data-rotated="1"] .swipeHint{
 @media (max-width:768px) and (orientation:portrait){
   .rotateHint:not(.dismissed){display:flex}
 }
+
+/* ===== Slide 13 — launch button for the standalone interactive flowchart ===== */
+.fcLaunchBtn{
+  position:absolute;
+  bottom:78px;
+  left:50%;
+  transform:translateX(-50%);
+  display:inline-flex;
+  align-items:center;
+  gap:16px;
+  padding:14px 26px 14px 22px;
+  background:rgba(255,255,255,.96);
+  border:1.5px solid var(--brand-deep);
+  border-radius:999px;
+  font-family:"IBM Plex Sans Arabic",sans-serif;
+  font-size:15px;
+  font-weight:600;
+  color:var(--brand-deep);
+  text-decoration:none;
+  box-shadow:0 14px 36px rgba(2,74,38,.18),0 0 0 6px rgba(255,255,255,.55);
+  z-index:6;
+  transition:background .25s cubic-bezier(.2,.7,.2,1),color .25s ease,box-shadow .25s ease,transform .25s ease,border-color .25s ease;
+  direction:rtl;
+  letter-spacing:-.002em;
+  white-space:nowrap;
+}
+.fcLaunchBtn:hover{
+  background:var(--brand-deep);
+  color:#fff;
+  border-color:var(--gold);
+  transform:translateX(-50%) translateY(-2px);
+  box-shadow:0 20px 44px rgba(2,74,38,.32),0 0 0 6px rgba(201,162,74,.18);
+}
+.fcLaunchBtn .lDot{
+  display:inline-block;
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 0 4px rgba(201,162,74,.28);
+  flex:none;
+  animation:lDotPulse 2.4s ease-in-out infinite;
+}
+@keyframes lDotPulse{
+  0%,100%{box-shadow:0 0 0 4px rgba(201,162,74,.28)}
+  50%{box-shadow:0 0 0 9px rgba(201,162,74,.10)}
+}
+.fcLaunchBtn .lEn{
+  font-family:"Playfair Display",serif;
+  font-style:italic;
+  font-weight:500;
+  font-size:14px;
+  color:var(--brand);
+  direction:ltr;
+  unicode-bidi:isolate;
+  padding-inline-start:14px;
+  border-inline-start:1px solid var(--hair);
+  transition:color .25s,border-inline-start-color .25s;
+}
+.fcLaunchBtn:hover .lEn{
+  color:#E4D9B6;
+  border-inline-start-color:rgba(255,255,255,.22);
+}
+.fcLaunchBtn .lArrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:18px;
+  opacity:.75;
+  transition:transform .25s ease,opacity .25s ease;
+  display:inline-block;
+}
+.fcLaunchBtn:hover .lArrow{
+  transform:translate(-2px,-2px);
+  opacity:1;
+}
+
+/* ===== Flowchart slide (4.3 · المخطط التفاعلي) ===== */
+.fcLayout{position:absolute;left:110px;right:110px;top:210px;bottom:130px;direction:ltr;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center}
+.fcCanvas{position:relative;width:1500px;height:560px;flex:none;background:
+  radial-gradient(circle at 12% 10%,rgba(0,108,53,.05),transparent 55%),
+  radial-gradient(circle at 92% 90%,rgba(201,162,74,.06),transparent 50%),
+  var(--cream);
+  background-image:radial-gradient(rgba(14,17,21,.10) 1.1px,transparent 1.1px);
+  background-size:24px 24px;background-position:0 0;
+  border:1px solid var(--hair);border-radius:22px;overflow:hidden;
+  box-shadow:0 30px 80px rgba(14,17,21,.06), inset 0 0 0 1px rgba(255,255,255,.6)}
+.fcCanvas::before{content:"blueprint · sprint-12 loop";position:absolute;top:18px;left:24px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+.fcCanvas::after{content:"NCGR · 01";position:absolute;bottom:18px;right:24px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+.fcCanvas .fcCorner{position:absolute;width:18px;height:18px;border-color:var(--brand);pointer-events:none}
+.fcCanvas .fcCorner.tl{top:14px;right:14px;border-top:2px solid;border-right:2px solid}
+.fcCanvas .fcCorner.tr{top:14px;left:14px;border-top:2px solid;border-left:2px solid}
+.fcCanvas .fcCorner.bl{bottom:14px;right:14px;border-bottom:2px solid;border-right:2px solid}
+.fcCanvas .fcCorner.br{bottom:14px;left:14px;border-bottom:2px solid;border-left:2px solid}
+.fcWires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.fcWires .wire{fill:none;stroke:#9CB0A1;stroke-width:2;stroke-dasharray:6 7;opacity:.55;transition:stroke .35s ease,opacity .35s ease,stroke-dasharray .35s ease}
+.fcWires .wire.is-on{stroke:var(--brand-deep);opacity:1;stroke-dasharray:9 6;animation:fcDash 1.4s linear infinite}
+.fcWires .wire.is-loopback{stroke:#C9A24A;stroke-dasharray:4 7}
+.fcWires .wire.is-loopback.is-on{stroke:#C9A24A;stroke-dasharray:9 6;animation:fcDash 1.4s linear infinite}
+.fcWires .wire.is-no{stroke:#9CB0A1}
+.fcWires .wireLabel{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.18em;fill:var(--ink-soft);text-transform:uppercase;direction:ltr;unicode-bidi:isolate}
+.fcWires .wireLabel.gold{fill:#8B6A1F}
+.fcWires .wireLabel.no{fill:#7A1F18}
+.fcWires .arrowFill-deep{fill:var(--brand-deep)}
+.fcWires .arrowFill-mute{fill:#9CB0A1}
+.fcWires .arrowFill-gold{fill:#C9A24A}
+@keyframes fcDash{to{stroke-dashoffset:-30}}
+
+.fcNode{position:absolute;width:248px;height:82px;background:#fff;border:1.5px solid var(--hair);border-radius:14px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:12px 16px;cursor:pointer;box-shadow:0 12px 26px rgba(14,17,21,.05);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease,border-color .35s ease,background .35s ease,opacity .35s ease;opacity:.42;direction:rtl;text-align:right}
+.fcNode:hover{transform:translateY(-2px);box-shadow:0 18px 38px rgba(14,17,21,.10)}
+.fcNode .nTag{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-bottom:5px;direction:ltr;unicode-bidi:isolate;display:flex;align-items:center;gap:8px}
+.fcNode .nTag::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5}
+.fcNode .nTitle{font-family:"IBM Plex Sans Arabic",sans-serif;font-weight:600;font-size:18px;color:var(--ink);line-height:1.25;letter-spacing:-.005em}
+.fcNode .nEn{font-family:"Inter",sans-serif;font-size:12px;color:var(--muted);margin-top:4px;direction:ltr;unicode-bidi:isolate;letter-spacing:.01em;font-weight:500}
+.fcNode.is-reached{opacity:1}
+.fcNode.is-active{background:var(--brand-deep);border-color:var(--brand-deep);box-shadow:0 22px 48px rgba(2,74,38,.32),0 0 0 4px rgba(201,162,74,.22);transform:translateY(-2px)}
+.fcNode.is-active .nTitle{color:#fff}
+.fcNode.is-active .nEn{color:#CDE2D3}
+.fcNode.is-active .nTag{color:var(--gold)}
+.fcNode.phase-setup .nTag{color:#1C7A52}
+.fcNode.phase-loop .nTag{color:#0E6B33}
+.fcNode.phase-decision .nTag{color:#8B6A1F}
+.fcNode.phase-done .nTag{color:#A07020}
+
+/* Decision diamond — true diamond via SVG polygon (no visual overflow) */
+.fcNode.is-diamond{width:260px;height:128px;background:transparent;border:none;box-shadow:none;padding:0;display:flex;align-items:center;justify-content:center;opacity:.42}
+.fcNode.is-diamond .diamondShape{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 14px 28px rgba(14,17,21,.07))}
+.fcNode.is-diamond .diamondShape polygon{fill:#fff;stroke:var(--hair);stroke-width:1.5;transition:fill .35s ease,stroke .35s ease,stroke-width .35s ease}
+.fcNode.is-diamond .diamondInner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 52px;text-align:center;z-index:2}
+.fcNode.is-diamond .nTag{justify-content:center;color:#8B6A1F;font-size:11px}
+.fcNode.is-diamond .nTitle{font-size:19px;text-align:center;line-height:1.22}
+.fcNode.is-diamond .nEn{text-align:center;direction:ltr;font-size:12.5px}
+.fcNode.is-diamond.is-active .diamondShape polygon{fill:#F4E4B5;stroke:#C9A24A;stroke-width:2.5}
+.fcNode.is-diamond.is-active .diamondShape{filter:drop-shadow(0 20px 36px rgba(201,162,74,.32))}
+.fcNode.is-diamond.is-active .nTag{color:#6B4F18}
+.fcNode.is-diamond.is-active .nTitle{color:#2F2410}
+.fcNode.is-diamond.is-active .nEn{color:#6B4F18}
+.fcNode.is-diamond.is-reached{opacity:1}
+.fcNode.is-diamond.is-active .diamondBg{background:#F4E4B5;border-color:#C9A24A;box-shadow:0 22px 50px rgba(201,162,74,.35),0 0 0 4px rgba(2,74,38,.18)}
+.fcNode.is-diamond.is-active .nTag{color:#6B4F18}
+.fcNode.is-diamond.is-active .nTitle{color:#2F2410}
+.fcNode.is-diamond.is-active .nEn{color:#6B4F18}
+.fcNode.is-diamond.is-reached{opacity:1}
+
+/* Done node — celebratory variant */
+.fcNode.is-done{background:linear-gradient(135deg,#F0F7F2,#fff);border:1.5px dashed var(--brand)}
+.fcNode.is-done.is-active{background:var(--brand-deep);border-style:solid;border-color:var(--brand-deep)}
+.fcNode.is-done .nTitle::after{content:" ✦";color:var(--gold);font-family:"Playfair Display",serif}
+.fcNode.is-done.is-active .nTitle::after{color:#E4D9B6}
+
+/* Phase bands (background tint zones) */
+.fcCanvas .phaseBand{position:absolute;border-radius:16px;pointer-events:none;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;direction:ltr;unicode-bidi:isolate;color:var(--muted);padding:10px 16px}
+.fcCanvas .phaseBand.setup{top:22px;left:1198px;width:284px;height:210px;background:linear-gradient(180deg,rgba(28,122,82,.06),rgba(28,122,82,.01));border:1px dashed rgba(28,122,82,.22);text-align:right}
+.fcCanvas .phaseBand.loop{top:232px;left:18px;right:18px;height:158px;background:linear-gradient(180deg,rgba(0,108,53,.05),rgba(0,108,53,.01));border:1px dashed rgba(0,108,53,.22);text-align:right}
+.fcCanvas .phaseBand.decision{top:400px;left:18px;right:18px;bottom:8px;background:linear-gradient(180deg,rgba(201,162,74,.06),rgba(201,162,74,.01));border:1px dashed rgba(201,162,74,.28);text-align:left}
+
+/* Traveler (gold dot moving along the path) */
+.fcTraveler{position:absolute;width:18px;height:18px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 5px rgba(201,162,74,.22),0 6px 16px rgba(201,162,74,.45);transform:translate(-50%,-50%);pointer-events:none;z-index:6;transition:left .9s cubic-bezier(.55,.05,.25,1),top .9s cubic-bezier(.55,.05,.25,1)}
+.fcTraveler::after{content:"";position:absolute;inset:-12px;border-radius:50%;border:1px dashed rgba(201,162,74,.55);animation:fcSpin 6s linear infinite}
+@keyframes fcSpin{to{transform:rotate(360deg)}}
+
+/* Detail panel */
+.fcDetail{position:relative;grid-column:2;direction:rtl;height:680px;background:#fff;border:1px solid var(--hair);border-radius:22px;padding:34px 36px 30px 36px;box-shadow:0 30px 80px rgba(14,17,21,.06);display:flex;flex-direction:column;overflow:hidden}
+.fcDetail::before{content:"";position:absolute;top:0;right:0;width:8px;height:100%;background:linear-gradient(180deg,var(--brand-deep) 0%,var(--brand) 50%,var(--gold) 100%);opacity:.85}
+.fcDetailHead{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:18px}
+.fcStepBig{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:110px;line-height:.85;color:var(--brand-deep);letter-spacing:-.02em;direction:ltr;unicode-bidi:isolate}
+.fcStepBig .total{font-family:"JetBrains Mono",monospace;font-style:normal;font-size:14px;color:var(--muted);letter-spacing:.22em;display:block;margin-top:10px;font-weight:400}
+.fcPhaseChip{display:inline-flex;align-items:center;gap:9px;padding:8px 14px;border-radius:999px;background:var(--brand-soft);color:var(--brand-deep);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;direction:ltr;unicode-bidi:isolate;align-self:flex-start;margin-top:8px;transition:background .3s ease,color .3s ease}
+.fcPhaseChip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.fcPhaseChip.is-decision{background:#F4E4B5;color:#6B4F18}
+.fcPhaseChip.is-done{background:var(--brand-deep);color:#E4D9B6}
+.fcStepTitle{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:34px;font-weight:600;color:var(--ink);line-height:1.18;letter-spacing:-.01em;margin-top:4px;direction:rtl;text-align:right}
+.fcStepEn{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:20px;color:var(--brand);margin-top:6px;direction:ltr;unicode-bidi:isolate;text-align:right}
+.fcStepDesc{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:17px;line-height:1.65;color:var(--ink-soft);margin-top:18px;direction:rtl;text-align:right}
+.fcArtifact{margin-top:auto;background:#0E1115;color:#E5E1D8;border-radius:14px;padding:18px 22px 18px 22px;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.65;direction:ltr;unicode-bidi:isolate;text-align:left;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);overflow:hidden;position:relative}
+.fcArtifact::before{content:"";position:absolute;top:14px;left:18px;width:8px;height:8px;border-radius:50%;background:#3a3f47;box-shadow:14px 0 0 #3a3f47,28px 0 0 #3a3f47}
+.fcArtHead{padding-left:60px;padding-bottom:12px;border-bottom:1px solid #20252b;margin-bottom:12px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#8b9aa0;display:flex;justify-content:space-between;align-items:center}
+.fcArtHead .meta{font-style:normal;color:#5d6a70}
+.fcArtBody{font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.7;white-space:pre-wrap;color:#D7D2C5;margin:0}
+.fcArtBody .k{color:#7DB8FF}
+.fcArtBody .s{color:#D6B864}
+.fcArtBody .n{color:#C97A50}
+.fcArtBody .ok{color:#7CCB8E}
+.fcArtBody .warn{color:#E0B257}
+.fcArtBody .dim{color:#5d6a70}
+.fcArtBody .ar{font-family:"IBM Plex Sans Arabic",sans-serif;color:#E5E1D8;font-size:12px;direction:rtl;unicode-bidi:isolate}
+.fcArtBody .arr{color:#C9A24A}
+
+/* Controls bar */
+.fcControls{position:absolute;left:110px;right:110px;bottom:60px;display:flex;align-items:center;justify-content:space-between;gap:16px;direction:rtl}
+.fcControls .fcGroup{display:flex;align-items:center;gap:10px}
+.fcBtn{appearance:none;border:1.5px solid var(--brand-deep);background:#fff;color:var(--brand-deep);padding:11px 22px;border-radius:999px;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s ease,color .2s ease,transform .15s ease;letter-spacing:.01em;display:inline-flex;align-items:center;gap:8px}
+.fcBtn:hover{background:var(--brand-deep);color:#fff;transform:translateY(-1px)}
+.fcBtn:disabled{opacity:.35;cursor:not-allowed;transform:none;background:#fff;color:var(--brand-deep)}
+.fcBtn.fcPlay{border-color:var(--gold);color:#8B6A1F;background:#FBF4DC}
+.fcBtn.fcPlay:hover{background:var(--gold);color:#fff}
+.fcBtn.fcPlay.is-playing{background:var(--gold);color:#fff}
+.fcBtn.fcReset{border-color:#9CA3AD;color:#6B7280;background:transparent;padding:11px 18px}
+.fcBtn.fcReset:hover{background:#6B7280;color:#fff}
+.fcCounter{font-family:"JetBrains Mono",monospace;font-size:18px;color:var(--ink);letter-spacing:.24em;direction:ltr;unicode-bidi:isolate;padding:0 8px;display:inline-flex;align-items:baseline;gap:4px}
+.fcCounter b{font-size:26px;color:var(--brand-deep);font-weight:700}
+.fcCounter .sep{color:var(--muted);margin:0 2px}
+.fcLegend{display:inline-flex;align-items:center;gap:18px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+.fcLegend .lk{display:inline-flex;align-items:center;gap:7px}
+.fcLegend .lk i{width:18px;height:2px;display:inline-block}
+.fcLegend .lk.live i{background:var(--brand-deep)}
+.fcLegend .lk.yes i{background:#C9A24A}
+.fcLegend .lk.no i{background:#9CB0A1;border-bottom:2px dashed #9CB0A1;height:0}
+
+/* Floating note (appears at step 1 and 7) */
+.fcNote{position:absolute;background:#FDF8E8;border:1.5px dashed #C9A24A;border-radius:14px;padding:18px 20px;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.6;color:#3F2F0A;max-width:340px;direction:ltr;unicode-bidi:isolate;text-align:left;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease;pointer-events:none;z-index:5;box-shadow:0 14px 30px rgba(201,162,74,.20)}
+.fcNote.is-on{opacity:1;transform:translateY(0)}
+.fcNote .nh{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#8B6A1F;margin-bottom:8px;border-bottom:1px dashed rgba(201,162,74,.4);padding-bottom:8px}
+.fcNote .ar{font-family:"IBM Plex Sans Arabic",sans-serif;color:#3F2F0A;font-size:14px;direction:rtl;unicode-bidi:isolate;display:block;margin-top:8px;line-height:1.5}
+
+/* Active-step status strip — sits below canvas, matches canvas width */
+.fcStatusStrip{position:relative;flex:none;width:1500px;height:68px;display:flex;align-items:center;gap:20px;padding:0 26px;background:#fff;border:1px solid var(--hair);border-radius:14px;box-shadow:0 12px 28px rgba(14,17,21,.06);direction:rtl;overflow:hidden}
+.fcStatusStrip::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--brand-deep) 0%,var(--brand) 50%,var(--gold) 100%);opacity:.85}
+.fcStatusStrip .stepNum{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:46px;line-height:.9;color:var(--brand-deep);letter-spacing:-.02em;direction:ltr;unicode-bidi:isolate;min-width:54px;text-align:center}
+.fcStatusStrip .stepDivider{width:1px;height:42px;background:var(--hair)}
+.fcStatusStrip .stepBody{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+.fcStatusStrip .stepHead{display:flex;align-items:center;gap:14px;direction:ltr;unicode-bidi:isolate}
+.fcStatusStrip .stepChip{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;background:var(--brand-soft);color:var(--brand-deep);padding:5px 12px;border-radius:999px;font-weight:600;display:inline-flex;align-items:center;gap:7px}
+.fcStatusStrip .stepChip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.fcStatusStrip .stepChip.is-decision{background:#F4E4B5;color:#6B4F18}
+.fcStatusStrip .stepChip.is-done{background:var(--brand-deep);color:#E4D9B6}
+.fcStatusStrip .stepArTitle{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:21px;font-weight:600;color:var(--ink);direction:rtl;unicode-bidi:isolate;letter-spacing:-.005em;line-height:1}
+.fcStatusStrip .stepEn{font-family:"Playfair Display",serif;font-style:italic;font-size:15px;color:var(--brand);direction:ltr;unicode-bidi:isolate;font-weight:500}
+.fcStatusStrip .stepDesc{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:15px;line-height:1.45;color:var(--ink-soft);direction:rtl;text-align:right;font-weight:400}
+
 </style>
 </head>
 <body>
@@ -760,7 +987,7 @@ body[data-rotated="1"] .swipeHint{
         <div class="modeBody">
           <div class="term">
             <div class="line"><span class="tcmd">$ claude -p --dangerously-skip-permissions</span></div>
-            <div class="line"><span class="check">✓</span> read PRD · <code>BE-0001</code><span class="dim">42ms</span></div>
+            <div class="line"><span class="check">✓</span> read BRD · <code>BE-0001</code><span class="dim">42ms</span></div>
             <div class="line"><span class="check">✓</span> wrote 3 files · 142 lines<span class="dim">4.1s</span></div>
             <div class="line"><span class="check">✓</span> ran tests · 18 passed<span class="dim">2.3s</span></div>
             <div class="line"><span class="check">✓</span> 7-gates green · committed<span class="dim">11.4s</span></div>
@@ -913,7 +1140,7 @@ body[data-rotated="1"] .swipeHint{
   </div>
 </section>
 
-<section class="slide" data-slide="13" data-eyebrow="— 4.2 · الحلقة" data-notes="هذه هي الحلقة التشغيلية. تسع مراحل، وأربعة أطوار، وتتكرر بدون توقف. النقطة الذهبية تمثل العميل وهو ينتقل بين المراحل. كل مرحلة هنا مربوطة بمخرَج حقيقي: قصة من prd.json، خطة، تعديل ملف، نتيجة اختبار، بوّابة، تصحيح، Commit، ثم القصة التالية.">
+<section class="slide" data-slide="13" data-eyebrow="— 4.2 · الحلقة" data-notes="هذه هي الحلقة التشغيلية. تسع مراحل، وأربعة أطوار، وتتكرر بدون توقف. النقطة الذهبية تمثل العميل وهو ينتقل بين المراحل. كل مرحلة هنا مربوطة بمخرَج حقيقي: قصة من BRD.json، خطة، تعديل ملف، نتيجة اختبار، بوّابة، تصحيح، Commit، ثم القصة التالية.">
   <div class="content full">
     <div class="kicker">13 / 17 — the loop · مخرَج كل خطوة ★</div>
     <h2 class="headline reveal loopHeadline" style="font-size:40px;max-width:none;margin-bottom:8px">أربع مراحل، <span class="accent">تسع خطوات</span> — وكل خطوة تنتج شيئاً ملموساً.</h2>
@@ -953,7 +1180,7 @@ body[data-rotated="1"] .swipeHint{
           </div>
 
           <div class="artifact is-on" data-stage="0">
-            <div class="artHeader"><span class="pip"></span>prd.json · BE-0007<span class="meta">read · 38ms</span></div>
+            <div class="artHeader"><span class="pip"></span>BRD.json · BE-0007<span class="meta">read · 38ms</span></div>
 <pre class="artBody">{
   <span class="key">"id"</span><span class="punct">:</span> <span class="str">"BE-0007"</span><span class="punct">,</span>
   <span class="key">"title"</span><span class="punct">:</span> <span class="str">"<span class="ar">تقديم طلب إجازة</span>"</span><span class="punct">,</span>
@@ -1072,8 +1299,16 @@ all gates green <span class="dim">· loop forward</span></pre>
         </div>
       </div>
     </div>
+
+    <a class="fcLaunchBtn" href="flowchart.html" target="_blank" rel="noopener" aria-label="Open interactive flowchart fullscreen">
+      <span class="lDot" aria-hidden="true"></span>
+      <span class="lAr">المخطط التفاعلي بملء الشاشة</span>
+      <span class="lEn">Open fullscreen flowchart</span>
+      <span class="lArrow" aria-hidden="true">↗</span>
+    </a>
   </div>
 </section>
+
 
 <section class="slide" data-slide="14" data-eyebrow="— 4.3 · بوّابات التحقّق" data-notes="سبع بوابات ما فيها تجاوز. كل قصة لازم تعبرها قبل تعتبر مكتملة. هنا الفرق بين كاتب كود وعميل إنتاجي موثوق.">
   <div class="content">
@@ -1149,38 +1384,38 @@ all gates green <span class="dim">· loop forward</span></pre>
   </div>
 </section>
 
-<section class="slide" data-slide="16" data-eyebrow="— 4.5 · الدليل" data-notes="الهدف من الديمو مو عرض شاشة فقط؛ الهدف إثبات أن NCGR Autopilot يقدر يأخذ نطاق حكومي معقد، يقسمه إلى قصص، يبني backend وfrontend، ويربط المصادقة والتحقق في حلقة تنفيذ واحدة.">
+<section class="slide" data-slide="16" data-eyebrow="— 4.5 · حالات الاستخدام" data-notes="الفكرة إن NCGR Autopilot مو محصور في بناء الميزات. نفس الحلقة وبوّاباتها السبع تشتغل على أربعة مسارات عبر كل مستودعات NCGR: تطوير السبرنت، تنظيف الجودة من SonarQube، ترقيع الثغرات الأمنية، وترقية الأطر والتبعيات. كل مهمة تنقسم قصص صغيرة، تنفيذ، تحقق، وcommit موثّق.">
   <div class="content">
     <div class="left">
-      <div class="kicker">16 / 17 — demo proposal</div>
-      <h2 class="headline reveal">الدليل يكون بتجربة<br/><span class="accent">قريبة من واقع NCGR</span>.</h2>
-      <p class="lede reveal d2">نقترح Demo كامل بنمط <strong>NCGR Autopilot</strong>: نظام <span class="latin">.NET 8 + ABP + DDD</span> لإدارة العقارات الحكومية، مع تكامل <span class="latin">Keycloak</span> للمصادقة، وواجهة <span class="latin">Angular</span>.</p>
+      <div class="kicker">16 / 17 — use cases</div>
+      <h2 class="headline reveal">حالات استخدام<br/><span class="accent latin">NCGR Autopilot</span></h2>
+      <p class="lede reveal d2">NCGR Autopilot ما يبني الميزات بس. نفس الحلقة — قصص، تنفيذ، <span class="latin">7 gates</span>، وcommit موثّق — تشتغل على كل مستودعات <span class="latin">NCGR</span>.</p>
       <div class="proofUS reveal d3">
-        <strong>Demo objective</strong> — من backlog إلى نظام يعمل · <span style="color:var(--brand)">backend + frontend + auth + gates</span>
-        <div class="subline">government real estate domain · one execution loop</div>
+        <strong>One loop · four missions</strong> — نفس بوّابات التحقق على كل مسار · <span style="color:var(--brand)">delivery + quality + security + upgrades</span>
+        <div class="subline">across every NCGR repository · fully autonomous</div>
       </div>
     </div>
     <div class="right">
       <div class="caseGrid">
         <div class="casecell">
-          <div class="source">Domain Model</div>
-          <div class="caseTitle">Real Estate</div>
-          <div class="caseText">العقارات الحكومية → المباني → الوحدات والأصول، مع علاقات واضحة وصلاحيات على كل مستوى.</div>
+          <div class="source">Delivery</div>
+          <div class="caseTitle">Sprint Delivery</div>
+          <div class="caseText">من <span class="latin">BRD.json</span> إلى نظام يعمل: backend وfrontend ومصادقة، قصة بعد قصة، في حلقة تنفيذ واحدة بسبع بوّابات تحقق.</div>
         </div>
         <div class="casecell">
-          <div class="source">Backend</div>
-          <div class="caseTitle">.NET 8 · ABP</div>
-          <div class="caseText">تطبيق مبني بـ DDD وEF Core، مع APIs، طبقات Domain/Application، واختبارات تحقق.</div>
+          <div class="source">Code Quality</div>
+          <div class="caseTitle">SonarQube Patcher</div>
+          <div class="caseText">يقرأ نتائج <span class="latin">SonarQube</span> عبر كل مستودعات NCGR — code smells، ثغرات، تغطية ناقصة — ويصلحها مستودعاً بعد مستودع قبل أي commit.</div>
         </div>
         <div class="casecell">
-          <div class="source">Identity</div>
-          <div class="caseTitle">Keycloak SSO</div>
-          <div class="caseText">مصادقة موحدة، أدوار وصلاحيات، وربط الوصول للعقارات الحكومية عبر Keycloak.</div>
+          <div class="source">Security</div>
+          <div class="caseTitle">Security Patcher</div>
+          <div class="caseText">يراقب تنبيهات <span class="latin">CVE</span> والثغرات في التبعيات والكود، يرفع الإصدارات ويصلح المواضع المكشوفة، ويتأكد إن ما انكسر شي.</div>
         </div>
         <div class="casecell">
-          <div class="source">Frontend</div>
-          <div class="caseTitle">Angular Portal</div>
-          <div class="caseText">واجهة لإدارة العقارات والمباني، مربوطة بالـ APIs والصلاحيات وتجربة استخدام واضحة.</div>
+          <div class="source">Modernization</div>
+          <div class="caseTitle">Stack Upgrades</div>
+          <div class="caseText">ترقية الأطر والتبعيات عبر الأسطول — <span class="latin">.NET</span>، <span class="latin">Angular</span>، حزم NuGet/npm — مع إصلاح ما يكسره التحديث تلقائياً.</div>
         </div>
       </div>
     </div>
@@ -1501,6 +1736,123 @@ all gates green <span class="dim">· loop forward</span></pre>
     loopRaf=requestAnimationFrame(tick);
   }
   function stopLoop(){cancelAnimationFrame(loopRaf);loopRaf=null}
+
+  /* ---------- Flowchart slide (14) ---------- */
+  const fcMeta=[
+    {phase:'SETUP · إعداد',ar:'قصص السبرنت',en:'Prepare sprint user stories',desc:'المنتج يحدّد القصص المطلوبة في السبرنت — تعريف القبول، الأولوية، التقدير. هذا الإدخال الوحيد المطلوب من الإنسان قبل بدء الحلقة.',chip:''},
+    {phase:'SETUP · إعداد',ar:'تشغيل NcgrAutopilot.sh',en:'Start the autonomous loop',desc:'أمر واحد على الطرفية يبدأ الحلقة. بعدها ما يحتاج الطيار أي تدخّل بشري — يشتغل بنفسه على القصص واحدة وراء الأخرى.',chip:''},
+    {phase:'LOOP · الحلقة',ar:'يختار قصة',en:'Picks next story (passes: false)',desc:'الطيار يفحص الـ backlog ويختار أوّل قصة لم تمر بعد. يقرأ معايير القبول بالكامل قبل ما يبدأ التنفيذ.',chip:''},
+    {phase:'LOOP · الحلقة',ar:'يلمّ السياق وينفّذ',en:'Gathers context · plans · builds',desc:'يفهرس الملفات المرتبطة، يضع خطة من 4-5 خطوات، ثم يكتب الكود والاختبارات. كل خطوة على القرص فعلياً، لا تظنّ ولا تخمين.',chip:''},
+    {phase:'LOOP · الحلقة',ar:'سبع بوّابات تحقّق',en:'Seven verification gates',desc:'كل قصة تمر على سبع بوّابات صارمة قبل القبول. ما فيه قصة تعتبر مكتملة إذا فشلت بوّابة واحدة — مهما كانت صغيرة.',chip:''},
+    {phase:'LOOP · الحلقة',ar:'يصحّح حتى يمر',en:'Self-corrects until green',desc:'إذا فشلت بوّابة، يحلّل الطيار السبب الجذري ويعدّل تلقائياً. ما يخرج من الحلقة الفرعية إلا بسبعة ✓ — بدون تدخّل بشري.',chip:''},
+    {phase:'LOOP · الحلقة',ar:'Commit + يوثّق الأثر',en:'Atomic commit + journal entry',desc:'Commit ذرّي بمعرّف القصة، ثم تحديث AGENTS.md بأنماط استخرجها من هذه الدورة — الحلقة تتعلّم من نفسها للدورات القادمة.',chip:''},
+    {phase:'DECISION · القرار',ar:'مزيد من القصص؟',en:'More stories with passes:false ?',desc:'الطيار يفحص الـ backlog: إذا في قصص بعد لم تمر، يرجع للخطوة الثالثة. إذا خلصت كل القصص، ينتقل لختم السبرنت.',chip:'decision'},
+    {phase:'DONE · اكتمل',ar:'اكتمل السبرنت',en:'Sprint complete · final report',desc:'كل القصص: ✓ مكتوبة، ✓ مختبرة، ✓ موثّقة، ✓ مدفوعة. تقرير نهائي للقسم مع الإحصائيات الكاملة والكلفة بالريال السعودي.',chip:'done'}
+  ];
+
+  let fcInited=false, fcCurrent=1, fcPlayTimer=null;
+  function $fc(id){return document.getElementById(id)}
+
+  function initFlowchart(){
+    if(!fcInited){
+      document.querySelectorAll('.fcNode').forEach(n=>{
+        n.addEventListener('click',()=>{
+          fcGoto(parseInt(n.dataset.step,10));
+          stopFlowchartAuto(true);
+        });
+      });
+      const prev=$fc('fcPrev'),next=$fc('fcNext'),reset=$fc('fcReset'),play=$fc('fcPlay');
+      if(prev)prev.addEventListener('click',()=>{fcGoto(Math.max(1,fcCurrent-1));stopFlowchartAuto(true)});
+      if(next)next.addEventListener('click',()=>{fcGoto(Math.min(9,fcCurrent+1));stopFlowchartAuto(true)});
+      if(reset)reset.addEventListener('click',()=>{fcGoto(1);stopFlowchartAuto(true)});
+      if(play)play.addEventListener('click',toggleFlowchartAuto);
+      fcInited=true;
+    }
+    fcGoto(1);
+  }
+
+  function fcGoto(step){
+    fcCurrent=step;
+    const meta=fcMeta[step-1];
+    if(!meta)return;
+    const num=$fc('fcStepNum');
+    if(num)num.textContent=String(step).padStart(2,'0');
+    const chip=$fc('fcStepChip');
+    if(chip){
+      chip.textContent=meta.phase;
+      chip.classList.remove('is-decision','is-done');
+      if(meta.chip==='decision')chip.classList.add('is-decision');
+      else if(meta.chip==='done')chip.classList.add('is-done');
+    }
+    const arTitle=$fc('fcStepArTitle');if(arTitle)arTitle.textContent=meta.ar;
+    const en=$fc('fcStepEn');if(en)en.textContent=meta.en;
+    const desc=$fc('fcStepDesc');if(desc)desc.textContent=meta.desc;
+    const counter=$fc('fcCounter');if(counter)counter.textContent=String(step).padStart(2,'0');
+
+    /* Node states */
+    document.querySelectorAll('.fcNode').forEach(n=>{
+      const ns=parseInt(n.dataset.step,10);
+      n.classList.toggle('is-reached',ns<=step);
+      n.classList.toggle('is-active',ns===step);
+    });
+
+    /* Wire activation — wire is on when its source ≤ current step */
+    const wireRules=[
+      {id:'w-1-2',src:1},{id:'w-2-3',src:2},{id:'w-3-4',src:3},
+      {id:'w-4-5',src:4},{id:'w-5-6',src:5},{id:'w-6-7',src:6},
+      {id:'w-7-8',src:7},{id:'w-8-3',src:8},{id:'w-8-9',src:8}
+    ];
+    wireRules.forEach(r=>{
+      const el=document.getElementById(r.id);
+      if(el)el.classList.toggle('is-on', r.src<step);
+    });
+    if(step===8){
+      const lb=document.getElementById('w-8-3');if(lb)lb.classList.add('is-on');
+    }
+    if(step===9){
+      const nb=document.getElementById('w-8-9');if(nb)nb.classList.add('is-on');
+    }
+
+    /* Floating notes */
+    const note1=$fc('fcNote1');if(note1)note1.classList.toggle('is-on',step===1);
+    const note2=$fc('fcNote2');if(note2)note2.classList.toggle('is-on',step===7);
+
+    /* Traveler dot follows the active node center */
+    const activeEl=document.querySelector('.fcNode[data-step="'+step+'"]');
+    const trav=$fc('fcTraveler');
+    const canvas=$fc('fcCanvas');
+    if(activeEl && trav && canvas){
+      const r=activeEl.getBoundingClientRect();
+      const cr=canvas.getBoundingClientRect();
+      const cx=(r.left-cr.left + r.width/2);
+      const cy=(r.top-cr.top + r.height/2);
+      trav.style.left=((cx/cr.width)*100)+'%';
+      trav.style.top=((cy/cr.height)*100)+'%';
+    }
+
+    const pb=$fc('fcPrev');if(pb)pb.disabled=(step===1);
+    const nb=$fc('fcNext');if(nb)nb.disabled=(step===9);
+  }
+
+  function toggleFlowchartAuto(){
+    const play=$fc('fcPlay');
+    if(fcPlayTimer){stopFlowchartAuto(true);return}
+    if(play){play.classList.add('is-playing');play.textContent='■ إيقاف';}
+    const tick=()=>{
+      let nx=fcCurrent+1;
+      if(nx>9)nx=1;
+      fcGoto(nx);
+      fcPlayTimer=setTimeout(tick, nx===1?1500:2100);
+    };
+    fcPlayTimer=setTimeout(tick, 1700);
+  }
+  function stopFlowchartAuto(updateBtn){
+    if(fcPlayTimer){clearTimeout(fcPlayTimer);fcPlayTimer=null}
+    if(updateBtn){
+      const play=$fc('fcPlay');
+      if(play){play.classList.remove('is-playing');play.textContent='▶ تشغيل تلقائي';}
+    }
+  }
 
   go(0);
 })();

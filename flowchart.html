@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#024A26" />
+<title>NCGR Autopilot · Interactive Flowchart</title>
+<link rel="icon" type="image/png" href="assets/ncgr-favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,500;1,700;1,900&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#0E1115;
+  --ink-soft:#2A2F36;
+  --muted:#6B7280;
+  --hair:#E5E1D8;
+  --paper:#FFFFFF;
+  --cream:#F6F2E9;
+  --brand:#006C35;
+  --brand-deep:#024A26;
+  --brand-soft:#E6F0EA;
+  --gold:#C9A24A;
+  --gold-soft:#F4E4B5;
+  --crit:#BE3A2E;
+  --slate:#101418;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--cream);color:var(--ink);font-family:"IBM Plex Sans Arabic","Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
+body{
+  background:
+    radial-gradient(circle at 10% 12%,rgba(0,108,53,.04),transparent 55%),
+    radial-gradient(circle at 90% 88%,rgba(201,162,74,.05),transparent 50%),
+    var(--cream);
+  background-image:radial-gradient(rgba(14,17,21,.08) 1px,transparent 1px);
+  background-size:26px 26px;background-position:0 0;
+}
+
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* Layout shell */
+.app{display:grid;grid-template-rows:72px 1fr 72px;height:100vh;height:100dvh;position:relative}
+
+/* ============ TOP BAR ============ */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid rgba(229,225,216,.6);background:rgba(255,255,255,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:relative;z-index:10;direction:ltr}
+.brand{display:flex;align-items:center;gap:14px}
+.brand img{height:30px;width:auto;opacity:.95}
+.brand .bWord{display:flex;flex-direction:column;line-height:1.1}
+.brand .bWord b{font-family:"IBM Plex Sans Arabic",sans-serif;font-weight:700;color:var(--ink);font-size:16px;letter-spacing:-.005em}
+.brand .bWord span{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.tbCenter{display:flex;align-items:center;gap:14px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+.tbCenter .live{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:var(--brand-soft);color:var(--brand-deep);font-weight:600}
+.tbCenter .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 0 rgba(0,108,53,.5);animation:tbPulse 2s ease-out infinite}
+@keyframes tbPulse{0%{box-shadow:0 0 0 0 rgba(0,108,53,.5)}80%{box-shadow:0 0 0 10px rgba(0,108,53,0)}100%{box-shadow:0 0 0 0 rgba(0,108,53,0)}}
+.tbCenter .sep{opacity:.4}
+.tbRight{display:flex;align-items:center;gap:14px}
+.kbdHint{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.24em;color:var(--muted);text-transform:uppercase}
+.kbdHint kbd{display:inline-block;padding:2px 7px;border-radius:4px;background:#fff;border:1px solid var(--hair);box-shadow:0 1px 0 var(--hair);font-size:10px;color:var(--ink);font-family:"JetBrains Mono",monospace;letter-spacing:0;text-transform:none;margin:0 2px}
+.backLink{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border:1.5px solid var(--hair);border-radius:999px;background:#fff;font-size:13px;font-weight:600;color:var(--ink-soft);transition:all .2s}
+.backLink:hover{border-color:var(--brand-deep);color:var(--brand-deep);transform:translateY(-1px)}
+.backLink span{font-family:"JetBrains Mono",monospace;font-size:14px}
+
+/* ============ MAIN ============ */
+.main{display:grid;grid-template-columns:1fr 440px;gap:24px;padding:18px 28px;min-height:0;overflow:hidden}
+@media (max-width:1340px){.main{grid-template-columns:1fr 380px;gap:18px;padding:14px 22px}}
+@media (max-width:1100px){.main{grid-template-columns:1fr 320px;gap:14px;padding:12px 16px}}
+
+/* ============ CANVAS WRAP ============ */
+.canvasWrap{position:relative;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid rgba(229,225,216,.7);border-radius:18px;box-shadow:0 30px 80px rgba(14,17,21,.06),inset 0 0 0 1px rgba(255,255,255,.7);overflow:hidden;background-image:radial-gradient(rgba(14,17,21,.07) 1px,transparent 1px);background-size:22px 22px;background-color:var(--cream)}
+.canvasWrap::before,.canvasWrap::after{content:"";position:absolute;width:22px;height:22px;border-color:var(--brand);pointer-events:none}
+.canvasWrap::before{top:14px;right:14px;border-top:2px solid;border-right:2px solid}
+.canvasWrap::after{bottom:14px;left:14px;border-bottom:2px solid;border-left:2px solid}
+.canvasCorner{position:absolute;width:22px;height:22px;border-color:var(--brand);pointer-events:none}
+.canvasCorner.tl{top:14px;left:14px;border-top:2px solid;border-left:2px solid}
+.canvasCorner.br{bottom:14px;right:14px;border-bottom:2px solid;border-right:2px solid}
+.cwLabel{position:absolute;top:18px;left:50px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate;pointer-events:none;z-index:2}
+.cwLabel b{color:var(--brand-deep)}
+.cwId{position:absolute;bottom:18px;right:50px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate;pointer-events:none;z-index:2}
+
+.canvasWrap{cursor:grab;user-select:none;touch-action:none}
+.canvasWrap.is-panning{cursor:grabbing}
+.canvasStage{position:relative;width:1700px;height:740px;transform-origin:0 0;transform:matrix(1,0,0,1,0,0);transition:transform .35s cubic-bezier(.2,.7,.2,1);will-change:transform}
+.canvasStage.no-trans,.canvasWrap.is-panning .canvasStage{transition:none !important}
+
+/* Zoom controls (bottom-right corner of canvasWrap) */
+.zoomCtrl{position:absolute;bottom:46px;right:18px;display:flex;flex-direction:column;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--hair);border-radius:12px;box-shadow:0 12px 28px rgba(14,17,21,.10);overflow:hidden;z-index:9;font-family:"JetBrains Mono",monospace}
+.zoomCtrl button{padding:11px 14px;border:none;background:transparent;color:var(--brand-deep);cursor:pointer;font-family:inherit;font-size:17px;line-height:1;transition:background .2s,color .2s;border-bottom:1px solid var(--hair);min-width:56px;display:flex;align-items:center;justify-content:center}
+.zoomCtrl button:last-child{border-bottom:none}
+.zoomCtrl button:hover{background:var(--brand-deep);color:#fff}
+.zoomCtrl .zoomLevel{padding:8px 6px;font-size:11px;letter-spacing:.16em;color:var(--muted);text-align:center;border-bottom:1px solid var(--hair);background:rgba(246,242,233,.7);font-weight:600;cursor:default}
+.zoomCtrl button.fitBtn{font-size:14px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+
+/* Hint badge top-center of canvasWrap */
+.canvasHint{position:absolute;top:18px;left:50%;transform:translateX(-50%);padding:7px 16px;background:rgba(2,74,38,.92);backdrop-filter:blur(6px);color:#fff;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;border-radius:999px;pointer-events:none;z-index:8;opacity:0;transition:opacity .35s ease;box-shadow:0 8px 18px rgba(2,74,38,.30)}
+.canvasHint.is-on{opacity:.92}
+.canvasHint kbd{display:inline-block;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,.18);font-size:10px;color:#fff;font-family:inherit;letter-spacing:0;text-transform:none;margin:0 3px;border:1px solid rgba(255,255,255,.22)}
+
+/* Node interactivity */
+.node{cursor:grab;touch-action:none}
+.node:active{cursor:grabbing}
+.node.is-dragging{box-shadow:0 32px 64px rgba(2,74,38,.42),0 0 0 6px rgba(201,162,74,.42);z-index:9;transition:box-shadow .2s ease;cursor:grabbing}
+.node.is-diamond{cursor:grab}
+.node.is-diamond:active{cursor:grabbing}
+
+/* Phase bands */
+.phaseBand{position:absolute;border-radius:18px;pointer-events:none;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;direction:ltr;unicode-bidi:isolate;color:var(--muted);padding:14px 22px}
+.phaseBand.setup{top:14px;left:1336px;width:354px;height:252px;background:linear-gradient(180deg,rgba(28,122,82,.07),rgba(28,122,82,.01));border:1px dashed rgba(28,122,82,.24);text-align:right}
+.phaseBand.loop{top:270px;left:24px;right:24px;height:160px;background:linear-gradient(180deg,rgba(0,108,53,.06),rgba(0,108,53,.01));border:1px dashed rgba(0,108,53,.22);text-align:right}
+.phaseBand.decision{top:446px;left:24px;right:24px;bottom:12px;background:linear-gradient(180deg,rgba(201,162,74,.08),rgba(201,162,74,.01));border:1px dashed rgba(201,162,74,.32);text-align:left}
+
+/* SVG wires */
+.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.wires .wire{fill:none;stroke:#9CB0A1;stroke-width:2.25;stroke-dasharray:6 7;opacity:.62;transition:stroke .35s ease,opacity .35s ease,stroke-dasharray .35s ease}
+.wires .wire.is-on{stroke:var(--brand-deep);opacity:1;stroke-dasharray:9 6;animation:wireDash 1.4s linear infinite}
+.wires .wire.is-loopback{stroke:#C9A24A;stroke-dasharray:4 7;opacity:.6}
+.wires .wire.is-loopback.is-on{stroke:#C9A24A;stroke-dasharray:9 6;animation:wireDash 1.4s linear infinite;opacity:1}
+.wires .wire.is-no{stroke:#9CB0A1}
+.wires .wireLabel{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.18em;fill:var(--ink-soft);text-transform:uppercase;direction:ltr;unicode-bidi:isolate;text-anchor:middle}
+.wires .wireLabel.gold{fill:#8B6A1F}
+.wires .wireLabel.no{fill:#7A1F18}
+.wires .arrowDeep{fill:var(--brand-deep)}
+.wires .arrowMute{fill:#9CB0A1}
+.wires .arrowGold{fill:#C9A24A}
+@keyframes wireDash{to{stroke-dashoffset:-30}}
+
+/* Nodes */
+.node{position:absolute;width:298px;min-height:96px;background:#fff;border:1.5px solid var(--hair);border-radius:14px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:16px 20px;cursor:pointer;box-shadow:0 14px 30px rgba(14,17,21,.05);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease,border-color .35s ease,background .35s ease,opacity .35s ease;opacity:.45;direction:rtl;text-align:right}
+.node:hover{transform:translateY(-3px);box-shadow:0 24px 48px rgba(14,17,21,.12);opacity:1}
+.node .nTag{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;direction:ltr;unicode-bidi:isolate;display:flex;align-items:center;gap:8px}
+.node .nTag::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.5}
+.node .nTitle{font-family:"IBM Plex Sans Arabic",sans-serif;font-weight:600;font-size:21px;color:var(--ink);line-height:1.28;letter-spacing:-.005em}
+.node .nEn{font-family:"Inter",sans-serif;font-size:13px;color:var(--muted);margin-top:5px;direction:ltr;unicode-bidi:isolate;letter-spacing:.01em;font-weight:500}
+.node.is-reached{opacity:1}
+.node.is-active{background:var(--brand-deep);border-color:var(--brand-deep);box-shadow:0 30px 60px rgba(2,74,38,.36),0 0 0 5px rgba(201,162,74,.24);transform:translateY(-3px) scale(1.02)}
+.node.is-active .nTitle{color:#fff}
+.node.is-active .nEn{color:#CDE2D3}
+.node.is-active .nTag{color:var(--gold)}
+.node.phase-setup .nTag{color:#1C7A52}
+.node.phase-loop .nTag{color:#0E6B33}
+.node.phase-done .nTag{color:#A07020}
+
+/* Done node */
+.node.is-done{background:linear-gradient(135deg,#F0F7F2,#fff);border:1.5px dashed var(--brand)}
+.node.is-done.is-active{background:var(--brand-deep);border-style:solid;border-color:var(--brand-deep)}
+.node.is-done .nTitle::after{content:" ✦";color:var(--gold);font-family:"Playfair Display",serif}
+.node.is-done.is-active .nTitle::after{color:#E4D9B6}
+
+/* Decision diamond */
+.node.is-diamond{width:300px;height:170px;background:transparent;border:none;box-shadow:none;padding:0;display:flex;align-items:center;justify-content:center;opacity:.45}
+.node.is-diamond .dShape{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 16px 32px rgba(14,17,21,.08))}
+.node.is-diamond .dShape polygon{fill:#fff;stroke:var(--hair);stroke-width:1.5;transition:fill .35s ease,stroke .35s ease,stroke-width .35s ease}
+.node.is-diamond .dInner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 60px;text-align:center;z-index:2}
+.node.is-diamond .nTag{justify-content:center;color:#8B6A1F}
+.node.is-diamond .nTitle{font-size:21px;text-align:center;line-height:1.25}
+.node.is-diamond .nEn{text-align:center;direction:ltr;font-size:13px}
+.node.is-diamond.is-active .dShape polygon{fill:#F4E4B5;stroke:#C9A24A;stroke-width:2.5}
+.node.is-diamond.is-active .dShape{filter:drop-shadow(0 24px 40px rgba(201,162,74,.36))}
+.node.is-diamond.is-active .nTag{color:#6B4F18}
+.node.is-diamond.is-active .nTitle{color:#2F2410}
+.node.is-diamond.is-active .nEn{color:#6B4F18}
+.node.is-diamond.is-reached{opacity:1}
+
+/* Traveler */
+.traveler{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 6px rgba(201,162,74,.22),0 8px 22px rgba(201,162,74,.55);transform:translate(-50%,-50%);pointer-events:none;z-index:7;transition:left .9s cubic-bezier(.55,.05,.25,1),top .9s cubic-bezier(.55,.05,.25,1)}
+.traveler::after{content:"";position:absolute;inset:-13px;border-radius:50%;border:1px dashed rgba(201,162,74,.55);animation:travSpin 6s linear infinite}
+@keyframes travSpin{to{transform:rotate(360deg)}}
+
+/* Floating note callouts */
+.note{position:absolute;background:#FDF8E8;border:1.5px dashed #C9A24A;border-radius:14px;padding:16px 18px;font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.55;color:#3F2F0A;max-width:320px;direction:ltr;unicode-bidi:isolate;text-align:left;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease;pointer-events:none;z-index:5;box-shadow:0 14px 30px rgba(201,162,74,.22)}
+.note.is-on{opacity:1;transform:translateY(0)}
+.note .nh{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#8B6A1F;margin-bottom:8px;border-bottom:1px dashed rgba(201,162,74,.4);padding-bottom:8px}
+.note .ar{font-family:"IBM Plex Sans Arabic",sans-serif;color:#3F2F0A;font-size:13px;direction:rtl;unicode-bidi:isolate;display:block;margin-top:8px;line-height:1.5}
+
+/* ============ DETAIL PANEL ============ */
+.detail{display:flex;flex-direction:column;background:#fff;border:1px solid var(--hair);border-radius:18px;box-shadow:0 30px 80px rgba(14,17,21,.06);overflow:hidden;position:relative;min-height:0}
+.detail::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--brand-deep) 0%,var(--brand) 50%,var(--gold) 100%);opacity:.9}
+.dHead{padding:28px 30px 18px 30px;display:flex;align-items:flex-start;justify-content:space-between;gap:18px;border-bottom:1px solid rgba(229,225,216,.7)}
+.dStepBig{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:88px;line-height:.82;color:var(--brand-deep);letter-spacing:-.025em;direction:ltr;unicode-bidi:isolate}
+.dStepBig .of{display:block;margin-top:8px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.26em;color:var(--muted);font-style:normal;font-weight:400}
+.dHeadRight{display:flex;flex-direction:column;align-items:flex-end;gap:8px;direction:rtl}
+.dChip{display:inline-flex;align-items:center;gap:9px;padding:7px 14px;border-radius:999px;background:var(--brand-soft);color:var(--brand-deep);font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;direction:ltr;unicode-bidi:isolate;transition:background .3s,color .3s}
+.dChip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.dChip.is-decision{background:var(--gold-soft);color:#6B4F18}
+.dChip.is-done{background:var(--brand-deep);color:#E4D9B6}
+.dNodeRef{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.24em;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+.dBody{padding:22px 30px 26px 30px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.dBody::-webkit-scrollbar{width:6px}
+.dBody::-webkit-scrollbar-track{background:transparent}
+.dBody::-webkit-scrollbar-thumb{background:var(--hair);border-radius:3px}
+.dArTitle{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:32px;font-weight:600;color:var(--ink);line-height:1.18;letter-spacing:-.01em;direction:rtl;text-align:right}
+.dEn{font-family:"Playfair Display",serif;font-style:italic;font-weight:500;font-size:19px;color:var(--brand);direction:ltr;unicode-bidi:isolate;text-align:right;margin-top:-4px}
+.dDesc{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:16.5px;line-height:1.7;color:var(--ink-soft);direction:rtl;text-align:right;font-weight:400}
+.dArtifact{margin-top:6px;background:#0E1115;color:#E5E1D8;border-radius:14px;padding:18px 22px;font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;direction:ltr;unicode-bidi:isolate;text-align:left;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);position:relative;overflow:hidden}
+.dArtifact::before{content:"";position:absolute;top:14px;left:18px;width:8px;height:8px;border-radius:50%;background:#3a3f47;box-shadow:14px 0 0 #3a3f47,28px 0 0 #3a3f47}
+.dArtHead{padding-left:60px;padding-bottom:12px;border-bottom:1px solid #20252b;margin-bottom:12px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8b9aa0;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.dArtHead .meta{color:#5d6a70;font-style:normal}
+.dArtBody{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.75;white-space:pre-wrap;color:#D7D2C5;margin:0}
+.dArtBody .k{color:#7DB8FF}
+.dArtBody .s{color:#D6B864}
+.dArtBody .n{color:#C97A50}
+.dArtBody .ok{color:#7CCB8E}
+.dArtBody .warn{color:#E0B257}
+.dArtBody .dim{color:#5d6a70}
+.dArtBody .ar{font-family:"IBM Plex Sans Arabic",sans-serif;color:#E5E1D8;font-size:11.5px;direction:rtl;unicode-bidi:isolate}
+.dArtBody .arr{color:#C9A24A}
+
+/* "Outputs" mini-list */
+.dOutputs{margin-top:6px;border-top:1px dashed var(--hair);padding-top:14px}
+.dOutputs .olabel{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate;margin-bottom:10px;text-align:right;direction:rtl}
+.dOutputs ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+.dOutputs li{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:14px;color:var(--ink-soft);display:flex;align-items:flex-start;gap:10px;direction:rtl;text-align:right;line-height:1.45}
+.dOutputs li::before{content:"";flex:none;width:14px;height:1.5px;background:var(--brand);margin-top:11px;border-radius:1px;opacity:.85}
+
+/* ============ BOTTOM BAR ============ */
+.bottombar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 28px;border-top:1px solid rgba(229,225,216,.6);background:rgba(255,255,255,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:relative;z-index:10;direction:rtl}
+.bbLeft,.bbRight{display:flex;align-items:center;gap:12px}
+.bbCenter{display:flex;align-items:center;gap:10px;direction:ltr}
+.btn{appearance:none;border:1.5px solid var(--brand-deep);background:#fff;color:var(--brand-deep);padding:10px 20px;border-radius:999px;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,color .2s,transform .15s;display:inline-flex;align-items:center;gap:7px;line-height:1}
+.btn:hover:not(:disabled){background:var(--brand-deep);color:#fff;transform:translateY(-1px)}
+.btn:disabled{opacity:.32;cursor:not-allowed;transform:none}
+.btn.ghost{border-color:#9CA3AD;color:#6B7280;background:transparent;padding:10px 16px}
+.btn.ghost:hover{background:#6B7280;color:#fff}
+.btn.play{border-color:var(--gold);color:#8B6A1F;background:#FBF4DC;font-weight:700}
+.btn.play:hover{background:var(--gold);color:#fff}
+.btn.play.is-playing{background:var(--gold);color:#fff}
+.btn .ico{font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1}
+.counter{font-family:"JetBrains Mono",monospace;font-size:18px;color:var(--ink);letter-spacing:.24em;direction:ltr;unicode-bidi:isolate;padding:0 6px;display:inline-flex;align-items:baseline;gap:4px}
+.counter b{font-size:28px;color:var(--brand-deep);font-weight:700;font-family:"Playfair Display",serif;font-style:italic}
+.counter .sep{color:var(--muted);margin:0 2px;font-size:18px;font-weight:400}
+.legend{display:inline-flex;align-items:center;gap:16px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+.legend .lk{display:inline-flex;align-items:center;gap:8px}
+.legend .lk i{width:18px;height:2px;display:inline-block;flex:none}
+.legend .lk.live i{background:var(--brand-deep)}
+.legend .lk.yes i{background:#C9A24A}
+.legend .lk.no i{background:#9CB0A1;border-top:2px dashed #9CB0A1;height:0}
+
+/* Phase ribbon (overlay) */
+.phaseRibbon{position:absolute;top:80px;left:24px;display:flex;flex-direction:column;gap:6px;z-index:6;pointer-events:none}
+.phaseRibbon .pStep{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.7);backdrop-filter:blur(6px);border:1px solid var(--hair);font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);direction:ltr;unicode-bidi:isolate;opacity:.7;transition:all .3s}
+.phaseRibbon .pStep::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.5}
+.phaseRibbon .pStep.is-current{opacity:1;background:var(--brand-deep);color:#fff;border-color:var(--brand-deep);box-shadow:0 8px 20px rgba(2,74,38,.25)}
+.phaseRibbon .pStep.is-current::before{background:var(--gold);opacity:1}
+
+/* Responsive: stack on small screens */
+@media (max-width:980px){
+  .app{grid-template-rows:64px 1fr auto auto}
+  .main{grid-template-columns:1fr;gap:14px;padding:12px}
+  .detail{max-height:240px}
+  .topbar{padding:0 16px}
+  .tbCenter{display:none}
+  .kbdHint{display:none}
+  .bottombar{flex-wrap:wrap;padding:10px 14px;justify-content:center;min-height:56px}
+  .legend{display:none}
+  .phaseRibbon{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/ncgr-logo.png" alt="NCGR" onerror="this.style.display='none'"/>
+      <div class="bWord">
+        <b>NCGR Autopilot</b>
+        <span>Interactive Flowchart · مخطط الطيار</span>
+      </div>
+    </div>
+    <div class="tbCenter">
+      <span class="live">Sprint-12 · Live Loop</span>
+      <span class="sep">·</span>
+      <span>9 stages</span>
+      <span class="sep">·</span>
+      <span>4 phases</span>
+    </div>
+    <div class="tbRight">
+      <span class="kbdHint">
+        <kbd>←</kbd><kbd>→</kbd> step
+        <kbd>Space</kbd> play
+        <kbd>F</kbd> fit
+        <kbd>+/-</kbd> zoom
+      </span>
+      <a class="backLink" href="index.html"><span>‹</span> العودة للعرض</a>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- CANVAS -->
+    <div class="canvasWrap" id="canvasWrap">
+      <span class="canvasCorner tl"></span><span class="canvasCorner br"></span>
+      <span class="cwLabel"><b>BLUEPRINT</b> · sprint-12 loop</span>
+      <span class="cwId">NCGR · AUTOPILOT · 01</span>
+
+      <!-- Pan/zoom hint -->
+      <div class="canvasHint" id="canvasHint">
+        <kbd>drag</kbd> pan · <kbd>scroll</kbd> zoom · <kbd>grab nodes</kbd>
+      </div>
+
+      <!-- Zoom controls (overlay) -->
+      <div class="zoomCtrl">
+        <button type="button" id="zIn" aria-label="Zoom in" title="Zoom in">+</button>
+        <div class="zoomLevel" id="zLevel">100%</div>
+        <button type="button" id="zOut" aria-label="Zoom out" title="Zoom out">−</button>
+        <button type="button" id="zFit" class="fitBtn" aria-label="Fit to view" title="Fit to view">FIT</button>
+      </div>
+
+      <!-- Phase ribbon -->
+      <div class="phaseRibbon">
+        <div class="pStep" data-phase="setup">SETUP · إعداد</div>
+        <div class="pStep" data-phase="loop">LOOP · حلقة</div>
+        <div class="pStep" data-phase="decision">DECISION · قرار</div>
+        <div class="pStep" data-phase="done">DONE · اكتمل</div>
+      </div>
+
+      <div class="canvasStage" id="canvasStage">
+
+        <div class="phaseBand setup">SETUP · إعداد</div>
+        <div class="phaseBand loop">LOOP · الحلقة</div>
+        <div class="phaseBand decision">DECISION · القرار</div>
+
+        <svg class="wires" viewBox="0 0 1700 740" preserveAspectRatio="none">
+          <defs>
+            <marker id="aDeep" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="arrowDeep" d="M0,0 L10,5 L0,10 z"/></marker>
+            <marker id="aMute" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrowMute" d="M0,0 L10,5 L0,10 z"/></marker>
+            <marker id="aGold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="arrowGold" d="M0,0 L10,5 L0,10 z"/></marker>
+          </defs>
+          <!-- 1 → 2 (down, setup) -->
+          <path class="wire" id="w-1-2" d="M 1529 124 L 1529 144" marker-end="url(#aMute)"/>
+          <!-- 2 → 3 (down into loop) -->
+          <path class="wire" id="w-2-3" d="M 1529 240 L 1529 300" marker-end="url(#aMute)"/>
+          <!-- 3 → 4 (left) -->
+          <path class="wire" id="w-3-4" d="M 1380 348 L 1348 348" marker-end="url(#aMute)"/>
+          <!-- 4 → 5 (left) -->
+          <path class="wire" id="w-4-5" d="M 1050 348 L 1018 348" marker-end="url(#aMute)"/>
+          <!-- 5 → 6 (left) -->
+          <path class="wire" id="w-5-6" d="M 720 348 L 688 348" marker-end="url(#aMute)"/>
+          <!-- 6 → 7 (left) -->
+          <path class="wire" id="w-6-7" d="M 390 348 L 358 348" marker-end="url(#aMute)"/>
+          <!-- 7 → 8 (down into decision) -->
+          <path class="wire" id="w-7-8" d="M 209 396 L 209 472" marker-end="url(#aMute)"/>
+          <!-- 8 → 9 (right, NO branch → done) -->
+          <path class="wire is-no" id="w-8-9" d="M 359 557 L 520 557" marker-end="url(#aMute)"/>
+          <text class="wireLabel no" id="label-no" x="439" y="544">NO · ينتهي</text>
+          <!-- 8 → 3 LOOPBACK YES (bottom return lane) -->
+          <path class="wire is-loopback" id="w-8-3" d="M 209 642 L 209 687 Q 209 705 227 705 L 1511 705 Q 1529 705 1529 687 L 1529 396" marker-end="url(#aGold)"/>
+          <text class="wireLabel gold" id="label-yes" x="869" y="691">YES · يكرّر الحلقة</text>
+        </svg>
+
+        <!-- Nodes -->
+        <div class="node phase-setup" data-step="1" style="top:28px;left:1380px"><div class="nTag">S · 01</div><div class="nTitle">قصص السبرنت</div><div class="nEn">Sprint backlog · BRD.json</div></div>
+        <div class="node phase-setup" data-step="2" style="top:144px;left:1380px"><div class="nTag">S · 02</div><div class="nTitle">تشغيل NcgrAutopilot.sh</div><div class="nEn">Start the autonomous loop</div></div>
+        <div class="node phase-loop" data-step="3" style="top:300px;left:1380px"><div class="nTag">L · 03</div><div class="nTitle">يختار قصة</div><div class="nEn">Pick next story (passes: false)</div></div>
+        <div class="node phase-loop" data-step="4" style="top:300px;left:1050px"><div class="nTag">L · 04</div><div class="nTitle">يلمّ السياق وينفّذ</div><div class="nEn">Plan · build · self-test</div></div>
+        <div class="node phase-loop" data-step="5" style="top:300px;left:720px"><div class="nTag">L · 05</div><div class="nTitle">سبع بوّابات تحقّق</div><div class="nEn">Seven verification gates</div></div>
+        <div class="node phase-loop" data-step="6" style="top:300px;left:390px"><div class="nTag">L · 06</div><div class="nTitle">يصحّح حتى يمر</div><div class="nEn">Self-corrects until green</div></div>
+        <div class="node phase-loop" data-step="7" style="top:300px;left:60px"><div class="nTag">L · 07</div><div class="nTitle">Commit + يوثّق</div><div class="nEn">Atomic commit + AGENTS.md</div></div>
+
+        <div class="node is-diamond" data-step="8" style="top:472px;left:59px">
+          <svg class="dShape" viewBox="0 0 300 170" preserveAspectRatio="none">
+            <polygon points="150,3 297,85 150,167 3,85"/>
+          </svg>
+          <div class="dInner">
+            <div class="nTag">D · 08</div>
+            <div class="nTitle">مزيد من القصص؟</div>
+            <div class="nEn">More stories?</div>
+          </div>
+        </div>
+
+        <div class="node is-done" data-step="9" style="top:509px;left:520px"><div class="nTag">E · 09</div><div class="nTitle">اكتمل السبرنت</div><div class="nEn">Sprint complete · report</div></div>
+
+        <!-- Floating callouts -->
+        <div class="note" id="note1" style="top:40px;left:980px;max-width:340px">
+          <div class="nh">BRD.json · BE-0007</div>
+{
+  <span style="color:#8B6A1F">"id"</span>: <span style="color:#5C7A33">"BE-0007"</span>,
+  <span style="color:#8B6A1F">"acceptance"</span>: [<br/>
+  &nbsp;&nbsp;<span style="color:#5C7A33">"POST /leave → 201"</span><br/>
+  ],
+  <span style="color:#8B6A1F">"passes"</span>: <span style="color:#7A1F18">false</span>
+}
+          <span class="ar">↑ الوحدة الأساسية. كل قصة لها معيار قبول قابل للتحقق.</span>
+        </div>
+        <div class="note" id="note2" style="top:120px;left:60px;max-width:300px">
+          <div class="nh">also updates AGENTS.md</div>
+          patterns + lessons feed back<br/>
+          into the next iteration —<br/>
+          the loop learns from itself.
+          <span class="ar">↑ كل دورة تعلّم الدورة اللي بعدها.</span>
+        </div>
+
+        <div class="traveler" id="traveler" style="left:1412px;top:92px"></div>
+      </div>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <aside class="detail">
+      <div class="dHead">
+        <div class="dStepBig" id="dStepBig">01<span class="of">of 09</span></div>
+        <div class="dHeadRight">
+          <span class="dChip" id="dChip">SETUP · إعداد</span>
+          <span class="dNodeRef" id="dNodeRef">NODE · S-01</span>
+        </div>
+      </div>
+      <div class="dBody">
+        <div class="dArTitle" id="dArTitle">قصص السبرنت</div>
+        <div class="dEn" id="dEn">Prepare sprint user stories</div>
+        <div class="dDesc" id="dDesc">المنتج يحدّد القصص المطلوبة في السبرنت — تعريف القبول، الأولوية، التقدير. هذا الإدخال الوحيد المطلوب من الإنسان قبل بدء الحلقة.</div>
+
+        <div class="dArtifact">
+          <div class="dArtHead">
+            <span id="dArtTitle">BRD.json · sprint-12</span>
+            <span class="meta" id="dArtMeta">20 stories · ~6h 40m budget</span>
+          </div>
+          <pre class="dArtBody" id="dArtBody"></pre>
+        </div>
+
+        <div class="dOutputs">
+          <div class="olabel">ما يُنتجه هذه المرحلة</div>
+          <ul id="dOutputs"></ul>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- BOTTOM BAR -->
+  <footer class="bottombar">
+    <div class="bbLeft">
+      <button class="btn ghost" id="btnReset" type="button" aria-label="Reset to start"><span class="ico">⟲</span> من البداية</button>
+      <button class="btn" id="btnPrev" type="button" aria-label="Previous step">السابق <span class="ico">›</span></button>
+    </div>
+    <div class="bbCenter">
+      <div class="counter"><b id="counterNow">01</b><span class="sep">/</span><span>09</span></div>
+      <button class="btn play" id="btnPlay" type="button" aria-label="Auto play"><span class="ico" id="playIco">▶</span> <span id="playTxt">تشغيل تلقائي</span></button>
+    </div>
+    <div class="bbRight">
+      <button class="btn" id="btnNext" type="button" aria-label="Next step"><span class="ico">‹</span> التالي</button>
+      <span class="legend">
+        <span class="lk live"><i></i>active</span>
+        <span class="lk yes"><i></i>YES · loop</span>
+        <span class="lk no"><i></i>NO · exit</span>
+      </span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const STEPS = [
+    {
+      phase:'SETUP · إعداد', phaseKey:'setup', chip:'', nodeRef:'NODE · S-01',
+      ar:'قصص السبرنت', en:'Prepare sprint user stories',
+      desc:'المنتج يحدّد القصص المطلوبة في السبرنت — معايير القبول، الأولوية، والتقدير. هذا الإدخال البشري الوحيد المطلوب قبل بدء الحلقة.',
+      artTitle:'BRD.json · sprint-12', artMeta:'20 stories · ~6h 40m budget',
+      outputs:['ملف BRD.json يحوي قصص السبرنت','معايير قبول قابلة للتحقق','تقدير زمني تقريبي لكل قصة'],
+      body:[
+        ['','{'],
+        ['k','  "sprint"',':','s',' "sprint-12"',',',''],
+        ['k','  "stories"',':','',' [',''],
+        ['','    { '],['k','"id"',':','s',' "BE-0007"',',',' '],['k','"passes"',':','warn',' false',' '],['','},'],
+        ['','    { '],['k','"id"',':','s',' "BE-0008"',',',' '],['k','"passes"',':','warn',' false',' '],['','},'],
+        ['dim','    // + 18 more …',''],
+        ['','  ],'],
+        ['k','  "budget_min"',':','n',' 400',''],
+        ['','}']
+      ]
+    },
+    {
+      phase:'SETUP · إعداد', phaseKey:'setup', chip:'', nodeRef:'NODE · S-02',
+      ar:'تشغيل NcgrAutopilot.sh', en:'Start the autonomous loop',
+      desc:'أمر واحد على الطرفية يبدأ الحلقة. بعدها لا يحتاج الطيار أي تدخّل بشري — يشتغل بنفسه على القصص واحدة تلو الأخرى حتى يكمل السبرنت.',
+      artTitle:'~/sprint-12 · zsh', artMeta:'pid 4271 · running',
+      outputs:['عملية autopilot نشطة على المضيف','watchdog يراقب البوّابات السبع','الحلقة تدخل المرحلة التالية تلقائياً'],
+      body:[
+        ['dim','$',''],[' ','./NcgrAutopilot.sh --sprint=12'],
+        ['',''],
+        ['ok','▸',''],[' ','ncgr-autopilot v0.6.4'],
+        ['ok','▸',''],[' ','20 stories queued · 0 done'],
+        ['ok','▸',''],[' ','watchdog · gates 7/7 enforced'],
+        ['dim','▸',''],[' ','entering loop … '],['arr','↻','']
+      ]
+    },
+    {
+      phase:'LOOP · الحلقة', phaseKey:'loop', chip:'', nodeRef:'NODE · L-03',
+      ar:'يختار قصة', en:'Picks next story (passes: false)',
+      desc:'الطيار يفحص الـ backlog ويختار أوّل قصة لم تمر بعد. يقرأ معايير القبول بالكامل ويعرّف نطاق العمل قبل أن يبدأ التنفيذ.',
+      artTitle:'pick · BE-0007', artMeta:'cursor at 1/20',
+      outputs:['قصة محدّدة بمعرّفها','معايير القبول محمّلة في السياق','الحالة محجوزة لمنع تكرار العمل'],
+      body:[
+        ['dim','▾',''],[' ','scanning BRD.json …'],
+        ['',''],
+        [' ','  '],['ok','→',''],[' ',' '],['k','"id"',':','s',' "BE-0007"'],
+        [' ','     '],['k','"title"',':','s',' "تقديم طلب إجازة"'],
+        [' ','     '],['k','"passes"',':','warn',' false'],
+        [' ','     '],['k','"estimate"',':','s',' "20m"'],
+        ['',''],
+        ['dim','  locked · loop entering build','']
+      ]
+    },
+    {
+      phase:'LOOP · الحلقة', phaseKey:'loop', chip:'', nodeRef:'NODE · L-04',
+      ar:'يلمّ السياق وينفّذ', en:'Gathers context · plans · builds',
+      desc:'يفهرس الملفات المرتبطة، يضع خطة من 4-5 خطوات، ثم يكتب الكود والاختبارات على القرص فعلياً. كل تغيير يتم تتبعه — لا تخمين ولا فرضيات.',
+      artTitle:'src/api/leave/handler.ts', artMeta:'+3 files · 142 LOC',
+      outputs:['ملفات جديدة على القرص (handler, dto, schema)','اختبارات unit وفحوصات تحقق','تعديلات على البنية القائمة عند الحاجة'],
+      body:[
+        ['ok','+',''],[' ',' export async function createLeaveRequest(req) {'],
+        ['ok','+',''],[' ','   const dto = LeaveRequestDto.parse(req.body)'],
+        ['ok','+',''],[' ','   await assertEmployeeActive(dto.employeeId)'],
+        ['ok','+',''],[' ','   const row = await db.leaveRequests.insert(dto)'],
+        ['ok','+',''],[' ','   await notifyManager(row)'],
+        ['ok','+',''],[' ','   return Response.json(row, { status: 201 })'],
+        ['ok','+',''],[' ',' }'],
+        ['',''],
+        ['dim','# also: schema + manager hook + dto','']
+      ]
+    },
+    {
+      phase:'LOOP · الحلقة', phaseKey:'loop', chip:'', nodeRef:'NODE · L-05',
+      ar:'سبع بوّابات تحقّق', en:'Seven verification gates',
+      desc:'كل قصة تمر على سبع بوّابات صارمة قبل القبول: typecheck, lint, unit, integration, coverage, security scan, build. ما فيه قصة تعتبر مكتملة إذا فشلت بوّابة واحدة.',
+      artTitle:'gates · BE-0007', artMeta:'gate runner · 8.4s',
+      outputs:['تقرير 7/7 من كل بوّابة','تحديد البوّابات الفاشلة (إن وجدت)','قرار: عبور أو دخول دورة الإصلاح'],
+      body:[
+        ['ok','✓',''],[' ',' [1/7] typecheck'],
+        ['ok','✓',''],[' ',' [2/7] lint'],
+        ['ok','✓',''],[' ',' [3/7] unit tests · 24 specs'],
+        ['ok','✓',''],[' ',' [4/7] integration'],
+        ['warn','!',''],[' ',' [5/7] coverage 78%  '],['dim','(target ≥ 80%)',''],
+        ['ok','✓',''],[' ',' [6/7] security scan'],
+        ['ok','✓',''],[' ',' [7/7] build'],
+        ['',''],
+        ['warn','→ gate 5 failed · looping to fix','']
+      ]
+    },
+    {
+      phase:'LOOP · الحلقة', phaseKey:'loop', chip:'', nodeRef:'NODE · L-06',
+      ar:'يصحّح حتى يمر', en:'Self-corrects until green',
+      desc:'إذا فشلت بوّابة، يحلّل الطيار السبب الجذري ويعدّل تلقائياً — يضيف اختبار، يعيد كتابة دالة، أو يصلّح حالة حدّية. لا يخرج من هذه الحلقة الفرعية إلا بسبعة ✓.',
+      artTitle:'autofix · coverage gap', artMeta:'attempt 1 · 1.2s',
+      outputs:['تشخيص دقيق للسبب الجذري','تعديل موجّه (اختبار/كود/إعداد)','إعادة تشغيل البوّابات حتى تخضرّ جميعاً'],
+      body:[
+        ['warn','!',''],[' ',' uncovered: createLeaveRequest overlap path'],
+        [' ','  → add test: rejects overlapping range'],
+        ['',''],
+        ['ok','✓',''],[' ',' wrote tests/leave-overlap.spec.ts'],
+        ['ok','✓',''],[' ',' coverage 84% '],['dim','(+6)',''],
+        ['ok','✓',''],[' ',' re-running 7 gates …'],
+        ['',''],
+        ['ok','all gates green',''],[' ',' '],['dim','· loop forward','']
+      ]
+    },
+    {
+      phase:'LOOP · الحلقة', phaseKey:'loop', chip:'', nodeRef:'NODE · L-07',
+      ar:'Commit + يوثّق الأثر', en:'Atomic commit + journal entry',
+      desc:'Commit ذرّي يحمل معرّف القصة وكل التغييرات المرتبطة، ثم تحديث AGENTS.md بأنماط تعلّمها من هذه الدورة — الحلقة تعلّم نفسها للدورات القادمة.',
+      artTitle:'git log · sprint-12', artMeta:'29 files · +2380 / -11',
+      outputs:['Commit نظيف بمعرّف القصة','تحديث AGENTS.md بالأنماط المستخرجة','سجل أثر يربط القصة بالتغييرات والاختبارات'],
+      body:[
+        ['ok','●',''],[' ',' 9b4a2f feat(api): [BE-0007] leave-request endpoint'],
+        [' ','│  29 files · '],['ok','+2380',''],[' ',' / '],['warn','-11',''],[' ',' · 7/7 gates ✓'],
+        [' ','│'],
+        ['ok','●',''],[' ',' 1c0e8d chore(agents): pattern · zod + guard'],
+        [' ','│'],
+        ['dim','→ AGENTS.md +12 lines · pattern shared with future stories','']
+      ]
+    },
+    {
+      phase:'DECISION · القرار', phaseKey:'decision', chip:'decision', nodeRef:'NODE · D-08',
+      ar:'مزيد من القصص؟', en:'More stories with passes:false ?',
+      desc:'الطيار يفحص الـ backlog بعد كل قصة: إذا فيه قصص لم تمر، يرجع إلى الخطوة الثالثة ويختار التالية. إذا اكتملت كلها، ينتقل لختم السبرنت.',
+      artTitle:'queue · sprint-12', artMeta:'loop guard · 4ms',
+      outputs:['عدّاد القصص المتبقية والمكتملة','الزمن المنقضي والكلفة التراكمية','قرار: عودة للحلقة أو خروج لختم السبرنت'],
+      body:[
+        ['dim','remaining',':','',':  '],['warn','14',''],[' ',' stories'],
+        ['dim','done      ',':','',':  '],['ok',' 6',''],[' ',' stories'],
+        ['dim','elapsed   ',':','',':  '],['ok',' 1h 58m',''],
+        ['',''],
+        ['','→ '],['arr','YES',''],[' ',' · loop back to L-03'],
+        ['dim','  no human prompt · cycle continues','']
+      ]
+    },
+    {
+      phase:'DONE · اكتمل', phaseKey:'done', chip:'done', nodeRef:'NODE · E-09',
+      ar:'اكتمل السبرنت', en:'Sprint complete · final report',
+      desc:'كل القصص اكتملت: ✓ مكتوبة، ✓ مختبرة، ✓ موثّقة، ✓ مدفوعة. تقرير نهائي للقسم مع إحصائيات السبرنت الكاملة والكلفة بالريال السعودي.',
+      artTitle:'report · sprint-12', artMeta:'final · idle',
+      outputs:['تقرير سبرنت كامل بالأرقام','تاريخ commits ذرّي ونظيف','مقارنة الكلفة والسرعة مقابل التنفيذ اليدوي'],
+      body:[
+        ['dim','═══════════════════════════════',''],
+        [' ','  Sprint 12 · '],['ok','COMPLETE',''],
+        ['dim','═══════════════════════════════',''],
+        ['k','stories  ',':','ok',' 20 / 20'],[' ','  · all 7 gates ✓'],
+        ['k','elapsed  ',':','',' 6h 42m'],[' ','  · avg 20.1m / story'],
+        ['k','cost     ',':','',' SAR 240'],[' ','  · vs SAR 84,000 manual'],
+        ['k','commits  ',':','',' 58'],[' ','  · clean atomic history'],
+        ['k','delta    ',':','arr',' 350×'],[' ',' cost · 11× speed'],
+        ['',''],
+        ['ok','→ artifacts delivered · loop idle','']
+      ]
+    }
+  ];
+
+  const PHASES = ['setup','loop','decision','done'];
+  let cur = 1;
+  let playTimer = null;
+  let dArtBodyEl, ribbonEls;
+
+  function $(id){return document.getElementById(id)}
+
+  // Build artifact body as text nodes + spans to avoid innerHTML
+  function renderArtifact(rows){
+    const el = $('dArtBody');
+    while(el.firstChild) el.removeChild(el.firstChild);
+    rows.forEach(row=>{
+      if(!Array.isArray(row)){el.appendChild(document.createTextNode(row+'\n'));return}
+      const frag = document.createDocumentFragment();
+      // Each row is a sequence of [class, text, class, text, ...] OR just strings interleaved.
+      // We treat odd-position items as classes and even as text — but we also allow plain strings.
+      // Cleaner approach: walk pairs (cls,text).
+      for(let i=0;i<row.length;i++){
+        const item = row[i];
+        if(item===undefined||item===null) continue;
+        // If looks like a class token, then next item is text
+        if(typeof item === 'string' && /^(k|s|n|ok|warn|dim|ar|arr)$/.test(item)){
+          const txt = row[i+1] || '';
+          if(txt){
+            const sp = document.createElement('span');
+            sp.className = item;
+            sp.appendChild(document.createTextNode(txt));
+            frag.appendChild(sp);
+          }
+          i++;
+        } else if (typeof item === 'string') {
+          if(item) frag.appendChild(document.createTextNode(item));
+        }
+      }
+      el.appendChild(frag);
+      el.appendChild(document.createTextNode('\n'));
+    });
+  }
+
+  function renderOutputs(items){
+    const ul = $('dOutputs');
+    while(ul.firstChild) ul.removeChild(ul.firstChild);
+    items.forEach(t=>{
+      const li = document.createElement('li');
+      li.textContent = t;
+      ul.appendChild(li);
+    });
+  }
+
+  // ========== NODE GEOMETRY & WIRES ==========
+  const NODE_DEFS = {
+    1:{w:298,h:96}, 2:{w:298,h:96}, 3:{w:298,h:96}, 4:{w:298,h:96},
+    5:{w:298,h:96}, 6:{w:298,h:96}, 7:{w:298,h:96},
+    8:{w:300,h:170,diamond:true},
+    9:{w:298,h:96}
+  };
+  const nodePos = {
+    1:{x:1380,y:28}, 2:{x:1380,y:144}, 3:{x:1380,y:300}, 4:{x:1050,y:300},
+    5:{x:720,y:300}, 6:{x:390,y:300}, 7:{x:60,y:300},
+    8:{x:59,y:472}, 9:{x:520,y:509}
+  };
+  const WIRES = [
+    {id:'w-1-2', from:1, fromA:'bottom', to:2, toA:'top',    kind:'line'},
+    {id:'w-2-3', from:2, fromA:'bottom', to:3, toA:'top',    kind:'line'},
+    {id:'w-3-4', from:3, fromA:'left',   to:4, toA:'right',  kind:'line'},
+    {id:'w-4-5', from:4, fromA:'left',   to:5, toA:'right',  kind:'line'},
+    {id:'w-5-6', from:5, fromA:'left',   to:6, toA:'right',  kind:'line'},
+    {id:'w-6-7', from:6, fromA:'left',   to:7, toA:'right',  kind:'line'},
+    {id:'w-7-8', from:7, fromA:'bottom', to:8, toA:'top',    kind:'line'},
+    {id:'w-8-9', from:8, fromA:'right',  to:9, toA:'left',   kind:'line'},
+    {id:'w-8-3', from:8, fromA:'bottom', to:3, toA:'bottom', kind:'loopback', labelId:'label-yes', labelOffsetY:-14},
+    {id:'w-8-9-label', from:8, fromA:'right', to:9, toA:'left', kind:'lineLabel', refWireId:'w-8-9', labelId:'label-no', labelOffsetY:-10}
+  ];
+
+  function anchorPt(id, side){
+    const p = nodePos[id], def = NODE_DEFS[id];
+    const cx = p.x + def.w/2, cy = p.y + def.h/2;
+    switch(side){
+      case 'top': return {x:cx, y:p.y};
+      case 'bottom': return {x:cx, y:p.y+def.h};
+      case 'left': return {x:p.x, y:cy};
+      case 'right': return {x:p.x+def.w, y:cy};
+      default: return {x:cx, y:cy};
+    }
+  }
+  function buildPath(w){
+    const a = anchorPt(w.from, w.fromA);
+    const b = anchorPt(w.to,   w.toA);
+    if(w.kind==='line') return `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
+    if(w.kind==='loopback'){
+      // Orthogonal feedback return: down → along a bottom lane → up into the target, rounded corners.
+      const laneY = 705, r = 18;
+      const dir = b.x >= a.x ? 1 : -1;
+      return `M ${a.x} ${a.y} L ${a.x} ${laneY-r} Q ${a.x} ${laneY} ${a.x+dir*r} ${laneY} `
+           + `L ${b.x-dir*r} ${laneY} Q ${b.x} ${laneY} ${b.x} ${laneY-r} L ${b.x} ${b.y}`;
+    }
+    return '';
+  }
+
+  function updateWires(){
+    WIRES.forEach(w=>{
+      if(w.kind==='lineLabel') return; // labelOnly handled below
+      const el = document.getElementById(w.id);
+      if(el) el.setAttribute('d', buildPath(w));
+    });
+    // Reposition labels at midpoint of their wires
+    [{labelId:'label-yes', wireId:'w-8-3', yOffset:-12},
+     {labelId:'label-no',  wireId:'w-8-9', yOffset:-10}].forEach(L=>{
+      const path = document.getElementById(L.wireId);
+      const txt = document.getElementById(L.labelId);
+      if(!path || !txt) return;
+      try{
+        const len = path.getTotalLength();
+        const pt = path.getPointAtLength(len/2);
+        txt.setAttribute('x', pt.x);
+        txt.setAttribute('y', pt.y + L.yOffset);
+      } catch(e){ /* ignore */ }
+    });
+  }
+
+  function applyNodeStyle(id){
+    const el = document.querySelector('.node[data-step="'+id+'"]');
+    if(!el) return;
+    el.style.left = nodePos[id].x + 'px';
+    el.style.top  = nodePos[id].y + 'px';
+  }
+
+  function placeTraveler(){
+    const s = STEPS[cur-1]; if(!s) return;
+    const trav = $('traveler');
+    const def = NODE_DEFS[cur];
+    const inset = 32;
+    let cx, cy;
+    if(def.diamond){
+      // diamond: bbox corner is outside the rotated shape — tuck just inside the left tip
+      cx = nodePos[cur].x + 46;
+      cy = nodePos[cur].y + def.h/2;
+    } else {
+      // rectangular nodes: lower-left corner, clear of the right-aligned RTL text
+      cx = nodePos[cur].x + inset;
+      cy = nodePos[cur].y + def.h - inset;
+    }
+    trav.style.left = cx + 'px';
+    trav.style.top  = cy + 'px';
+  }
+
+  // ========== STEP STATE ==========
+  function setStep(step){
+    cur = step;
+    const s = STEPS[step-1];
+    if(!s) return;
+    const big = $('dStepBig');
+    big.firstChild.nodeValue = String(step).padStart(2,'0');
+    const chip = $('dChip');
+    chip.textContent = s.phase;
+    chip.classList.remove('is-decision','is-done');
+    if(s.chip==='decision') chip.classList.add('is-decision');
+    else if(s.chip==='done') chip.classList.add('is-done');
+    $('dNodeRef').textContent = s.nodeRef;
+    $('dArTitle').textContent = s.ar;
+    $('dEn').textContent = s.en;
+    $('dDesc').textContent = s.desc;
+    $('dArtTitle').textContent = s.artTitle;
+    $('dArtMeta').textContent = s.artMeta;
+    renderArtifact(s.body);
+    renderOutputs(s.outputs);
+    $('counterNow').textContent = String(step).padStart(2,'0');
+
+    document.querySelectorAll('.node').forEach(n=>{
+      const ns = +n.dataset.step;
+      n.classList.toggle('is-reached', ns<=step);
+      n.classList.toggle('is-active', ns===step);
+    });
+    const wireSrc = {'w-1-2':1,'w-2-3':2,'w-3-4':3,'w-4-5':4,'w-5-6':5,'w-6-7':6,'w-7-8':7,'w-8-3':8,'w-8-9':8};
+    Object.entries(wireSrc).forEach(([id,src])=>{
+      const el = document.getElementById(id);
+      if(el) el.classList.toggle('is-on', src < step);
+    });
+    if(step===8) document.getElementById('w-8-3').classList.add('is-on');
+    if(step===9) document.getElementById('w-8-9').classList.add('is-on');
+
+    $('note1').classList.toggle('is-on', step===1);
+    $('note2').classList.toggle('is-on', step===7);
+    ribbonEls.forEach(el=>el.classList.toggle('is-current', el.dataset.phase===s.phaseKey));
+    placeTraveler();
+    $('btnPrev').disabled = (step===1);
+    $('btnNext').disabled = (step===9);
+  }
+
+  // ========== PAN / ZOOM ==========
+  let scale = 1, tx = 0, ty = 0;
+  const MIN_SCALE = 0.3, MAX_SCALE = 2.6;
+
+  function applyTransform(){
+    const stage = $('canvasStage');
+    stage.style.transform = `matrix(${scale}, 0, 0, ${scale}, ${tx}, ${ty})`;
+    $('zLevel').textContent = Math.round(scale*100) + '%';
+  }
+  function fitToWrap(animated){
+    const wrap = $('canvasWrap');
+    const ww = wrap.clientWidth, wh = wrap.clientHeight;
+    const pad = 50;
+    const s = Math.min((ww-pad)/1700, (wh-pad)/740);
+    scale = s;
+    tx = (ww - 1700*s)/2;
+    ty = (wh - 740*s)/2;
+    if(!animated){
+      const stage = $('canvasStage');
+      stage.classList.add('no-trans');
+      applyTransform();
+      requestAnimationFrame(()=>stage.classList.remove('no-trans'));
+    } else applyTransform();
+  }
+  function zoomAt(px, py, factor){
+    const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * factor));
+    if(newScale === scale) return;
+    const ratio = newScale / scale;
+    tx = px - (px - tx) * ratio;
+    ty = py - (py - ty) * ratio;
+    scale = newScale;
+    applyTransform();
+  }
+
+  // ========== PLAY/PAUSE ==========
+  function startPlay(){
+    if(playTimer){ stopPlay(); return; }
+    $('playIco').textContent = '■';
+    $('playTxt').textContent = 'إيقاف التشغيل';
+    $('btnPlay').classList.add('is-playing');
+    const tick = ()=>{
+      let next = cur + 1; if(next > 9) next = 1;
+      setStep(next);
+      playTimer = setTimeout(tick, next===1 ? 1700 : 2300);
+    };
+    playTimer = setTimeout(tick, 1900);
+  }
+  function stopPlay(){
+    if(playTimer){ clearTimeout(playTimer); playTimer = null; }
+    $('playIco').textContent = '▶';
+    $('playTxt').textContent = 'تشغيل تلقائي';
+    $('btnPlay').classList.remove('is-playing');
+  }
+
+  // ========== HINT BADGE ==========
+  let hintTimer = null;
+  function showHint(){
+    const h = $('canvasHint');
+    if(!h) return;
+    h.classList.add('is-on');
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(()=>h.classList.remove('is-on'), 3200);
+  }
+
+  // ========== INIT ==========
+  function init(){
+    ribbonEls = [...document.querySelectorAll('.phaseRibbon .pStep')];
+
+    // Sync initial node positions to DOM (matches inline styles, just for safety)
+    Object.keys(nodePos).forEach(id => applyNodeStyle(+id));
+    updateWires();
+
+    // ----- Pan on canvasWrap background -----
+    const wrap = $('canvasWrap');
+    const stage = $('canvasStage');
+    let panning = false, panStart = null;
+    let pinchStart = null;
+
+    wrap.addEventListener('pointerdown', e=>{
+      // Ignore if started on a node, button, or any inner UI
+      if(e.target.closest('.node, .zoomCtrl, .phaseRibbon, button, a, .canvasHint')) return;
+      panning = true;
+      panStart = {x:e.clientX, y:e.clientY, tx, ty};
+      wrap.classList.add('is-panning');
+      wrap.setPointerCapture(e.pointerId);
+    });
+    wrap.addEventListener('pointermove', e=>{
+      if(!panning) return;
+      tx = panStart.tx + (e.clientX - panStart.x);
+      ty = panStart.ty + (e.clientY - panStart.y);
+      applyTransform();
+    });
+    const endPan = e=>{
+      if(!panning) return;
+      panning = false;
+      wrap.classList.remove('is-panning');
+      try{ wrap.releasePointerCapture(e.pointerId); }catch(_){}
+    };
+    wrap.addEventListener('pointerup', endPan);
+    wrap.addEventListener('pointercancel', endPan);
+    wrap.addEventListener('pointerleave', endPan);
+
+    // ----- Wheel zoom (anchored to mouse) -----
+    wrap.addEventListener('wheel', e=>{
+      e.preventDefault();
+      const rect = wrap.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      const factor = e.deltaY < 0 ? 1.12 : 1/1.12;
+      stage.classList.add('no-trans');
+      zoomAt(px, py, factor);
+      requestAnimationFrame(()=>stage.classList.remove('no-trans'));
+      showHint();
+    }, {passive:false});
+
+    // ----- Node drag (per-node) -----
+    document.querySelectorAll('.node').forEach(node=>{
+      node.addEventListener('pointerdown', e=>{
+        e.stopPropagation();
+        const stepId = +node.dataset.step;
+        const start = {nx: nodePos[stepId].x, ny: nodePos[stepId].y, mx:e.clientX, my:e.clientY, moved:false};
+        try{ node.setPointerCapture(e.pointerId); }catch(_){}
+        const onMove = ev=>{
+          const dxRaw = ev.clientX - start.mx;
+          const dyRaw = ev.clientY - start.my;
+          if(!start.moved && (Math.abs(dxRaw)>4 || Math.abs(dyRaw)>4)){
+            start.moved = true;
+            node.classList.add('is-dragging');
+            stage.classList.add('no-trans');
+          }
+          if(start.moved){
+            nodePos[stepId].x = start.nx + dxRaw/scale;
+            nodePos[stepId].y = start.ny + dyRaw/scale;
+            applyNodeStyle(stepId);
+            updateWires();
+            if(stepId === cur) placeTraveler();
+          }
+        };
+        const onUp = ev=>{
+          node.removeEventListener('pointermove', onMove);
+          node.removeEventListener('pointerup', onUp);
+          node.removeEventListener('pointercancel', onUp);
+          try{ node.releasePointerCapture(ev.pointerId); }catch(_){}
+          stage.classList.remove('no-trans');
+          if(!start.moved){
+            stopPlay();
+            setStep(stepId);
+          } else {
+            node.classList.remove('is-dragging');
+          }
+        };
+        node.addEventListener('pointermove', onMove);
+        node.addEventListener('pointerup', onUp);
+        node.addEventListener('pointercancel', onUp);
+      });
+    });
+
+    // ----- Zoom controls -----
+    $('zIn').addEventListener('click', ()=>{
+      const r = wrap.getBoundingClientRect();
+      zoomAt(r.width/2, r.height/2, 1.25);
+    });
+    $('zOut').addEventListener('click', ()=>{
+      const r = wrap.getBoundingClientRect();
+      zoomAt(r.width/2, r.height/2, 1/1.25);
+    });
+    $('zFit').addEventListener('click', ()=>{
+      fitToWrap(true);
+    });
+
+    // ----- Step controls -----
+    $('btnPrev').addEventListener('click', ()=>{ stopPlay(); setStep(Math.max(1, cur-1)); });
+    $('btnNext').addEventListener('click', ()=>{ stopPlay(); setStep(Math.min(9, cur+1)); });
+    $('btnReset').addEventListener('click', ()=>{ stopPlay(); setStep(1); fitToWrap(true); });
+    $('btnPlay').addEventListener('click', startPlay);
+
+    // ----- Keyboard -----
+    window.addEventListener('keydown', e=>{
+      if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if(e.key==='ArrowLeft'||e.key==='ArrowDown'){ stopPlay(); setStep(Math.max(1, cur-1)); e.preventDefault(); }
+      else if(e.key==='ArrowRight'||e.key==='ArrowUp'){ stopPlay(); setStep(Math.min(9, cur+1)); e.preventDefault(); }
+      else if(e.key===' '){ startPlay(); e.preventDefault(); }
+      else if(e.key==='r'||e.key==='R'){ stopPlay(); setStep(1); }
+      else if(e.key==='f'||e.key==='F'){ fitToWrap(true); }
+      else if(e.key==='+'||e.key==='='){ const r=wrap.getBoundingClientRect(); zoomAt(r.width/2,r.height/2,1.2); }
+      else if(e.key==='-'||e.key==='_'){ const r=wrap.getBoundingClientRect(); zoomAt(r.width/2,r.height/2,1/1.2); }
+      else if(/^[1-9]$/.test(e.key)){ stopPlay(); setStep(+e.key); }
+    });
+
+    window.addEventListener('resize', ()=>fitToWrap(false));
+
+    fitToWrap(false);
+    setStep(1);
+    setTimeout(showHint, 500);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>
